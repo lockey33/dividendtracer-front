@@ -1,0 +1,196 @@
+html {
+    --old-mauve: #672a4eff;
+    --tuscany: #b09398ff;
+    --opal: #cedfd9ff;
+    --azure-x-11-web-color: #ebfcfbff;
+    --green-blue-crayola: #0a81d1ff;
+    --raisin-black: #242325;
+    --cultured: #F6F4F3;
+    background-color: var(--raisin-black);
+}
+
+@font-face {
+
+    font-family: "Frutiger Bold";
+
+    src: url("../fonts/FrutigerLTStd-Bold.otf");
+
+}
+
+@font-face {
+    font-family: "Frutiger";
+    src: url('../fonts/FrutigerLTStd-Roman.otf')
+}
+
+@font-face {
+    font-family: "Frutiger Light";
+    src: url('../fonts/FrutigerLTStd-Light.otf')
+}
+
+@font-face {
+    font-family: "Frutiger Light Cn";
+    src: url('../fonts/FrutigerLTStd-LightCn.otf')
+}
+
+@font-face {
+    font-family: "Frutiger Cn";
+    src: url('../fonts/FrutigerLTStd-Cn.otf')
+}
+
+@font-face {
+    font-family: "Frutiger Roman";
+    src: url('../fonts/FrutigerLTStd-Roman.otf')
+}
+
+
+@font-face {
+    font-family: "Frutiger Black";
+    src: url('../fonts/FrutigerLTStd-Black.otf')
+}
+
+.h-100{
+    height: 100%;
+}
+
+.w-25{
+    width: 25%;
+}
+
+.w-50{
+    width: 50%;
+}
+
+.w-75{
+    width: 75%;
+}
+
+.w-100{
+    width: 100%;
+}
+
+h1, h2, h3, h4, h5{
+    font-family: "Frutiger Bold";
+    letter-spacing: 0.5px;
+    color: var(--cultured);
+}
+
+.justify-center{
+    justify-content: center;
+    justify-items: center;
+}
+.space-between{
+    justify-content: space-between;
+}
+
+.flex{
+    display: flex;
+}
+
+.flexWrap{
+    flex-wrap: wrap;
+}
+
+.column{
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.smallPaddingTop{
+    padding-top:2%;
+}
+
+.smallPaddingBottom{
+    padding-bottom:2%;
+}
+
+.smallPaddingLeft{
+    padding-left: 2%;
+}
+
+.smallPaddingRight{
+    padding-right: 2%;
+}
+
+
+.smallMarginTop{
+    margin-top:2%;
+}
+
+.smallMarginBottom{
+    margin-bottom:2%;
+}
+
+.smallMarginLeft{
+    margin-left: 2%;
+}
+
+.smallMarginRight{
+    margin-right: 2%;
+}
+
+.mediumPaddingTop{
+    padding-top:5%;
+}
+
+.mediumPaddingBottom{
+    padding-bottom:5%;
+}
+
+
+.coolButton{
+    -webkit-box-align: center;
+    align-items: center;
+    border: 0px;
+    border-radius: 16px;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    -webkit-box-pack: center;
+    justify-content: center;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    opacity: 1;
+    outline: 0px;
+    transition: background-color 0.2s ease 0s, opacity 0.2s ease 0s;
+    height: 48px;
+    padding: 0px 24px;
+    background-color: var(--green-blue-crayola);
+    color: white;
+    width: 20%;
+}
+
+.dataBox{
+    background-color: var(--azure-x-11-web-color);
+    opacity: 0.8;
+    width: 40%;
+    height: 300px;
+    margin-bottom: 5%;
+}
+
+.dataBoxHeader{
+    height: 50px;
+    background-color: var(--old-mauve);
+    padding: 2%;
+    color: white;
+}
+
+.dataBoxHeader img{
+    height: 25px;
+}
+
+.dataBoxContent{
+    overflow-y: scroll;
+    padding: 2%;
+}
+
+.dataBox:first-child{
+    margin-right: 5%;
+}
+
+.dataBox:nth-child(2n+3) {
+    margin-right:5%;
+}
