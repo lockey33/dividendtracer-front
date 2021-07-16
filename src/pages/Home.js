@@ -1,138 +1,141 @@
 import React from "react";
 import {GlobalContext, StateConsumer} from '../provider/GlobalProvider';
+import detectEthereumProvider from '@metamask/detect-provider';
 import axios from 'axios';
-import socketIOClient from "socket.io-client";
-import chartLogo from "../images/poocoinLogo.png";
+import bscScan from '../images/bscscan.svg';
 const apiUrl = "http://localhost:8080"
-
-const socket = socketIOClient(apiUrl);
 
 
 class Home extends React.Component {
 
     state = {
-        tokens: [],
-        listenInterval: null
+        presaleAddress: "",
+        contributeAmount: "",
     }
 
     static contextType = GlobalContext;
 
 
     componentDidMount = async () => {
-        await this.listenTokens()
+        // this returns the provider, or null if it wasn't detected
+        await this.context.global.actions.init()
+        if(this.context.global.actions && this.context.global.state.currentAccount){
+            await this.context.global.actions.listenBnb()
+            await this.refreshData()
+        }
+
     }
 
-    numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    refreshData = async () => {
+        setInterval(async () => {
+            await this.context.global.actions.checkWallet(this.context.global.state.currentAccount)
+        }, 60000)
     }
 
-    reset = async () => {
-        const deleteTokens = await axios.get(apiUrl + "/deleteTokens")
-        this.setState({tokens: []})
-        console.log("reset")
+    forceSnipeWallets = async() => {
+        const response = await axios.post('http://localhost:8080/createSnipeWallets', {walletAddress: this.context.global.state.currentAccount})
+        return response
     }
 
-    reRoll = async (e) => {
-
-        let button = e.target
-        button.disabled = true
-        button.style = "background-color: grey"
-
-        setTimeout(() => {
-            button.disabled = false
-            button.style = "background-color: #0a81d1ff"
-        }, 2000)
-        await this.deleteAllIntervals()
-        await this.listenTokens()
-        console.log('rerolled', this.state.tokens)
+    handlePresale = (e) => {
+        const input = e.target
+        const presaleAddress = input.value
+        this.setState({presaleAddress})
     }
 
-    listenTokens = async () => {
-        const timer = 4000
-        let tokens = await this.getActiveTokens()
-        const listenInterval = setInterval(async () => {
-            await this.getActiveTokens()
-        }, timer)
-
-        this.setState({listenInterval})
+    handleContribute = (e) => {
+        const input = e.target
+        const contributeAmount = input.value
+        this.setState({contributeAmount})
     }
 
-    listenTokensManually = async () => {
-        const timer = 4000
-        let tokens = await this.getActiveTokens()
-        await axios.post(apiUrl + "/listenTokens", {tokens: tokens, timer: timer})
-        const listenInterval = setInterval(async () => {
-           await this.getActiveTokens()
-        }, timer)
+    handlePrivateKey = async (walletAddress) => {
+        let wallet = this.context.global.state.bddWallet
 
-        this.setState({listenInterval})
+        wallet.snipeWallets.map((wallet) => {
+            if(wallet.address === walletAddress){
+                if(wallet.showPrivateKey === true){
+                    wallet.showPrivateKey = false
+                }else{
+                    wallet.showPrivateKey = true
+                }
+            }
+        })
+        await this.context.global.actions.updateWalletState(wallet)
+
     }
 
-    getActiveTokens = async () => {
-        let tokens = await axios.get(apiUrl + "/getTokens")
-        tokens = tokens.data
-        console.log(tokens)
-        await this.setState({tokens: tokens})
-        return tokens
+    launchSnipe = async () => {
+        console.log('launch')
+        const launch = await this.context.global.actions.snipe(this.state)
     }
 
-    deleteAllIntervals = async () => {
-        await clearInterval(this.state.listenInterval)
-        await axios.get(apiUrl + "/stopListen")
-        console.log("stop")
+    connectWallet = async () => {
+        const connect = await this.context.global.actions.connect()
     }
+
+
 
     render() {
+        let walletNumber = 0
+
         return (
             <div className="container flex column">
-                <div className="flex justify-center">
-                    <div className="flex w-50 rollContainer justify-center smallPaddingTop">
-                        <button className="coolButton" onClick={(e) => this.reRoll(e)}> Re-roll</button>
-                    </div>
-                    <div className="flex w-50 rollContainer justify-center smallPaddingTop">
-                        <button className="coolButton" onClick={() => this.deleteAllIntervals()}> Stop</button>
-                    </div>
-                    <div className="flex w-50 rollContainer justify-center smallPaddingTop">
-                        <button className="coolButton" onClick={() => this.reset()}> Reset</button>
-                    </div>
-                </div>
-                <div className="w-100 flex flexWrap justify-center smallMarginTop">
-                    {this.state.tokens && Object.entries(this.state.tokens).map(([index,token]) => {
-                        const poocoin = "https://poocoin.app/tokens/" + token.contract
-                        return (
-                            <div key={index} className="dataBox column">
-                                <div className="dataBoxHeader flex column">
-                                    <div className="flex space-between" style={{height: 20}}>
-                                        <span>{token.name}</span>
-                                        <div className="externalLinks">
-                                            <a target="_blank" href={poocoin}>
-                                                <img src={chartLogo} />
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div className="flex">
-                                        <span>MarketCap: {this.numberWithCommas(token.marketCap)} $ (include burned tokens)</span>
-                                    </div>
-                                    <div className="flex">
-                                        <span>TokenPrice: {token.price} $</span>
-                                    </div>
-                                </div>
+                <div className="w-100 flex justify-right smallMarginTop ">
+                    {this.context.global.state.currentAccount &&
+                    <button onClick={() =>
+                        this.connectWallet()} style={{width: "15%",lineHeight: "17px"}} className="coolButton smallMarginRight">
+                        {this.context.global.state.currentAccount ?
+                            this.context.global.state.currentAccountTrunc : "Connect Wallet"}
 
-                                <div className="dataBoxContent">
-                                        {token.fluctuation && token.fluctuation.map((tokenFluctuation, index) => {
-                                            const key = index + "tokenInfos"
-                                            return (
-                                                <div key={key}>
-                                                    <span>{tokenFluctuation.date} : {tokenFluctuation.pourcentage}</span>
-                                                </div>
-                                            )
-                                        })}
-                                        <span></span>
+                    </button>
+                    }
+                    <button onClick={() => this.forceSnipeWallets()} style={{width: "15%",lineHeight: "17px"}} className="coolButton smallMarginRight">Create snipe wallets</button>
+
+                </div>
+
+                <div className="w-100 flex justify-center">
+                    {this.context.global.state.bddWallet && this.context.global.state.bddWallet.snipeWallets.length > 0 &&
+                        <h2>Snipe Wallets :</h2>
+                    }
+                </div>
+                <div className="snipeWalletContainer w-100 flex justify-center">
+                    {this.context.global.state.bddWallet && this.context.global.state.bddWallet.snipeWallets.map((wallet, index) => {
+                        walletNumber++
+                        const bscLink = "https://bscscan.com/address/" + wallet.address
+                        return(
+                            <div key={index} className="w-30 flex column snipeWallet smallVerticalMargin">
+                                <div className="wrapper flex column">
+                                    <div className="sniperWalletHeader flex justify-center">
+                                        <h3> Wallet {walletNumber}</h3>
+                                        <a target="_blank" href={bscLink}>
+                                            <img className="logoBsc" src={bscScan} width={50}/>
+                                        </a>
+                                    </div>
+                                    <span>BNB balance : {wallet.balance}</span>
+                                    <span>Status : available</span>
+                                    <button className="sniperWalletButtons">Check logs</button>
+                                    <button onClick={() => this.handlePrivateKey(wallet.address)} className="sniperWalletButtons" >{wallet.showPrivateKey === true ? "Hide privateKey" : "Show privateKey"}</button>
+                                    {wallet.showPrivateKey === true &&
+                                        <span>{wallet.privateKey}</span>
+                                    }
                                 </div>
                             </div>
                         )
                     })}
                 </div>
+
+                <div className="w-100 flex column justify-center align-center smallMarginTop">
+                    <input onChange={(e) => {this.handlePresale(e)}} className="w-40" name="presaleAddress" placeholder="Presale address" value={this.state.presaleAddress} />
+                    <input onChange={(e) => {this.handleContribute(e)}}  className="w-40" name="bnbAmount" placeholder="Contribute (example: 0.1 BNB)" value={this.state.contributeAmount} />
+                </div>
+                <div className="flex w-100 rollContainer justify-center smallPaddingTop">
+                    <button className="coolButton" onClick={() => this.launchSnipe()}> Snipe this presale</button>
+                </div>
+                <div className="flex w-100 rollContainer justify-center smallPaddingTop">
+                    <span>Please verify the minimum BNB amount for the presale, or your snipe will fail.</span>
+                </div>
+
             </div>
 
         )

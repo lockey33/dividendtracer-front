@@ -16,7 +16,7 @@ class HeaderComponent extends React.Component {
     render() {
         return (
             <div className="headerContainer flex justify-center">
-                <h2>CryptoRadar</h2>
+                <h2>DxSnipe</h2>
             </div>
         )
     }

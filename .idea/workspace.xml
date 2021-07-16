@@ -2,77 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dc007fcb-24aa-4283-bcfc-90e957a07ab9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/HeaderComponent.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/styles/header.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/styles/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/1.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abi/approveSpender.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abi/helper.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abi/pancake.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abi/wbnb.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abis/approveSpender.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abis/erc20.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abis/erc20.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abis/erc20_bytes32.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abis/pancake.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abis/pancake.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abis/wbnb.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/abis/weth.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/listenerFactory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/.babelrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/.github/workflows/CI.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/.yarnrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/abis/ERC20.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/constants.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/declarations.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/currency.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/fractions/currencyAmount.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/fractions/fraction.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/fractions/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/fractions/percent.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/fractions/price.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/fractions/tokenAmount.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/pair.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/token.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/entities/trade.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/errors.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/fetcher.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/router.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/src/utils.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/constants.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/data.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/entities.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/fraction.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/miscellaneous.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/pair.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/route.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/router.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/token.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/test/trade.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/tsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/pancakeswap-sdk-v2/yarn.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/factory/swapFactory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gemFinder.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/listenCoinHunt.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/HeaderComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HeaderComponent.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/router/Router.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/Router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram/session.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram/signIn.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram/telegram.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trade.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/provider/GlobalProvider.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/provider/GlobalProvider.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/styles/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="CSS File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -140,7 +76,17 @@
       <workItem from="1625149819774" duration="5999000" />
       <workItem from="1625211790738" duration="11374000" />
       <workItem from="1625314515422" duration="1103000" />
-      <workItem from="1625410944871" duration="613000" />
+      <workItem from="1625410944871" duration="1471000" />
+      <workItem from="1625503994719" duration="947000" />
+      <workItem from="1625562032304" duration="581000" />
+      <workItem from="1625596877009" duration="448000" />
+      <workItem from="1625643145623" duration="1095000" />
+      <workItem from="1625730311613" duration="580000" />
+      <workItem from="1625847436003" duration="4840000" />
+      <workItem from="1625919565300" duration="1813000" />
+      <workItem from="1626188001682" duration="583000" />
+      <workItem from="1626334933473" duration="10818000" />
+      <workItem from="1626377321387" duration="6111000" />
     </task>
     <servers />
   </component>

@@ -1,4 +1,5 @@
 html {
+    height: 100%;
     --old-mauve: #672a4eff;
     --tuscany: #b09398ff;
     --opal: #cedfd9ff;
@@ -7,6 +8,10 @@ html {
     --raisin-black: #242325;
     --cultured: #F6F4F3;
     background-color: var(--raisin-black);
+}
+
+body, #root{
+    height: 100%;
 }
 
 @font-face {
@@ -56,6 +61,14 @@ html {
     width: 25%;
 }
 
+.w-30{
+    width: 30%;
+}
+
+.w-40{
+    width: 40%;
+}
+
 .w-50{
     width: 50%;
 }
@@ -78,6 +91,18 @@ h1, h2, h3, h4, h5{
     justify-content: center;
     justify-items: center;
 }
+
+.justify-right{
+    justify-content: flex-end;
+}
+
+.align-center{
+    align-items: center;
+}
+.align-right{
+    align-items: flex-end;
+}
+
 .space-between{
     justify-content: space-between;
 }
@@ -113,6 +138,11 @@ h1, h2, h3, h4, h5{
     padding-right: 2%;
 }
 
+
+.smallVerticalMargin{
+    margin-right: 1%;
+    margin-left: 1%;
+}
 
 .smallMarginTop{
     margin-top:2%;
@@ -193,4 +223,81 @@ h1, h2, h3, h4, h5{
 
 .dataBox:nth-child(2n+3) {
     margin-right:5%;
+}
+
+input{
+    height: 30px;
+    margin-top: 2%;
+    padding: 1%;
+}
+
+span{
+    color:white;
+}
+
+.snipeWallet{
+    height: auto;
+    background-color: var(--old-mauve);
+    color: white;
+    word-break: break-word;
+    border-radius: 25px;
+}
+
+.snipeWalletAddress{
+    font-size: 9px;
+}
+
+.wrapper{
+    padding: 5%;
+}
+
+.snipeWallet span{
+    padding: 2%
+}
+h3{
+    margin-block-start: 0;
+    margin-block-end: 2%;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.sniperWalletHeader{
+    width: 100%;
+    border-bottom: 1px solid white;
+    margin-bottom: 5%;
+}
+
+.sniperWalletHeader a{
+    margin-left: 2%;
+}
+
+.sniperWalletButtons{
+    margin-top: 3%;
+}
+
+.logoBsc{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: 2%;
+    margin-right: 2px;
+    opacity: .8;
+    transition: opacity .1s ease-in;
+    background: #fff;
+    border: 1px solid #fff;
+    border-radius: 12px;
+}
+
+@media screen and (max-width: 1000px){
+    .snipeWalletContainer{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .snipeWallet{
+        margin-top: 1%;
+        margin-bottom: 1%;
+    }
+
 }
