@@ -1,5 +1,5 @@
 import React from "react";
-import { GlobalContext, StateConsumer } from '../provider/GlobalProvider';
+import { GlobalContext } from '../provider/GlobalProvider';
 import "../styles/main.css";
 import "../styles/header.css";
 

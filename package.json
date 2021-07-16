@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "dxSnipe",
+  "name": "dxsnipe",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -17,6 +17,8 @@
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
+    "react-helmet-async": "^1.0.9",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "typescript": "^4.3.2",

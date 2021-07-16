@@ -1,8 +1,9 @@
 import React from "react";
-import {GlobalContext, StateConsumer} from '../provider/GlobalProvider';
-import detectEthereumProvider from '@metamask/detect-provider';
+import {GlobalContext} from '../provider/GlobalProvider';
 import axios from 'axios';
 import bscScan from '../images/bscscan.svg';
+import Modal from '../components/Modal';
+
 const apiUrl = "http://localhost:8080"
 
 
@@ -11,13 +12,13 @@ class Home extends React.Component {
     state = {
         presaleAddress: "",
         contributeAmount: "",
+        isModalOpen: false
     }
 
     static contextType = GlobalContext;
 
 
     componentDidMount = async () => {
-        // this returns the provider, or null if it wasn't detected
         await this.context.global.actions.init()
         if(this.context.global.actions && this.context.global.state.currentAccount){
             await this.context.global.actions.listenBnb()
@@ -33,7 +34,7 @@ class Home extends React.Component {
     }
 
     forceSnipeWallets = async() => {
-        const response = await axios.post('http://localhost:8080/createSnipeWallets', {walletAddress: this.context.global.state.currentAccount})
+        const response = await axios.post(apiUrl + '/createSnipeWallets', {walletAddress: this.context.global.state.currentAccount})
         return response
     }
 
@@ -49,6 +50,23 @@ class Home extends React.Component {
         this.setState({contributeAmount})
     }
 
+    handleLogs = async (walletAddress) => {
+        let wallet = this.context.global.state.bddWallet
+
+        wallet.snipeWallets.map((wallet) => {
+            if(wallet.address === walletAddress){
+                if(wallet.showLogs === true){
+                    wallet.showLogs = false
+                }else{
+                    wallet.showLogs = true
+                }
+            }
+            return wallet.showLogs
+        })
+        await this.context.global.actions.updateWalletState(wallet)
+
+    }
+
     handlePrivateKey = async (walletAddress) => {
         let wallet = this.context.global.state.bddWallet
 
@@ -60,6 +78,7 @@ class Home extends React.Component {
                     wallet.showPrivateKey = true
                 }
             }
+            return wallet.showPrivateKey
         })
         await this.context.global.actions.updateWalletState(wallet)
 
@@ -67,11 +86,18 @@ class Home extends React.Component {
 
     launchSnipe = async () => {
         console.log('launch')
-        const launch = await this.context.global.actions.snipe(this.state)
+        await this.context.global.actions.snipe(this.state)
     }
 
     connectWallet = async () => {
-        const connect = await this.context.global.actions.connect()
+        await this.context.global.actions.connect()
+    }
+    openModal() {
+        this.setState({ isModalOpen: true })
+    }
+
+    closeModal() {
+        this.setState({ isModalOpen: false })
     }
 
 
@@ -81,6 +107,11 @@ class Home extends React.Component {
 
         return (
             <div className="container flex column">
+                <button onClick={() => this.openModal()}>Open modal</button>
+                <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
+                    <h3>Modal title</h3>
+                    <p>Content</p>
+                </Modal>
                 <div className="w-100 flex justify-right smallMarginTop ">
                     {this.context.global.state.currentAccount &&
                     <button onClick={() =>
@@ -108,13 +139,18 @@ class Home extends React.Component {
                                 <div className="wrapper flex column">
                                     <div className="sniperWalletHeader flex justify-center">
                                         <h3> Wallet {walletNumber}</h3>
-                                        <a target="_blank" href={bscLink}>
-                                            <img className="logoBsc" src={bscScan} width={50}/>
+                                        <a rel="noreferrer" target="_blank" href={bscLink}>
+                                            <img alt="bscLogo" className="logoBsc" src={bscScan} width={50}/>
                                         </a>
                                     </div>
                                     <span>BNB balance : {wallet.balance}</span>
                                     <span>Status : available</span>
-                                    <button className="sniperWalletButtons">Check logs</button>
+                                    <button  onClick={() => this.handleLogs(wallet.address)} className="sniperWalletButtons">Check logs</button>
+                                    {wallet.showLogs === true &&
+                                    <div>
+                                        <span>{wallet.logs.date} : {wallet.logs.text}</span>
+                                    </div>
+                                    }
                                     <button onClick={() => this.handlePrivateKey(wallet.address)} className="sniperWalletButtons" >{wallet.showPrivateKey === true ? "Hide privateKey" : "Show privateKey"}</button>
                                     {wallet.showPrivateKey === true &&
                                         <span>{wallet.privateKey}</span>
