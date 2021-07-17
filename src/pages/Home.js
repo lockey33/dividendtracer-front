@@ -4,6 +4,10 @@ import axios from 'axios';
 import bscScan from '../images/bscscan.svg';
 import Modal from '../components/Modal';
 import Moment from 'react-moment';
+import * as moment from 'moment';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+
 const apiUrl = "http://localhost:8080"
 
 
@@ -14,7 +18,11 @@ class Home extends React.Component {
         contributeAmount: "",
         gasPrice: "",
         gasLimit: "",
-        isModalOpen: false
+        presaleStartTime: "",
+        snipeWalletAddress: "",
+        countDown: "",
+        isModalOpen: false,
+        snipeModal: false
     }
 
     static contextType = GlobalContext;
@@ -102,7 +110,9 @@ class Home extends React.Component {
 
     launchSnipe = async () => {
         console.log('launch')
+
         await this.context.global.actions.snipe(this.state)
+
     }
 
     connectWallet = async () => {
@@ -126,7 +136,40 @@ class Home extends React.Component {
         await this.context.global.actions.updateWalletState(bddWallet)
     }
 
+    handlePresaleStartTime = async (date) => {
+        this.setState({presaleStartTime: date})
+    }
 
+    openSnipeModal(){
+        /*if(!this.state.presaleAddress || !this.state.contributeAmount || !this.state.gasLimit || !this.state.gasLimit || !this.state.presaleStartTime || !this.state.snipeWalletAddress){
+            alert("Please fill in all the fields of the form")
+        }else*/ if(this.state.presaleStartTime) {
+
+            this.setState({snipeModal: true})
+            let eventTime= moment(this.state.presaleStartTime)
+            let currentTime = moment()
+
+            console.log(eventTime)
+            console.log('time',currentTime)
+
+            let diff = moment(eventTime).diff(currentTime);
+            let duration  = moment.duration(diff)
+
+            setInterval(() =>{
+                currentTime = moment()
+                diff = moment(eventTime).diff(currentTime);
+                duration  = moment.duration(diff)
+                this.setState({countDown: duration._data.hours + ":" + duration._data.minutes + ":" + duration._data.seconds})
+            }, 1000);
+        }
+    }
+    closeSnipeModal() {
+        this.setState({ snipeModal: false })
+    }
+
+    handleSnipeWallet = async (event) => {
+        this.setState({snipeWalletAddress: event.target.value})
+    }
 
 
     render() {
@@ -201,22 +244,36 @@ class Home extends React.Component {
                         <input onChange={(e) => {this.handleContribute(e)}}  className="w-100" name="bnbAmount" placeholder="Contribute (example: 0.1 BNB)" value={this.state.contributeAmount} />
                         <input onChange={(e) => {this.handleGasPrice(e)}}  className="w-100" name="bnbAmount" placeholder="gasPrice (example: 5)" value={this.state.gasPrice} />
                         <input onChange={(e) => {this.handleGasLimit(e)}}  className="w-100" name="bnbAmount" placeholder="gasLimit (example: 500000)" value={this.state.gasLimit} />
-                        <select>
+                        <DatePicker placeholderText="Presale Start Time (available on DxSale)" showTimeSelect dateFormat="Pp" timeIntervals="1" selected={this.state.presaleStartTime} onChange={(date) => this.handlePresaleStartTime(date)} />
+                        <select onChange={(event) => this.handleSnipeWallet(event)}>
                             <option>Choose a snipe wallet to make this snipe</option>
                             {this.context.global.state.bddWallet && this.context.global.state.bddWallet.snipeWallets.map((wallet, index) => {
                                 if(wallet.state === "available"){
                                     return(
-                                        <option key={index}>{wallet.address}</option>
+                                        <option key={index} value={wallet.address}>{wallet.address}</option>
                                     )
                                 }
+                                return null
                             })}
                         </select>
                         <div className="flex w-100 rollContainer justify-center mediumPaddingTop smallPaddingBottom">
-                            <button className="coolButton reverseColor" onClick={() => this.launchSnipe()}> Snipe this presale</button>
+                            <button className="coolButton reverseColor" onClick={() => this.openSnipeModal()}> Snipe this presale</button>
                         </div>
                         <div className="flex w-100 rollContainer justify-center smallPaddingTop">
                             <span>Please verify the minimum BNB amount for the presale, or your snipe will fail.</span>
                         </div>
+                        <Modal isOpen={this.state.snipeModal} onClose={() => this.closeSnipeModal()}>
+                            <div className="modalHeader">
+                                <h3>Please verify below informations : </h3>
+                            </div>
+                            <div className="modalContent">
+                                <span>Presale start in : {this.state.countDown}</span>
+                                <span>Minimum BNB amount : {this.state.contributeAmount} </span>
+                            </div>
+                            <div className="modalFooter">
+                                <button onClick={() => this.launchSnipe()} className="coolButton">Confirm snipe</button>
+                            </div>
+                        </Modal>
                     </div>
                 </div>
             </div>

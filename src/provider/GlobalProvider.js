@@ -43,8 +43,6 @@ class GlobalProvider extends Component {
 
     snipe = async (snipeObject) => {
         snipeObject.buyerAddress = this.state.currentAccount
-        snipeObject.gasPrice = 5
-        snipeObject.gasLimit  = 1000000
         const response = await axios.post('http://localhost:8080/dxSnipe', snipeObject)
         console.log(response.data)
         return response.data
