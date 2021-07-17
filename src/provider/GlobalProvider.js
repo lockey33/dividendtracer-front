@@ -28,31 +28,11 @@ class GlobalProvider extends Component {
             checkWallet: this.checkWallet,
             snipe: this.snipe,
             updateWalletState: this.updateWalletState,
-            listenBnb: this.listenBnb
+            listenBnb: this.listenBnb,
+            truncate: this.truncate
         }
     }
 
-
-
-    saveTruncatedAccount = async (account) => {
-        const trunc = this.truncate(account, 15)
-        this.setState({currentAccountTrunc: trunc})
-    }
-
-    truncate = (fullStr, strLen, separator) => {
-        if (fullStr.length <= strLen) return fullStr;
-
-        separator = separator || '...';
-
-        let sepLen = separator.length,
-            charsToShow = strLen - sepLen,
-            frontChars = Math.ceil(charsToShow/2),
-            backChars = Math.floor(charsToShow/2);
-
-        return fullStr.substr(0, frontChars) +
-            separator +
-            fullStr.substr(fullStr.length - backChars);
-    }
 
     listenBnb = async () => {
         const snipeWallets = this.state.bddWallet.snipeWallets
@@ -71,15 +51,16 @@ class GlobalProvider extends Component {
     }
 
     checkWallet = async (walletAddress) => {
-        console.log(walletAddress)
         const response = await axios.post('http://localhost:8080/checkWallet', {walletAddress: walletAddress})
-        console.log(response)
+
         this.setState({bddWallet: response.data[0]})
         return response.data[0]
     }
 
     updateWalletState = async (bddWallet) => {
-        return this.setState({bddWallet: bddWallet})
+        this.setState({bddWallet: bddWallet})
+        const response = await axios.post('http://localhost:8080/updateWallet', {bddWallet})
+        return response
     }
 
 
@@ -114,7 +95,6 @@ class GlobalProvider extends Component {
         try {
             const connectedAccount = await this.state.ethereum.request({ method: "eth_requestAccounts" });
             await this.setState({ currentAccount : connectedAccount[0] })
-            await this.saveTruncatedAccount(this.state.currentAccount)
             await this.checkWallet(this.state.currentAccount)
             localStorage.setItem('connectedWallet', "true");
         } catch (error) {

@@ -9,7 +9,12 @@ html {
     --cultured: #F6F4F3;
     background-color: var(--raisin-black);
 }
-
+*{
+    -ms-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
 body, #root{
     height: 100%;
 }
@@ -170,6 +175,7 @@ h1, h2, h3, h4, h5{
 
 
 .coolButton{
+    min-width: 175px;
     -webkit-box-align: center;
     align-items: center;
     border: 0px;
@@ -191,6 +197,11 @@ h1, h2, h3, h4, h5{
     background-color: var(--old-mauve);
     color: white;
     width: 20%;
+}
+
+.reverseColor{
+    color: var(--old-mauve) !important;
+    background-color: white !important;
 }
 
 .dataBox{
@@ -226,7 +237,7 @@ h1, h2, h3, h4, h5{
 }
 
 input{
-    height: 30px;
+    height: 20px;
     margin-top: 2%;
     padding: 1%;
 }
@@ -289,18 +300,45 @@ h3{
 }
 
 .modal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color:black;
     z-index: 9999;
     position: absolute;
     top: 50%;
     left: 50%;
-    min-width: 250px;
-    min-height: 100px;
+    min-width: 50%;
+    min-height: 40%;
     padding: 15px;
     border-radius: 10px;
     transform: translate(-50%, -50%);
     background: #fff;
+    justify-content: space-between;
 }
 
+.modalHeader{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.modalContent{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modalFooter{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.modal h3, .modal span{
+    color: black;
+}
 
 .bg{
     z-index: 9998;
@@ -312,8 +350,43 @@ h3{
     background: rgba(0, 0, 0, 0.3);
 }
 
+.snipeContainer{
+    padding: 2% 5% 3%;
+    background: var(--old-mauve);
+    border-radius: 5px;
+    margin-bottom: 5%;
+}
+
+select{
+    padding: 1%;
+    width: 100%;
+    height: 20px;
+    margin-top: 2%;
+}
+
 
 @media screen and (max-width: 1000px){
+
+    .modalContainer{
+        position: relative;
+        margin: auto;
+    }
+
+    .buttonContainer{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .buttonContainer button:last-of-type{
+        margin-top: 3%;
+    }
+
+    .snipeWalletContainer div:not(.bg){
+        width: 90%;
+        margin-top: 2%;
+    }
+
     .snipeWalletContainer{
         display: flex;
         flex-direction: column;
@@ -323,6 +396,11 @@ h3{
     .snipeWallet{
         margin-top: 1%;
         margin-bottom: 1%;
+    }
+
+    .snipeContainer{
+        width: 100%;
+        margin-top: 2%;
     }
 
 }
