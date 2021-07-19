@@ -78,6 +78,12 @@ body, #root{
     width: 50%;
 }
 
+.w-65{
+    width: 65%;
+}
+.w-70{
+    width: 70%;
+}
 .w-75{
     width: 75%;
 }
@@ -156,6 +162,9 @@ h1, h2, h3, h4, h5{
 .smallMarginBottom{
     margin-bottom:2%;
 }
+.mediumMarginBottom{
+    margin-bottom: 5% !important;
+}
 
 .smallMarginLeft{
     margin-left: 2%;
@@ -179,7 +188,6 @@ h1, h2, h3, h4, h5{
     -webkit-box-align: center;
     align-items: center;
     border: 0px;
-    border-radius: 16px;
     cursor: pointer;
     display: inline-flex;
     font-family: inherit;
@@ -198,7 +206,10 @@ h1, h2, h3, h4, h5{
     color: white;
     width: 20%;
 }
-
+.smallCoolButton{
+    padding: 0px;
+    height: 30px;
+}
 .reverseColor{
     color: var(--old-mauve) !important;
     background-color: white !important;
@@ -237,10 +248,11 @@ h1, h2, h3, h4, h5{
 }
 
 input, select{
-    height: 35px;
+    height: 50px;
+    border: none;
     margin-top: 2%;
-    padding: 1%;
-    box-sizing:border-box
+    padding: 2%;
+    box-sizing: border-box;
 }
 
 span{
@@ -252,7 +264,6 @@ span{
     background-color: var(--old-mauve);
     color: white;
     word-break: break-word;
-    border-radius: 25px;
 }
 
 .snipeWalletAddress{
@@ -328,7 +339,7 @@ h3{
     display: flex;
     width: 100%;
     flex-direction: column;
-    align-items: center;
+    text-align: center;
 }
 
 .modalFooter{
@@ -351,10 +362,13 @@ h3{
     background: rgba(0, 0, 0, 0.3);
 }
 
+.smallWrapper{
+    padding: 2%;
+}
+
 .snipeContainer{
-    padding: 2% 5% 3%;
+    padding: 1% 0% 3%;
     background: var(--old-mauve);
-    border-radius: 5px;
     margin-bottom: 5%;
 }
 
@@ -377,11 +391,46 @@ select{
     width: 100%;
 }
 
+.premiumContainer .snipeWallet{
+    padding: 2% 5% 2%;
+    border-radius: 0px;
+}
+
+.premiumBanner{
+    background-color: white;
+    height: 25px;
+    padding: 2% 5% 2%;
+}
+
+.premiumContent{
+    background-color: white;
+    padding: 2% 5% 2%;
+}
+.premiumContent span{
+    color: black;
+}
+
+.premiumBanner h4, .premiumBanner h2, .premiumBanner h3{
+    padding:2px;
+    margin: 0;
+    color: black;
+}
+
+
 
 
 @media screen and (max-width: 1000px){
 
+    .premiumContainer .w-65{
+        width: 80%;
+    }
+
+    .sniperLaunch .w-65{
+        width: 80%;
+    }
+
     .modalContainer{
+        width: 80%;
         position: relative;
         margin: auto;
     }
@@ -397,6 +446,8 @@ select{
     }
 
     .snipeWalletContainer div:not(.bg){
+        flex-direction: column;
+        align-items: center;
         width: 90%;
         margin-top: 2%;
     }
@@ -406,15 +457,14 @@ select{
         flex-direction: column;
         align-items: center;
     }
+    .snipeContainer span{
+        text-align: center;
+    }
 
     .snipeWallet{
         margin-top: 1%;
         margin-bottom: 1%;
     }
 
-    .snipeContainer{
-        width: 100%;
-        margin-top: 2%;
-    }
 
 }

@@ -29,14 +29,28 @@ class GlobalProvider extends Component {
             snipe: this.snipe,
             updateWalletState: this.updateWalletState,
             listenBnb: this.listenBnb,
-            truncate: this.truncate
+            listenPayment: this.listenPayment,
+            truncate: this.truncate,
+            setPremiumNow: this.setPremiumNow,
         }
     }
 
+    setPremiumNow = async (paymentAddress, buyerAddress) => {
+        const response = await axios.post('http://localhost:8080/setPremium', {paymentAddress: paymentAddress, buyerAddress: buyerAddress})
+        console.log(response.data)
+        return response.data
+    }
 
     listenBnb = async () => {
         const snipeWallets = this.state.bddWallet.snipeWallets
         const response = await axios.post('http://localhost:8080/listenBnb', snipeWallets)
+        console.log(response.data)
+        return response.data
+    }
+
+    listenPayment = async () => {
+        const paymentWallet = this.state.bddWallet.paymentWallet.address
+        const response = await axios.post('http://localhost:8080/listenPayment', {paymentWallet: paymentWallet})
         console.log(response.data)
         return response.data
     }
