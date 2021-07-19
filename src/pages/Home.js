@@ -136,7 +136,7 @@ class Home extends React.Component {
             if(wallet.address === snipeWallet){
                 snipeWalletBalance = wallet.balance
             }
-            return nul
+            return null
         })
         const contributeAmount = this.state.contributeAmount
         console.log(snipeWalletBalance, contributeAmount)
