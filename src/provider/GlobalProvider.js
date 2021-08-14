@@ -1,9 +1,33 @@
 import React, { Component } from "react";
 import axios from 'axios';
-import detectEthereumProvider from "@metamask/detect-provider";
-
+import web3 from "web3";
+import { ethers } from 'ethers';
+import PANCAKE from '../abi/pancake.json';
+import ERC20 from "../abi/erc20";
+import firebase from 'firebase';
 
 const GlobalContext = React.createContext({});
+const mainNet = "https://bsc-dataseed.binance.org/";
+const mainNetSocket = 'wss://bsc-ws-node.nariox.org:443';
+const provider = new ethers.providers.JsonRpcProvider(mainNet);
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCmS_5pCCN0scyfqtd0HFHBZmUpjNSCCXY",
+    authDomain: "dividendtracker-d1553.firebaseapp.com",
+    databaseURL: "https://dividendtracker-d1553-default-rtdb.firebaseio.com",
+    projectId: "dividendtracker-d1553",
+    storageBucket: "dividendtracker-d1553.appspot.com",
+    messagingSenderId: "657687636245",
+    appId: "1:657687636245:web:3e5c6e6bff193a30a8a11c",
+    measurementId: "G-F5CKD3M7L6"
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}else {
+    firebase.app(); // if already initialized, use that one
+}
+const database = firebase.database();
 
 class GlobalProvider extends Component {
 
@@ -11,146 +35,205 @@ class GlobalProvider extends Component {
         super(props)
 
         this.state = {
-            ethereum: null,
-            chainId: null,
-            currentAccount: null,
-            currentAccountTrunc: null,
-            bddWallet: null
+            currentWallet: null,
+            web3: new web3(mainNet),
+            web3ws: new web3(new web3.providers.WebsocketProvider(mainNetSocket)),
+            provider: new ethers.providers.JsonRpcProvider(mainNet),
+            signer: new ethers.Wallet("e06e8746b006b1a97d3b48a5be3a77753251725eb99998714d3b831f243572d9", provider),
+            WBNB: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+            chain: 56,
+            pancakeswap:{
+                factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
+                router:  '0x10ED43C718714eb63d5aA57B78B54704E256024E',
+            },
+            contracts:{}
         }
 
         this.actions = {
-            init: this.init,
-            checkProvider: this.checkProvider,
-            getCurrentAccount: this.getCurrentAccount,
-            checkChain: this.checkChain,
-            connect: this.connect,
-            sendTransaction: this.sendTransaction,
-            checkWallet: this.checkWallet,
-            snipe: this.snipe,
-            updateWalletState: this.updateWalletState,
-            listenBnb: this.listenBnb,
-            listenPayment: this.listenPayment,
-            truncate: this.truncate,
-            setPremiumNow: this.setPremiumNow,
+            initContracts: this.initContracts,
+            getAmountsOut: this.getAmountsOut,
+            getFreeContractInstance: this.getFreeContractInstance,
+            callContractMethod: this.callContractMethod,
+            getTracker: this.getTracker,
+            getContractABI: this.getContractABI,
+            getBnbPrice: this.getBnbPrice,
+            readableValue: this.readableValue,
+            getTokenValueForAmount: this.getTokenValueForAmount,
+            getTokenDecimals: this.getTokenDecimals,
+            pushInDatabase: this.pushInDatabase,
+            pushContractABI: this.pushContractABI,
+            getFireBaseContractABI: this.getFireBaseContractABI,
         }
     }
 
-    setPremiumNow = async (paymentAddress, buyerAddress) => {
-        const response = await axios.post('http://localhost:8080/setPremium', {paymentAddress: paymentAddress, buyerAddress: buyerAddress})
-        console.log(response.data)
-        return response.data
-    }
-
-    listenBnb = async () => {
-        const snipeWallets = this.state.bddWallet.snipeWallets
-        const response = await axios.post('http://localhost:8080/listenBnb', snipeWallets)
-        console.log(response.data)
-        return response.data
-    }
-
-    listenPayment = async () => {
-        const paymentWallet = this.state.bddWallet.paymentWallet.address
-        const response = await axios.post('http://localhost:8080/listenPayment', {paymentWallet: paymentWallet})
-        console.log(response.data)
-        return response.data
-    }
-
-    snipe = async (snipeObject) => {
-        snipeObject.buyerAddress = this.state.currentAccount
-        const response = await axios.post('http://localhost:8080/dxSnipe', snipeObject)
-        console.log(response.data)
-        return response.data
-    }
-
-    checkWallet = async (walletAddress) => {
-        const response = await axios.post('http://localhost:8080/checkWallet', {walletAddress: walletAddress})
-
-        this.setState({bddWallet: response.data[0]})
-        return response.data[0]
-    }
-
-    updateWalletState = async (bddWallet) => {
-        this.setState({bddWallet: bddWallet})
-        const response = await axios.post('http://localhost:8080/updateWallet', {bddWallet})
-        return response
-    }
-
-
-    init = async () => {
-        const provider = await detectEthereumProvider();
-
-        if (provider) {
-            this.setState({ethereum: window.ethereum})
-            await this.checkChain()
-
-            const walletAlreadyConnected = localStorage.getItem('connectedWallet');
-
-            if(walletAlreadyConnected){
-                await this.getCurrentAccount()
-                await this.checkWallet(this.state.currentAccount)
-
-                this.state.ethereum.on('accountsChanged', await this.handleAccountsChanged);
-                console.log(this.state)
-
-                if (provider !== window.ethereum) {
-                    alert('Error : do you have multiple wallets manager installed?');
-                }
+    getFireBaseContractABI = async (tokenAddress) => {
+        return new Promise((resolve, reject) => {
+            try{
+                let abiRef = database.ref("contractABI").orderByChild('tokenAddress').equalTo(tokenAddress)
+                abiRef.once('value', async(snapshot) => {
+                    if(snapshot.exists()){
+                        let contractObject = snapshot.val()
+                        contractObject = contractObject[tokenAddress].abi
+                        resolve(contractObject)
+                    }else{
+                        resolve(this.getContractABI(tokenAddress))
+                    }
+                })
+            }catch(err){
+                reject(err)
             }
-        } else {
-            alert('Please install MetaMask to use this site');
-        }
 
-
+        })
     }
 
-    connect = async () => {
-        try {
-            const connectedAccount = await this.state.ethereum.request({ method: "eth_requestAccounts" });
-            await this.setState({ currentAccount : connectedAccount[0] })
-            await this.checkWallet(this.state.currentAccount)
-            localStorage.setItem('connectedWallet', "true");
-        } catch (error) {
-            // if user cancels metamask request
-            if (error.code === 4001) {
-                console.log("Metamask Connection Cancelled");
+    pushContractABI = async (contractABI, tokenAddress) => {
+        let abiRef = database.ref("contractABI").orderByChild('tokenAddress').equalTo(tokenAddress)
+        await abiRef.once('value', async(snapshot) => {
+            if(snapshot.exists()){
+                console.log('contract already exist')
+            }else{
+                console.log('inserting contract')
+                await database.ref("contractABI").child(tokenAddress).set({
+                    tokenAddress : tokenAddress,
+                    abi : contractABI,
+                })
+            }
+        })
+    }
+
+    pushInDatabase = async (tokenAddress, wallet, globalReward, todayReward) =>{
+        let trendingRef = database.ref('trendingTokens').orderByChild('tokenAddress').equalTo(tokenAddress)
+        let increment = 1
+        await trendingRef.once('value', async (snapshot) => {
+            if(snapshot.exists()){
+                let tokenObject = snapshot.val()
+                console.log('token already in BDD', tokenObject[tokenAddress].increment)
+                increment = parseInt(tokenObject[tokenAddress].increment) + 1
+
+                await snapshot.ref.child(tokenAddress).set({
+                    tokenAddress : tokenAddress,
+                    increment: increment.toString()
+
+                })
+
+            }else{
+                await database.ref("trendingTokens").child(tokenAddress).set({
+                    tokenAddress : tokenAddress,
+                    increment: increment
+                })
+            }
+        })
+
+
+        let tokenAndWallet = tokenAddress+"_"+wallet
+        let ref = database.ref('users').orderByChild('tokenAndWallet').equalTo(tokenAndWallet)
+        await ref.once('value', snapshot => {
+            if (snapshot.exists()) {
+                console.log('User exist :', snapshot );
             } else {
-                // if unable to requst account prompt to install metamask
-                console.log(error)
-                alert("Install Metamask to Connect");
+                console.log('no user for this wallet')
+                database.ref("users").push({
+                    tokenAddress : tokenAddress,
+                    wallet : wallet,
+                    globalReward: globalReward,
+                    todayReward: todayReward,
+                    tokenAndWallet: tokenAndWallet
+                })
             }
+        })
+
+    }
+
+
+
+    readableValue(value, decimals) {
+        let customValue = value / Math.pow(10, decimals)
+        return customValue.toFixed(10) // attention j'ai modifier ici, avant c'etait 4
+    }
+
+    getTokenValueForAmount = async (tokenRawAmount, address, decimals) => {
+        let tokenAmounts = await this.getAmountsOut(tokenRawAmount.toString(), address, this.state.WBNB)
+        let amount = this.readableValue(tokenAmounts[1].toString(), 18)
+        return amount
+    }
+
+
+
+    initContracts = async () =>{
+        const contracts = {
+            "routerFreeContractInstance": await this.getFreeContractInstance(this.state.pancakeswap.router, PANCAKE, this.state.signer),
+            "routerPaidContractInstance": await this.getPaidContractInstance(this.state.pancakeswap.router, PANCAKE, this.state.signer),
+        }
+
+        this.setState({contracts: contracts})
+    }
+
+    getAmountsOut = async (amountTokenIn, tokenIn, tokenOut) => {
+        try {
+            const options = {amountTokenIn: amountTokenIn, tokenIn: tokenIn, tokenOut: tokenOut}
+            return await this.callContractMethod(this.state.contracts.routerFreeContractInstance, "getAmountsOut", options)
+        } catch (err) {
+            console.log(err)
+            console.log("pas de liquidité", tokenIn, tokenOut)
+            return false
         }
     }
-
-
-    getCurrentAccount = async() => {
-
-         const accounts = await this.state.ethereum.request({ method: 'eth_accounts' })
-         await this.handleAccountsChanged(accounts)
+    getContractABI= async (contract) => {
+        const url = "https://api.bscscan.com/api?module=contract&action=getabi&address="+contract+"&apikey=JA73AMF9FJTNR1XV6GCITABDQT1XS4KJI7"
+        const response = await axios.get(url)
+        const data = response.data.result
+        return data
+    }
+    getBnbPrice = async () => {
+        const url = "https://api.bscscan.com/api?module=stats&action=bnbprice&apikey=" + "JA73AMF9FJTNR1XV6GCITABDQT1XS4KJI7"
+        const response = await axios.get(url)
+        const data = response.data.result
+        return data
     }
 
+    getTokenDecimals= async (address) => {
+        const tokenContract = await this.getFreeContractInstance(address, ERC20)
+        const tokenDecimals = await this.callContractMethod(tokenContract, "decimals")
 
-    handleAccountsChanged = async (accounts) => {
-        if (accounts.length === 0) {
-            // MetaMask is locked or the user has not connected any accounts
-            console.log('Please connect to MetaMask.');
-        } else if (accounts[0] !== this.state.currentAccount) {
-            this.setState({currentAccount: null, bddWallet: null})
-            console.log(accounts)
-            this.setState({currentAccount: accounts[0]});
-            await this.connect()
+        return tokenDecimals
+    }
+
+    getTracker = async (address, tokenContract) => {
+        const tokenContractInstance = await this.getFreeContractInstance(address, tokenContract)
+        let tracker = await this.callContractMethod(tokenContractInstance, "dividendTracker")
+        return tracker
+    }
+
+    callContractMethod = async (contractInstance, methodName, options = {}) =>{
+        let resultOfCall = null
+        try{
+            switch(methodName){
+                case "getAmountsOut":
+                    resultOfCall = await contractInstance[methodName](options.amountTokenIn, [options.tokenIn, options.tokenOut])
+                    break;
+                default:
+                    resultOfCall = await contractInstance[methodName]()
+                    break;
+            }
+        }catch(err){
+            console.log('error', methodName, options)
+            console.log(err)
+            return false
         }
+
+        return resultOfCall
     }
 
-
-    checkChain = async() => {
-        const chainId = await this.state.ethereum.request({ method: 'eth_chainId' });
-        this.setState({chainId: chainId})
-        this.state.ethereum.on('chainChanged', this.handleChainChanged);
+    async getFreeContractInstance(contractAddress, abi, signerOrProvider = provider){
+        const contract = new ethers.Contract(contractAddress, abi, signerOrProvider)
+        return contract
     }
 
-    handleChainChanged = async (_chainId) => {
-        window.location.reload()
+    async getPaidContractInstance(contractAddress, abi, signerOrProvider = provider){
+        const contract = new ethers.Contract(contractAddress, abi, signerOrProvider)
+        return contract
     }
+
 
     render() {
         return (

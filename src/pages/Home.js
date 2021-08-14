@@ -1,380 +1,362 @@
 import React from "react";
 import {GlobalContext} from '../provider/GlobalProvider';
+import CheCoin from '../images/checoin.png';
+import BabyCake from '../images/babycake.png';
 import axios from 'axios';
-import bscScan from '../images/bscscan.svg';
-import Modal from '../components/Modal';
 import Moment from 'react-moment';
 import * as moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
-const apiUrl = "http://localhost:8080"
+import ERC20 from '../abi/erc20.js';
+import { ethers } from 'ethers';
 
 
 class Home extends React.Component {
 
     state = {
-        presaleAddress: "",
-        contributeAmount: "",
-        gasPrice: "",
-        gasLimit: "",
-        presaleStartTime: "",
-        snipeWalletAddress: "",
-        countDown: "",
-        isModalOpen: false,
-        snipeModal: false
-    }
+        response: {},
+        tracker: "",
+        customTracker: "",
+        address: "",
+        wallet: "",
+        loading: false,
+        dividends: [],
+        dividendsSave: [],
+        todayGain: 0,
+        globalGain: 0,
+        dateGain: 0,
+        dateRange: "",
+        fetching: false,
 
+    }
     static contextType = GlobalContext;
 
 
+
+
     componentDidMount = async () => {
-        if(this.context.global.actions){ // on attend que le contexte se charge
-            await this.context.global.actions.init()
+        //this.setState({wallet: ethers.utils.getAddress(this.state.wallet)})
+        if(this.context.global.actions && this.context.global.state){
+            await this.context.global.actions.initContracts()
+            //let tokenValueInBnb = await this.context.global.actions.getTokenValueForAmount("8306881046664425", "0xacfc95585d80ab62f67a14c566c1b7a49fe91167", 18)
+            //console.log(tokenValueInBnb)
         }
 
-        if(this.context.global.state.currentAccount){
-            console.log(this.context.global.state.bddWallet.paymentWallet)
-            if(this.context.global.state.bddWallet.premium === false){
-                await this.context.global.actions.listenPayment()
-                await this.refreshData(10000, true)
+    }
 
+    getData = async() => {
+        const latest = await this.context.global.state.web3.eth.getBlockNumber()
+        let url = "https://api.bscscan.com/api?module=account&action=txlistinternal&address=" + this.state.wallet + "&startblock=0&endblock=" + latest + "&sort=asc&apikey=JA73AMF9FJTNR1XV6GCITABDQT1XS4KJI7"
+        const response = await axios.get(url)
+        let data = response.data.result
+        let dividends = []
+        data.map((transaction) => {
+            if (ethers.utils.getAddress(transaction.from) === this.state.tracker) {
+                transaction.bnb = true
+                dividends.push(transaction)
+            }
+        })
+        if(dividends.length === 0){
+            let url = "https://api.bscscan.com/api?module=account&action=tokentx&address="+this.state.wallet+"&startblock=0&endblock="+latest+"&sort=asc&apikey=JA73AMF9FJTNR1XV6GCITABDQT1XS4KJI7"
+            const response = await axios.get(url)
+            const bepTokensData = response.data.result
+            bepTokensData.map((bepData) => {
+                if (ethers.utils.getAddress(bepData.from) === this.state.tracker) {
+                    dividends.push(bepData)
+                }
+            })
+
+        }
+
+        return dividends
+    }
+
+    checkAddress = async (address) => {
+        try{
+            ethers.utils.getAddress(address.trim())
+            return true
+        }catch(err){
+            return false
+        }
+    }
+
+    checkForm = async() => {
+        if(this.state.wallet === "" || this.state.address === ""){
+            this.setState({response: {status: false, message: "Please enter value for all the inputs"}})
+        }else if(await this.checkAddress(this.state.wallet) === false){
+            this.setState({response: {status:false, message: "Wallet address incorrect"}})
+        }else if(await this.checkAddress(this.state.address) === false){
+            this.setState({response: {status:false, message: "Token address incorrect"}})
+        }else{
+            this.setState({response: {status:true, message: "ok"}})
+        }
+
+    }
+
+    checkSum = async () => {
+        let wallet = ethers.utils.getAddress(this.state.wallet.trim())
+        let address = ethers.utils.getAddress(this.state.address.trim())
+        this.setState({wallet: wallet, address: address})
+    }
+
+    showDividend = async () => {
+        try{
+            await this.checkForm()
+            if(this.state.response.status === true){
+
+                await this.checkSum()
+                this.setState({loading: true})
+                let contractAbi = await this.context.global.actions.getFireBaseContractABI(this.state.address)
+                let tracker = await this.context.global.actions.getTracker(this.state.address, contractAbi)
+                if(this.state.customTracker !== "" && tracker === false){
+                    tracker = this.state.customTracker
+                }else if(this.state.customTracker !== "" && tracker !== false){
+                    this.setState({customTracker: tracker})
+                }
+                else if(tracker === false){
+                    throw 'dividendTracker'
+                }
+
+                this.setState({tracker: tracker})
+
+
+                let calculatedData = await this.calculate()
+
+                await this.context.global.actions.pushInDatabase(this.state.address, this.state.wallet, calculatedData.globalGain, calculatedData.todayGain)
+                this.context.global.actions.pushContractABI(contractAbi, this.state.address)
+                this.setState({dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, fetching: true, loading: false})
+                this.table.scrollIntoView({ behavior: "smooth" });
+
+            }
+        }catch(err){
+            console.log('error', err)
+            this.setState({loading: false})
+            if(err === "dividendTracker"){
+                this.setState({tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
             }else{
-                await this.context.global.actions.listenBnb()
-                await this.refreshData(60000)
+                alert('An error occured, please retry')
             }
         }
 
     }
 
-
-
-    refreshData = async (timer, waitPayment = false) => {
-        setInterval(async () => {
-            await this.context.global.actions.checkWallet(this.context.global.state.currentAccount)
-            if(waitPayment === true && this.context.global.state.bddWallet.premium === false){
-                const balance = parseFloat(this.context.global.state.bddWallet.paymentWallet.balance)
-                const required = parseFloat("0.095")
-                if(balance >= required){
-                    console.log('paid', balance, required)
-                    await this.context.global.actions.setPremiumNow(this.context.global.state.bddWallet.paymentWallet.address, this.context.global.state.bddWallet.buyerAddress)
-                    await this.context.global.actions.checkWallet(this.context.global.state.bddWallet.buyerAddress)
-                }
-            }
-
-        }, timer)
-    }
-
-    forceSnipeWallets = async() => {
-        const response = await axios.post(apiUrl + '/createSnipeWallets', {walletAddress: this.context.global.state.currentAccount})
-        return response
-    }
-
-    handlePresale = (e) => {
-        const input = e.target
-        const presaleAddress = input.value
-        this.setState({presaleAddress})
-    }
-
-    handleContribute = (e) => {
-        const input = e.target
-        const contributeAmount = input.value
-        this.setState({contributeAmount})
-    }
-
-    handleGasPrice = (e) => {
-        const input = e.target
-        const gasPrice = input.value
-        this.setState({gasPrice})
-    }
-    handleGasLimit = (e) => {
-        const input = e.target
-        const gasLimit = input.value
-        this.setState({gasLimit})
-    }
-
-    handleLogs = async (walletAddress) => {
-        let wallet = this.context.global.state.bddWallet
-
-        wallet.snipeWallets.map((wallet) => {
-            if(wallet.address === walletAddress){
-                if(wallet.showLogs === true){
-                    wallet.showLogs = false
+    calculate = async() => {
+        let data = await this.getData()
+        let dividends = []
+        let bnbPrice = await this.context.global.actions.getBnbPrice()
+        bnbPrice = bnbPrice.ethusd
+        let todayGain = 0
+        let globalGain = 0
+        await Promise.all(data.map(async(transaction) => {
+            if (ethers.utils.getAddress(transaction.from) === this.state.tracker) {
+                let tokenAddress = transaction.contractAddress
+                let tokenParsedValue = transaction.value
+                let dollarValue = null
+                let tokenValue = null
+                if(transaction.hasOwnProperty('bnb')){
+                    tokenValue = await this.context.global.actions.readableValue(transaction.value, 18)
+                    dollarValue = tokenValue * bnbPrice
                 }else{
-                    wallet.showLogs = true
+                    let tokenDecimals = await this.context.global.actions.getTokenDecimals(tokenAddress)
+                    tokenValue = await this.context.global.actions.readableValue(transaction.value, tokenDecimals)
+                    let tokenValueInBnb = await this.context.global.actions.getTokenValueForAmount(tokenParsedValue, tokenAddress, tokenDecimals)
+                    dollarValue = parseFloat(tokenValueInBnb)
+                    dollarValue = dollarValue * bnbPrice
                 }
-            }
-            return wallet.showLogs
-        })
-        await this.context.global.actions.updateWalletState(wallet)
 
-    }
-
-    handlePrivateKey = async (walletAddress) => {
-        let wallet = this.context.global.state.bddWallet
-
-        wallet.snipeWallets.map((wallet) => {
-            if(wallet.address === walletAddress){
-                if(wallet.showPrivateKey === true){
-                    wallet.showPrivateKey = false
-                }else{
-                    wallet.showPrivateKey = true
+                let object = {
+                    timestamp: transaction.timeStamp,
+                    rawDollarValue: dollarValue.toFixed(4),
+                    dollarValue: dollarValue.toFixed(4) + " $",
+                    bnbValue: tokenValue + " " + (transaction.tokenSymbol ? transaction.tokenSymbol : "BNB")
                 }
+                globalGain += dollarValue
+
+                let isCurrentDate = moment.unix(transaction.timeStamp).isSame(moment(), 'day')
+                if (isCurrentDate) {
+                    todayGain += dollarValue
+                }
+                dividends.push(object)
             }
-            return wallet.showPrivateKey
+        }))
+
+        globalGain = globalGain.toFixed(2) + " $"
+        todayGain = todayGain.toFixed(2) + " $"
+        dividends.sort(function (x, y) {
+            return y.timestamp - x.timestamp;
         })
-        await this.context.global.actions.updateWalletState(wallet)
+
+        return {dividends: dividends, globalGain: globalGain, todayGain: todayGain}
+    }
+
+    handleTracker = async (e) => {
+        this.setState({customTracker:  e.target.value})
+    }
+
+    handleAddress = async (e) => {
+        this.setState({address: e.target.value})
 
     }
 
-    launchSnipe = async () => {
-        console.log('launch')
-        const snipeWallet = this.state.snipeWalletAddress
-        let snipeWalletBalance = 0
-        this.context.global.state.bddWallet.snipeWallets.map((wallet) => {
-            if(wallet.address === snipeWallet){
-                snipeWalletBalance = wallet.balance
+
+    handleWallet = async (e) => {
+        this.setState({wallet:  e.target.value})
+    }
+
+    handleDate = async (date) => {
+        this.setState({dateRange: date})
+        await this.filterByDate(date)
+    }
+
+    filterByDate = async (date) => {
+        let filteredData = []
+        let dividends = (this.state.dividends.length === 0 | this.state.dividends.length !== this.state.dividendsSave ? this.state.dividendsSave : this.state.dividends)
+        let momentDate = moment(date)
+
+        let dateGain = 0
+        dividends.map((row) => {
+            let isCurrentDate = moment.unix(row.timestamp).isSame(momentDate, 'day')
+            if (isCurrentDate) {
+                dateGain += parseFloat(row.rawDollarValue)
+                filteredData.push(row)
             }
-            return null
         })
-        const contributeAmount = this.state.contributeAmount
-        console.log(snipeWalletBalance, contributeAmount)
-        let funds = false
-        if(parseFloat(snipeWalletBalance) >= parseFloat(contributeAmount)){
-            funds = true
-        }
-        if(this.context.global.state.bddWallet.premium === true && funds === true){
-            await this.context.global.actions.snipe(this.state)
-            this.closeSnipeModal()
-            await this.context.global.actions.checkWallet(this.context.global.state.currentAccount)
-        }else if(funds === false){
-            alert('Insufficient funds, please send BNB to your snipe wallet')
-        }else{
-            alert('You need a premium account to snipe')
-        }
+        this.setState({dividends: filteredData, dateGain: dateGain.toFixed(2)})
     }
 
-    connectWallet = async () => {
-        await this.context.global.actions.connect()
-    }
-    openModal() {
-        this.setState({ isModalOpen: true })
+    setCheCoin = async () => {
+        let tracker = ethers.utils.getAddress("0xbae343c5a479b20f54e742fdbb8d5202a0f5d85f")
+        this.setState({address: "0x54626300818e5c5b44db0fcf45ba4943ca89a9e2",tracker: tracker})
     }
 
-    closeModal= async () => {
-        this.setState({ isModalOpen: false })
-        const bddWallet = this.context.global.state.bddWallet
 
-        bddWallet.snipeWallets.map((wallet) => {
-            wallet.showPrivateKey = false
-            wallet.showLogs = false
-
-            return wallet
-        })
-
-        await this.context.global.actions.updateWalletState(bddWallet)
+    setCake = async () => {
+        let tracker = ethers.utils.getAddress("0x363621Cb1B32590c55f283432D91530d77cf532f")
+        this.setState({address: "0xdb8d30b74bf098af214e862c90e647bbb1fcc58c",tracker: tracker})
     }
-
-    handlePresaleStartTime = async (date) => {
-        this.setState({presaleStartTime: date})
-    }
-
-    openSnipeModal(){
-        if(!this.state.presaleAddress || !this.state.contributeAmount || !this.state.gasLimit || !this.state.gasLimit || !this.state.presaleStartTime || !this.state.snipeWalletAddress){
-            alert("Please fill in all the fields of the form")
-        }else{
-            this.setState({snipeModal: true})
-            let eventTime= moment(this.state.presaleStartTime)
-            let currentTime = moment()
-
-            console.log(eventTime)
-            console.log('time',currentTime)
-
-            let diff = moment(eventTime).diff(currentTime);
-            let duration  = moment.duration(diff)
-
-            setInterval(() =>{
-                currentTime = moment()
-                diff = moment(eventTime).diff(currentTime);
-                duration  = moment.duration(diff)
-                this.setState({countDown: duration._data.hours + ":" + duration._data.minutes + ":" + duration._data.seconds})
-            }, 1000);
-        }
-    }
-    closeSnipeModal() {
-        this.setState({ snipeModal: false })
-    }
-
-    handleSnipeWallet = async (event) => {
-        this.setState({snipeWalletAddress: event.target.value})
-    }
-
 
     render() {
-        let walletNumber = 0
-
         return (
-            <div className="container flex column">
-
-                <div className="w-100  buttonContainer flex justify-right smallMarginTop smallMarginBottom">
-                    {this.context.global.state.currentAccount && this.context.global.state.bddWallet &&
-                        <button onClick={() =>
-                            this.connectWallet()} style={{width: "15%",lineHeight: "17px"}} className="coolButton smallMarginRight">
-                            {this.context.global.state.currentAccount ?
-                                "Connected: " + this.context.global.state.bddWallet.truncBuyerAddress : "Connect Wallet"}
-
-                        </button>
-                    }
-                </div>
-                {this.context.global.state.bddWallet !== null && this.context.global.state.bddWallet.premium === false &&
-                <div className="w-100 premiumContainer flex column buttonContainer smallMarginTop flex align-center justify-center smallMarginBottom">
-                    <div className="w-65 flex column">
-                        <div className="flex justify-center premiumBanner">
-                            <h3>
-                                You need a premium account to snipe
-                            </h3>
-                        </div>
-                        <div className="flex column snipeWallet">
-                            <div className="wrapper flex column">
-                                <div className="sniperWalletHeader flex justify-center">
-                                    <h3> Payment wallet (This wallet is unique)</h3>
-                                    <a rel="noreferrer" target="_blank" href={"https://bscscan.com/address/" + this.context.global.state.bddWallet.paymentWallet.address}>
-                                        <img alt="bscLogo" className="logoBsc" src={bscScan} width={50}/>
-                                    </a>
-                                </div>
-                                <span>Address : {this.context.global.state.bddWallet.paymentWallet.address}</span>
-                                <div className="flex">
-                                    <span>BNB balance : {this.context.global.state.bddWallet.paymentWallet.balance}</span>
-                                </div>
-                                <div className="flex">
-                                    <span>Status : {this.context.global.state.bddWallet.premium === false ? "Waiting payment" : "Paid"} </span>
-                                    <Loader
-                                        type="ThreeDots"
-                                        color="white"
-                                        height={45}
-                                        width={30}
-                                    />
-                                </div>
-                                <div className="flex column align-center justify-center">
-                                    <h4>Send 0.5 BNB to this address to get premium </h4>
-                                    <span style={{textAlign: 'center'}}>Premium account allow you to launch snipe when you want</span>
-                                    <span>(3 snipes max at the same time)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+            <div className="pageContent container flex column">
+                {this.state.loading === true &&
+                    <Loader
+                        className="loader"
+                        type="Puff"
+                        color="#009879"
+                        height={100}
+                        width={100}
+                    />
                 }
-                <div className="snipeWalletContainer w-100 flex justify-center">
-                    <div className="w-65 flex space-between">
-                        {this.context.global.state.bddWallet && this.context.global.state.bddWallet.snipeWallets.map((wallet, index) => {
-                            walletNumber++
-                            const bscLink = "https://bscscan.com/address/" + wallet.address
-                            return(
-                                <div key={index} className="w-30 flex column snipeWallet">
-                                    <div className="wrapper flex column">
-                                        <div className="sniperWalletHeader flex justify-center">
-                                            <h3> Snipe-wallet {walletNumber}</h3>
-                                            <a rel="noreferrer" target="_blank" href={bscLink}>
-                                                <img alt="bscLogo" className="logoBsc" src={bscScan} width={50}/>
-                                            </a>
-                                        </div>
-                                        <span>Address : {wallet.truncAddress}</span>
-                                        <span>BNB balance : {wallet.balance}</span>
-                                        <span>Status : {wallet.state}</span>
-                                        <div className="flex column align-center smallMarginTop">
-                                            <button  onClick={() => this.handleLogs(wallet.address)} className="coolButton smallCoolButton reverseColor mediumMarginBottom">Check logs</button>
-                                            <button onClick={() => this.handlePrivateKey(wallet.address)} className="coolButton reverseColor smallCoolButton" >{wallet.showPrivateKey === true ? "Hide privateKey" : "Show privateKey"}</button>
-                                        </div>
+                <div className="sponsorContainer w-100 flex column justify-center align-center smallMarginTop">
+                    <div className="sponsorContent w-50 justify-center flex">
+                        <span>Want your ad here ? contact us at dividendtracer@gmail.com</span>
+                    </div>
+                </div>
+                <div className="featuring w-100 flex column justify-center align-center">
+                    <div style={{marginTop: "2%"}} className="title">
+                        <h1>Trending tokens with rewards</h1>
+                    </div>
 
-                                    </div>
-                                    <Modal isOpen={wallet.showPrivateKey} onClose={() => this.closeModal()}>
-                                        <div className="modalHeader">
-                                            <h3>Private Key : </h3>
-                                        </div>
-                                        <div className="modalContent">
-                                            <p>{wallet.privateKey}</p>
-                                        </div>
-                                        <div className="modalFooter">
-                                            <button onClick={() => this.closeModal()} className="coolButton">Close</button>
-                                        </div>
-                                    </Modal>
-                                    <Modal isOpen={wallet.showLogs} onClose={() => this.closeModal()}>
-                                        <div className="modalHeader">
-                                            <h3>Logs : </h3>
-                                        </div>
-                                        <div className="modalContent">
-                                            {wallet.logs.map((log, index) => {
-                                                return(
-                                                    <div key={index}>
-                                                        <span>
-                                                            <Moment unix format="YYYY/MM/DD HH:MM:ss">{log.date}</Moment> : {log.text}
-                                                        </span>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                        <div className="modalFooter">
-                                            <button onClick={() => this.closeModal()} className="coolButton">Close</button>
-                                        </div>
-                                    </Modal>
-                                </div>
-                            )
-                        })}
+                    <div className="flex w-100 justify-center trendingIcons">
+                        <img id="checoin" onClick={() => this.setCheCoin()} height={100} src={CheCoin}/>
+                        <img id="babycake" onClick={() => this.setCake()} height={100} src={BabyCake}/>
+                    </div>
+                    <div className="text">
+                        <span style={{fontSize: "12px"}}> Click on one icon to set the token address automatically</span>
                     </div>
                 </div>
 
-                <div className="w-100 sniperLaunch flex column align-center justify-center smallMarginTop">
+                <div className="w-100 flex column align-center justify-center smallMarginTop">
                     <div className="w-65 flex column">
-                        <div className="flex justify-center premiumBanner">
-                            <h3>
-                                Launch Snipe
-                            </h3>
-                        </div>
-                        <div className="snipeContainer flex column align-center">
-                            <div style={{paddingBottom: "4%"}} className="w-70 smallWrapper flex column">
-                                <input onChange={(e) => {this.handlePresale(e)}} className="w-100" name="presaleAddress" placeholder="Presale address" value={this.state.presaleAddress} />
-                                <input onChange={(e) => {this.handleContribute(e)}}  className="w-100" name="bnbAmount" placeholder="Contribute (example: 0.1 BNB)" value={this.state.contributeAmount} />
-                                <input onChange={(e) => {this.handleGasPrice(e)}}  className="w-100" name="bnbAmount" placeholder="gasPrice (example: 5)" value={this.state.gasPrice} />
-                                <input onChange={(e) => {this.handleGasLimit(e)}}  className="w-100" name="bnbAmount" placeholder="gasLimit (example: 500000)" value={this.state.gasLimit} />
-                                <DatePicker placeholderText="Presale Start Time (available on DxSale)" showTimeSelect dateFormat="Pp" timeIntervals="1" selected={this.state.presaleStartTime} onChange={(date) => this.handlePresaleStartTime(date)} />
-                                <select onChange={(event) => this.handleSnipeWallet(event)}>
-                                    <option>Choose a snipe wallet to make this snipe</option>
-                                    {this.context.global.state.bddWallet && this.context.global.state.bddWallet.snipeWallets.map((wallet, index) => {
-                                        if(wallet.state === "available"){
-                                            return(
-                                                <option key={index} value={wallet.address}>{wallet.address}</option>
-                                            )
-                                        }
-                                        return null
-                                    })}
-                                </select>
+                        <div className="flex column align-center">
+                            <div style={{paddingBottom: "4%"}} className="w-70 flex column">
+                                <span className="smallBothMargin">Token Address</span>
+                                <input onChange={(e) => this.handleAddress(e)} className="w-100" name="address"
+                                       placeholder="Token address" value={this.state.address}/>
+                                <span className="smallBothMargin">Wallet Address</span>
+                                <input onChange={(e) => this.handleWallet(e)} className="w-100" name="wallet"
+                                       placeholder="Your wallet address" value={this.state.wallet}/>
+                                {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
+                                    <div className="smallBothMargin">
+                                        <span>Dividend Tracker Address</span>
+                                        <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
+                                            placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
+                                    </div>
+                                }
+                                {this.state.customTracker !== ""  && this.state.response.status === true &&
+                                    <div className="smallBothMargin">
+                                        <span>Dividend Tracker Address</span>
+                                        <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
+                                               placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
+                                    </div>
+                                }
+                            </div>
+                            {this.state.response.status === false &&
+                                <div className="flex w-100 justify-center smallPaddingBottom">
+                                    <span style={{textAlign: "center"}}>{this.state.response.message}</span>
+                                </div>
+                            }
+
+                            <div className="flex w-100 justify-center smallPaddingBottom">
+                                <button id="showDividend" className="coolButton " onClick={() => this.showDividend()}> Show my dividends
+                                </button>
                             </div>
 
-                            <div className="flex w-100 rollContainer justify-center smallPaddingBottom">
-                                <button className="coolButton reverseColor" onClick={() => this.openSnipeModal()}> Snipe this presale</button>
-                            </div>
-                            <div className="flex w-100 rollContainer justify-center smallPaddingTop">
-                                <div className="w-70">
-                                    <span>Please verify the minimum BNB amount for the presale, or your snipe will fail.</span>
-                                </div>
-                            </div>
-                            <Modal isOpen={this.state.snipeModal} onClose={() => this.closeSnipeModal()}>
-                                <div className="modalHeader">
-                                    <h3>Please verify below informations : </h3>
-                                </div>
-                                <div className="modalContent flex justify-center">
-                                    <span>Presale start in : {this.state.countDown}</span>
-                                    <span>BNB amount : {this.state.contributeAmount} </span>
-                                </div>
-                                <div className="modalFooter">
-                                    <button onClick={() => this.launchSnipe()} className="coolButton">Confirm snipe</button>
-                                </div>
-                            </Modal>
                         </div>
                     </div>
+                </div>
+
+                <div className="tableContainer w-100 flex column align-center justify-center smallMarginTop">
+                    <div className="w-65 flex column align-center">
+                        <div style={{paddingBottom: "4%"}} className="w-70 flex column">
+                            {this.state.fetching === true &&
+                            <>
+                                <div ref={(el) => { this.table = el }} className="flex column">
+                                    <span> Global Gains : {this.state.globalGain}</span>
+                                    <span> Today Gains : {this.state.todayGain}</span>
+                                    <DatePicker placeholderText="Filter by date (YYYY/MM/DD)" dateFormat="yyyy/MM/dd"
+                                                selected={this.state.dateRange}
+                                                onChange={(date) => this.handleDate(date)}/>
+
+                                    {this.state.dateRange !== "" &&
+                                        <div className="smallMarginTop">
+                                            <span>Gains on <Moment format="YYYY/MM/DD">{this.state.dateRange}</Moment> : {this.state.dateGain} $</span>
+                                        </div>
+                                    }
+                                </div>
+                                <table  className="styled-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>$ Value</th>
+                                        <th>Reward Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.state.dividends.length > 0 && this.state.dividends.map((row, i) => {
+                                        return (
+                                            <tr key={i}>
+                                                <td><Moment unix format="YYYY/MM/DD">{row.timestamp}</Moment></td>
+                                                <td>{row.dollarValue}</td>
+                                                <td>{row.bnbValue}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                    </tbody>
+                                </table>
+                            </>
+                            }
+
+                            {this.state.dividends.length === 0 && this.state.fetching === true &&
+                                <div className="smallMarginTop">
+                                    <span>No data</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
                 </div>
             </div>
 

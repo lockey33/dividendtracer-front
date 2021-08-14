@@ -1,6 +1,6 @@
 html {
     height: 100%;
-    --old-mauve: #672a4eff;
+    --old-mauve: #009879;
     --tuscany: #b09398ff;
     --opal: #cedfd9ff;
     --azure-x-11-web-color: #ebfcfbff;
@@ -18,6 +18,7 @@ html {
 body, #root{
     height: 100%;
 }
+
 
 @font-face {
 
@@ -92,6 +93,20 @@ body, #root{
     width: 100%;
 }
 
+.pageContent{
+    height: 100%;
+}
+
+.pageContent .loader{
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
 h1, h2, h3, h4, h5{
     font-family: "Frutiger Bold";
     letter-spacing: 0.5px;
@@ -102,7 +117,9 @@ h1, h2, h3, h4, h5{
     justify-content: center;
     justify-items: center;
 }
-
+.justify-left{
+    justify-content: flex-start;
+}
 .justify-right{
     justify-content: flex-end;
 }
@@ -131,6 +148,11 @@ h1, h2, h3, h4, h5{
     flex-direction: column;
 }
 
+.sponsorContent{
+    height: 100px;
+    border: 1px solid white;
+    align-items: center;
+}
 
 
 .smallPaddingTop{
@@ -181,6 +203,15 @@ h1, h2, h3, h4, h5{
 .mediumPaddingBottom{
     padding-bottom:5%;
 }
+.modalContent.logs{
+    text-align: unset;
+}
+.modalContent.logs div{
+   margin-bottom: 2%;
+}
+.modalContent.logs span{
+    padding: 0;
+}
 
 
 .coolButton{
@@ -206,6 +237,13 @@ h1, h2, h3, h4, h5{
     color: white;
     width: 20%;
 }
+
+.coolButton:hover{
+    color: var(--old-mauve);
+    background-color: white;
+    transition: background-color 200ms ease-out;
+}
+
 .smallCoolButton{
     padding: 0px;
     height: 30px;
@@ -215,68 +253,25 @@ h1, h2, h3, h4, h5{
     background-color: white !important;
 }
 
-.dataBox{
-    background-color: var(--azure-x-11-web-color);
-    opacity: 0.8;
-    width: 40%;
-    height: 300px;
-    margin-bottom: 5%;
-}
-
-.dataBoxHeader{
-    height: 50px;
-    background-color: var(--old-mauve);
-    padding: 2%;
-    color: white;
-}
-
-.dataBoxHeader img{
-    height: 25px;
-}
-
-.dataBoxContent{
-    overflow-y: scroll;
-    padding: 2%;
-}
-
-.dataBox:first-child{
-    margin-right: 5%;
-}
-
-.dataBox:nth-child(2n+3) {
-    margin-right:5%;
+.smallBothMargin{
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 
 input, select{
     height: 50px;
+    width: 50%;
     border: none;
-    margin-top: 2%;
     padding: 2%;
     box-sizing: border-box;
 }
+
+
 
 span{
     color:white;
 }
 
-.snipeWallet{
-    height: auto;
-    background-color: var(--old-mauve);
-    color: white;
-    word-break: break-word;
-}
-
-.snipeWalletAddress{
-    font-size: 9px;
-}
-
-.wrapper{
-    padding: 5%;
-}
-
-.snipeWallet span{
-    padding: 2%
-}
 h3{
     margin-block-start: 0;
     margin-block-end: 2%;
@@ -284,92 +279,9 @@ h3{
     margin-inline-end: 0px;
 }
 
-.sniperWalletHeader{
-    width: 100%;
-    border-bottom: 1px solid white;
-    margin-bottom: 5%;
-}
-
-.sniperWalletHeader a{
-    margin-left: 2%;
-}
-
-.sniperWalletButtons{
-    margin-top: 3%;
-}
-
-.logoBsc{
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    margin-left: 2%;
-    margin-right: 2px;
-    opacity: .8;
-    transition: opacity .1s ease-in;
-    background: #fff;
-    border: 1px solid #fff;
-    border-radius: 12px;
-}
-
-.modal{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color:black;
-    z-index: 9999;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 50%;
-    min-height: 40%;
-    padding: 15px;
-    border-radius: 10px;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    justify-content: space-between;
-}
-
-.modalHeader{
-    display: flex;
-    width: 100%;
-    justify-content: center;
-}
-
-.modalContent{
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    text-align: center;
-}
-
-.modalFooter{
-    display: flex;
-    width: 100%;
-    justify-content: center;
-}
-
-.modal h3, .modal span{
-    color: black;
-}
-
-.bg{
-    z-index: 9998;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: rgba(0, 0, 0, 0.3);
-}
 
 .smallWrapper{
     padding: 2%;
-}
-
-.snipeContainer{
-    padding: 1% 0% 3%;
-    background: var(--old-mauve);
-    margin-bottom: 5%;
 }
 
 select{
@@ -378,62 +290,130 @@ select{
     margin-top: 2%;
 }
 
-.react-datepicker-wrapper{
-    width: 100%;
+.headerLogo{
+    margin-left: 2%;
 }
 
-.react-datepicker-wrapper input{
+.presentation{
     width: 100%;
-}
-
-.react-datepicker__input-container {
+    padding-top: 1%;
+    padding-bottom: 1%;
+    text-align: center;
+    background-color: white;
+    color: black;
     display: flex;
-    width: 100%;
+    justify-content: center;
+    align-items: center;
 }
 
-.premiumContainer .snipeWallet{
-    padding: 2% 5% 2%;
-    border-radius: 0px;
+.presentation span{
+    color:black;
 }
 
-.premiumBanner{
-    background-color: white;
-    height: 25px;
-    padding: 2% 5% 2%;
+.featuring img{
+    padding: 3%;
 }
 
-.premiumContent{
-    background-color: white;
-    padding: 2% 5% 2%;
-}
-.premiumContent span{
-    color: black;
-}
-
-.premiumBanner h4, .premiumBanner h2, .premiumBanner h3{
-    padding:2px;
-    margin: 0;
-    color: black;
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
 
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
 
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+.styled-table tbody tr{
+    background-color: lightgrey;
+}
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+
+.trendingIcons img{
+    cursor: pointer;
+}
 
 @media screen and (max-width: 1000px){
+
+    .w-50{
+        width: 90%;
+    }
+
+    .trendingIcons img{
+        padding: 1%;
+        height: 60px;
+    }
+
+    .trendingIcons img:last-of-type{
+        margin-bottom: 2%;
+    }
+
+    .sponsorContent{
+        margin-top: 2%;
+    }
+    .sponsorContent span{
+        text-align: center;
+    }
+
+    h1, h2, h3, h4, h5{
+        text-align: center;
+    }
+    .styled-table{
+        min-width: unset;
+        width: auto;
+    }
+    .w-65{
+        width: 100%;
+    }
+
+    .w-70{
+        width: 90%;
+    }
+
+    .text{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .text span{
+        width: 80%;
+        margin-bottom: 4%;
+    }
+
+    .trendingIcons{
+        flex-direction: column;
+        align-items: center;
+    }
 
     .premiumContainer .w-65{
         width: 80%;
     }
 
-    .sniperLaunch .w-65{
-        width: 80%;
-    }
-
-    .modalContainer{
-        width: 80%;
-        position: relative;
-        margin: auto;
-    }
 
     .buttonContainer{
         display: flex;
@@ -443,27 +423,6 @@ select{
 
     .buttonContainer button:last-of-type{
         margin-top: 3%;
-    }
-
-    .snipeWalletContainer div:not(.bg){
-        flex-direction: column;
-        align-items: center;
-        width: 90%;
-        margin-top: 2%;
-    }
-
-    .snipeWalletContainer{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .snipeContainer span{
-        text-align: center;
-    }
-
-    .snipeWallet{
-        margin-top: 1%;
-        margin-bottom: 1%;
     }
 
 
