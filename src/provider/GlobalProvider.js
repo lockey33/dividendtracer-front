@@ -63,7 +63,62 @@ class GlobalProvider extends Component {
             pushInDatabase: this.pushInDatabase,
             pushContractABI: this.pushContractABI,
             getFireBaseContractABI: this.getFireBaseContractABI,
+            getTrendingTokens: this.getTrendingTokens,
+            getAccountTransactions: this.getAccountTransactions,
+            getAllContracts: this.getAllContracts
         }
+    }
+
+    getAllContracts = async(transactions) => {
+        let contracts = []
+        await Promise.all(transactions.map(async (transaction) => {
+            if(transaction.hasOwnProperty("contractAddress")){
+                contracts.push({contract:transaction.contractAddress})
+
+            }
+        }))
+
+        contracts = [...new Set(contracts)];
+
+        return contracts
+    }
+
+    getAccountTransactions = async() => {
+        const latest = await this.state.web3.eth.getBlockNumber()
+        const url = "https://api.bscscan.com/api?module=account&action=tokentx&address=0x7bb89460599dbf32ee3aa50798bbceae2a5f7f6a&startblock=0&endblock="+latest+"&sort=asc&apikey=JA73AMF9FJTNR1XV6GCITABDQT1XS4KJI7"
+        const response = await axios.get(url)
+        const data = response.data.result
+        return data
+    }
+
+    getTrendingTokens = async() => {
+        return new Promise(async (resolve, reject) => {
+            let trendingArray = []
+            let trendingRef = database.ref('trendingTokens').orderByChild('increment')
+            await trendingRef.once('value', async(snapshot) => {
+                if(snapshot.exists()){
+                    snapshot.forEach((child) => {
+                        trendingArray.push(child.val())
+                    })
+                }
+            })
+            trendingArray.sort((b, a) => (parseInt(a.increment) > parseInt(b.increment)) ? 1 : ((parseInt(b.increment) > parseInt(a.increment)) ? -1 : 0))
+            const slicedArray = trendingArray.slice(0, 10);
+            await Promise.all(slicedArray.map(async (object, index) => {
+                let tokenName = await this.getTokenName(object.tokenAddress)
+                slicedArray[index].name = tokenName
+            }))
+            resolve(slicedArray)
+        })
+    }
+
+
+    getTokenName = async(address) => {
+        return new Promise(async(resolve,reject) => {
+            const tokenContract = await this.getFreeContractInstance(address, ERC20)
+            const tokenName = await this.callContractMethod(tokenContract, "name")
+            resolve(tokenName)
+        })
     }
 
     getFireBaseContractABI = async (tokenAddress) => {

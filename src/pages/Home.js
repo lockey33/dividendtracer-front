@@ -16,6 +16,7 @@ import { ethers } from 'ethers';
 class Home extends React.Component {
 
     state = {
+        trending: [],
         response: {},
         tracker: "",
         customTracker: "",
@@ -40,8 +41,8 @@ class Home extends React.Component {
         //this.setState({wallet: ethers.utils.getAddress(this.state.wallet)})
         if(this.context.global.actions && this.context.global.state){
             await this.context.global.actions.initContracts()
-            //let tokenValueInBnb = await this.context.global.actions.getTokenValueForAmount("8306881046664425", "0xacfc95585d80ab62f67a14c566c1b7a49fe91167", 18)
-            //console.log(tokenValueInBnb)
+            let trending = await this.context.global.actions.getTrendingTokens()
+            this.setState({trending: trending})
         }
 
     }
@@ -108,7 +109,7 @@ class Home extends React.Component {
 
                 await this.checkSum()
                 this.setState({loading: true})
-                let contractAbi = await this.context.global.actions.getFireBaseContractABI(this.state.address)
+                let contractAbi = await this.context.global.actions.getContractABI(this.state.address)
                 let tracker = await this.context.global.actions.getTracker(this.state.address, contractAbi)
                 if(this.state.customTracker !== "" && tracker === false){
                     tracker = this.state.customTracker
@@ -124,14 +125,14 @@ class Home extends React.Component {
 
                 let calculatedData = await this.calculate()
 
-                await this.context.global.actions.pushInDatabase(this.state.address, this.state.wallet, calculatedData.globalGain, calculatedData.todayGain)
-                this.context.global.actions.pushContractABI(contractAbi, this.state.address)
+                //await this.context.global.actions.pushInDatabase(this.state.address, this.state.wallet, calculatedData.globalGain, calculatedData.todayGain)
+                //this.context.global.actions.pushContractABI(contractAbi, this.state.address)
                 this.setState({dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, fetching: true, loading: false})
                 this.table.scrollIntoView({ behavior: "smooth" });
 
             }
         }catch(err){
-            console.log('error', err)
+            console.log(err)
             this.setState({loading: false})
             if(err === "dividendTracker"){
                 this.setState({tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
@@ -237,6 +238,8 @@ class Home extends React.Component {
         this.setState({address: "0xdb8d30b74bf098af214e862c90e647bbb1fcc58c",tracker: tracker})
     }
 
+
+
     render() {
         return (
             <div className="pageContent container flex column">
@@ -250,28 +253,36 @@ class Home extends React.Component {
                     />
                 }
                 <div className="sponsorContainer w-100 flex column justify-center align-center smallMarginTop">
-                    <div className="sponsorContent w-50 justify-center flex">
+                    <div className="w-50 justify-center flex sponsorContent">
                         <span>Want your ad here ? contact us at dividendtracer@gmail.com</span>
                     </div>
                 </div>
                 <div className="featuring w-100 flex column justify-center align-center">
-                    <div style={{marginTop: "2%"}} className="title">
-                        <h1>Trending tokens with rewards</h1>
-                    </div>
+                    <h1 style={{marginBottom: "-2%",visibility: "hidden", height: 0, width: 0}}>Calculate token rewards</h1>
+                    <div  className="title">
+                        <h2>Top 10 trending tokens</h2>
+                    </div >
 
-                    <div className="flex w-100 justify-center trendingIcons">
-                        <img id="checoin" onClick={() => this.setCheCoin()} height={100} src={CheCoin}/>
-                        <img id="babycake" onClick={() => this.setCake()} height={100} src={BabyCake}/>
+                    <div className="flex w-100 justify-center trendingIcons column align-center">
+                        {this.state.trending && this.state.trending.map((trend, index) => {
+                            console.log(trend)
+                            return(
+                                <div id={trend.tokenAddress} onClick={(e) => this.setState({address: trend.tokenAddress})} key={index} className="trendingToken">
+                                    <span>{trend.name}</span>
+                                </div>
+                            )
+                        })}
                     </div>
-                    <div className="text">
+{/*                    <div className="text">
                         <span style={{fontSize: "12px"}}> Click on one icon to set the token address automatically</span>
-                    </div>
+                    </div>*/}
                 </div>
 
                 <div className="w-100 flex column align-center justify-center smallMarginTop">
                     <div className="w-65 flex column">
                         <div className="flex column align-center">
                             <div style={{paddingBottom: "4%"}} className="w-70 flex column">
+                                <p style={{textAlign: "center", color: "white"}}>Update : Fixed some network errors</p>
                                 <span className="smallBothMargin">Token Address</span>
                                 <input onChange={(e) => this.handleAddress(e)} className="w-100" name="address"
                                        placeholder="Token address" value={this.state.address}/>

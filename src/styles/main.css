@@ -258,6 +258,16 @@ h1, h2, h3, h4, h5{
     margin-bottom: 1%;
 }
 
+.trendingToken span{
+    color: var(--old-mauve);
+}
+
+
+.trendingToken span:hover{
+    color: white;
+    cursor:pointer;
+}
+
 input, select{
     height: 50px;
     width: 50%;
@@ -308,6 +318,8 @@ select{
 
 .presentation span{
     color:black;
+    padding-left: 1%;
+    padding-right: 1%;
 }
 
 .featuring img{

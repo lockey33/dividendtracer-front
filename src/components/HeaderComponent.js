@@ -22,7 +22,7 @@ class HeaderComponent extends React.Component {
                     <img alt="logo" className="headerLogo" src={Bills} height={40} />
                 </div>
                 <div className="presentation">
-                    <span>This site will never open your metamask</span>
+                    <span>Please disable AdBlock to avoid all errors</span>
                 </div>
 
             </div>
