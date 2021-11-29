@@ -109,6 +109,8 @@ class Home extends React.Component {
 
                 await this.checkSum()
                 this.setState({loading: true})
+                //let contractAbi = await this.context.global.actions.getFireBaseContractABI(this.state.address)
+                //TODO en attendant d'avoir les contrats de nouveaux stockés en BDD j'appel direct l'API, a voir si ça passe ...
                 let contractAbi = await this.context.global.actions.getContractABI(this.state.address)
                 let tracker = await this.context.global.actions.getTracker(this.state.address, contractAbi)
                 if(this.state.customTracker !== "" && tracker === false){
@@ -124,7 +126,7 @@ class Home extends React.Component {
 
 
                 let calculatedData = await this.calculate()
-
+                //TODO ces 2 lignes servent a stocker les contrats dans firebase, a remplacer au plus vite
                 //await this.context.global.actions.pushInDatabase(this.state.address, this.state.wallet, calculatedData.globalGain, calculatedData.todayGain)
                 //this.context.global.actions.pushContractABI(contractAbi, this.state.address)
                 this.setState({dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, fetching: true, loading: false})
@@ -282,7 +284,9 @@ class Home extends React.Component {
                     <div className="w-65 flex column">
                         <div className="flex column align-center">
                             <div style={{paddingBottom: "4%"}} className="w-70 flex column">
-                                <p style={{textAlign: "center", color: "white"}}>Update : Fixed some network errors</p>
+                                <p style={{textAlign: "center", color: "white"}}>We apologize for the problems the site is having lately, the traffic has become important and we need to review the architecture of our servers.
+
+                                    The site is now functional but the number of requests is limited, we are trying to solve this problem as soon as possible</p>
                                 <span className="smallBothMargin">Token Address</span>
                                 <input onChange={(e) => this.handleAddress(e)} className="w-100" name="address"
                                        placeholder="Token address" value={this.state.address}/>
