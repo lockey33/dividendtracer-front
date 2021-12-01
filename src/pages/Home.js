@@ -260,10 +260,12 @@ class Home extends React.Component {
                     </div>
                 </div>
                 <div className="featuring w-100 flex column justify-center align-center">
+{/*
                     <h1 style={{marginBottom: "-2%",visibility: "hidden", height: 0, width: 0}}>Calculate token rewards</h1>
                     <div  className="title">
                         <h2>Top 10 trending tokens</h2>
                     </div >
+*/}
 
                     <div className="flex w-100 justify-center trendingIcons column align-center">
                         {this.state.trending && this.state.trending.map((trend, index) => {
@@ -287,6 +289,7 @@ class Home extends React.Component {
                                 <p style={{textAlign: "center", color: "white"}}>We apologize for the problems the site is having lately, the traffic has become important and we need to review the architecture of our servers.
 
                                     The site is now functional but the number of requests is limited, we are trying to solve this problem as soon as possible</p>
+                                <p style={{textAlign: "center", color: "white"}} >Beside that, new design and much more is coming, be ready</p>
                                 <span className="smallBothMargin">Token Address</span>
                                 <input onChange={(e) => this.handleAddress(e)} className="w-100" name="address"
                                        placeholder="Token address" value={this.state.address}/>
