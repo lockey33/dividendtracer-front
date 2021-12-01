@@ -1,4 +1,4 @@
-import GlobalProvider from "./provider/GlobalProvider";
+import {GlobalProvider} from "./provider/GlobalProvider";
 import AppRouter from "./router/Router";
 import {Helmet, HelmetProvider } from "react-helmet-async";
 

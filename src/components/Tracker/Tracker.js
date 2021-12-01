@@ -1,41 +1,117 @@
 import React from "react";
-import {GlobalContext} from '../provider/GlobalProvider';
-import CheCoin from '../images/checoin.png';
-import BabyCake from '../images/babycake.png';
+import styled from "styled-components";
+import { GlobalContext } from "../../provider/GlobalProvider";
 import axios from 'axios';
-import Moment from 'react-moment';
 import * as moment from 'moment';
-import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from 'react-loader-spinner';
-import ERC20 from '../abi/erc20.js';
 import { ethers } from 'ethers';
+import { Results } from "./Results";
 
-
-class Home extends React.Component {
-
-    state = {
-        trending: [],
-        response: {},
-        tracker: "",
-        customTracker: "",
-        address: "",
-        wallet: "",
-        loading: false,
-        dividends: [],
-        dividendsSave: [],
-        todayGain: 0,
-        globalGain: 0,
-        dateGain: 0,
-        dateRange: "",
-        fetching: false,
-
+const TrackerWrapper = styled.div`
+    display: flex;
+    background: #23262F;
+    border-radius: 10px;
+    padding: 40px 50px;
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+    @media (max-width: 768px) {
+        padding: 40px;
     }
+`
+
+const AdBlock = styled.div`
+    margin-top: 1rem;
+    background: rgba(255, 100, 100, 0.49);
+    border-radius: 10px;
+    padding: 12px 20px;
+    text-align: center;
+    font-family: 'DM Sans';
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+`
+
+const SubmitButton = styled.button`
+    background: #669566;
+    border: solid 1px transparent;
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-family: 'DM Sans';
+    font-weight: bold;
+    font-size: 16px;
+    color: #FFFFFF;
+    margin-left: auto;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    &:hover {
+        border: solid 1px #6CF057;
+    }
+`
+
+const ItemForm = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 2rem;
+    label{
+        color: white;
+        font-family: 'DM Sans';
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+`
+
+const Form = styled.form`
+    width: 100%;
+`
+
+const Input = styled.input`
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(119, 126, 144, 1);
+    color: white;
+    font-family: 'DM Sans';
+    font-weight: bold;
+    font-size: 16px;
+    border: solid 1px transparent;
+    &::placeholder{
+        color: rgba(255, 255, 255, 0.5);
+    }
+    &:focus, &:active, &:focus-visible{
+        outline: none;
+        border: solid 1px #6CF057;
+    }
+`
+
+export class Tracker extends React.Component {
+
     static contextType = GlobalContext;
 
-
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            trending: [],
+            response: {},
+            tracker: "",
+            customTracker: "",
+            address: "",
+            wallet: "",
+            loading: false,
+            dividends: [],
+            dividendsSave: [],
+            todayGain: 0,
+            globalGain: 0,
+            dateGain: 0,
+            dateRange: "",
+            fetching: false,
+    
+        }
+    }
 
     componentDidMount = async () => {
         //this.setState({wallet: ethers.utils.getAddress(this.state.wallet)})
@@ -102,7 +178,8 @@ class Home extends React.Component {
         this.setState({wallet: wallet, address: address})
     }
 
-    showDividend = async () => {
+    showDividend = async (e) => {
+        e.preventDefault();
         try{
             await this.checkForm()
             if(this.state.response.status === true){
@@ -130,7 +207,7 @@ class Home extends React.Component {
                 //await this.context.global.actions.pushInDatabase(this.state.address, this.state.wallet, calculatedData.globalGain, calculatedData.todayGain)
                 //this.context.global.actions.pushContractABI(contractAbi, this.state.address)
                 this.setState({dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, fetching: true, loading: false})
-                this.table.scrollIntoView({ behavior: "smooth" });
+                // this.table.scrollIntoView({ behavior: "smooth" });
 
             }
         }catch(err){
@@ -152,6 +229,7 @@ class Home extends React.Component {
         bnbPrice = bnbPrice.ethusd
         let todayGain = 0
         let globalGain = 0
+        let profit = 0;
         await Promise.all(data.map(async(transaction) => {
             if (ethers.utils.getAddress(transaction.from) === this.state.tracker) {
                 let tokenAddress = transaction.contractAddress
@@ -203,97 +281,30 @@ class Home extends React.Component {
 
     }
 
-
     handleWallet = async (e) => {
         this.setState({wallet:  e.target.value})
     }
 
-    handleDate = async (date) => {
-        this.setState({dateRange: date})
-        await this.filterByDate(date)
-    }
-
-    filterByDate = async (date) => {
-        let filteredData = []
-        let dividends = (this.state.dividends.length === 0 | this.state.dividends.length !== this.state.dividendsSave ? this.state.dividendsSave : this.state.dividends)
-        let momentDate = moment(date)
-
-        let dateGain = 0
-        dividends.map((row) => {
-            let isCurrentDate = moment.unix(row.timestamp).isSame(momentDate, 'day')
-            if (isCurrentDate) {
-                dateGain += parseFloat(row.rawDollarValue)
-                filteredData.push(row)
-            }
-        })
-        this.setState({dividends: filteredData, dateGain: dateGain.toFixed(2)})
-    }
-
-    setCheCoin = async () => {
-        let tracker = ethers.utils.getAddress("0xbae343c5a479b20f54e742fdbb8d5202a0f5d85f")
-        this.setState({address: "0x54626300818e5c5b44db0fcf45ba4943ca89a9e2",tracker: tracker})
-    }
-
-
-    setCake = async () => {
-        let tracker = ethers.utils.getAddress("0x363621Cb1B32590c55f283432D91530d77cf532f")
-        this.setState({address: "0xdb8d30b74bf098af214e862c90e647bbb1fcc58c",tracker: tracker})
-    }
-
-
-
-    render() {
-        return (
-            <div className="pageContent container flex column">
-                {this.state.loading === true &&
-                    <Loader
-                        className="loader"
-                        type="Puff"
-                        color="#009879"
-                        height={100}
-                        width={100}
-                    />
+    render(){
+        console.log(this.state)
+        return(
+            <>
+                {!this.state.fetching &&
+                    <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
                 }
-                <div className="sponsorContainer w-100 flex column justify-center align-center smallMarginTop">
-                    <div className="w-50 justify-center flex sponsorContent">
-                        <span>Want your ad here ? contact us at dividendtracer@gmail.com</span>
-                    </div>
-                </div>
-                <div className="featuring w-100 flex column justify-center align-center">
-                    <h1 style={{marginBottom: "-2%",visibility: "hidden", height: 0, width: 0}}>Calculate token rewards</h1>
-                    <div  className="title">
-                        <h2>Top 10 trending tokens</h2>
-                    </div>
-
-                    <div className="flex w-100 justify-center trendingIcons column align-center">
-                        {this.state.trending && this.state.trending.map((trend, index) => {
-                            console.log(trend)
-                            return(
-                                <div id={trend.tokenAddress} onClick={(e) => this.setState({address: trend.tokenAddress})} key={index} className="trendingToken">
-                                    <span>{trend.name}</span>
-                                </div>
-                            )
-                        })}
-                    </div>
-{/*                    <div className="text">
-                        <span style={{fontSize: "12px"}}> Click on one icon to set the token address automatically</span>
-                    </div>*/}
-                </div>
-
-                <div className="w-100 flex column align-center justify-center smallMarginTop">
-                    <div className="w-65 flex column">
-                        <div className="flex column align-center">
-                            <div style={{paddingBottom: "4%"}} className="w-70 flex column">
-                                <p style={{textAlign: "center", color: "white"}}>We apologize for the problems the site is having lately, the traffic has become important and we need to review the architecture of our servers.
-
-                                    The site is now functional but the number of requests is limited, we are trying to solve this problem as soon as possible</p>
-                                <span className="smallBothMargin">Token Address</span>
-                                <input onChange={(e) => this.handleAddress(e)} className="w-100" name="address"
-                                       placeholder="Token address" value={this.state.address}/>
-                                <span className="smallBothMargin">Wallet Address</span>
-                                <input onChange={(e) => this.handleWallet(e)} className="w-100" name="wallet"
-                                       placeholder="Your wallet address" value={this.state.wallet}/>
-                                {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
+                <TrackerWrapper>
+                {!this.state.fetching ?
+                    <Form  action="">
+                        <ItemForm>
+                            <label htmlFor="item">Token address</label>
+                            <Input onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." />
+                        </ItemForm>
+                        <ItemForm>
+                            <label htmlFor="item">Wallet address</label>
+                            <Input onChange={(e) => this.handleWallet(e)} type="text" name="walletaddr" placeholder="0x..." />
+                        </ItemForm>
+                        <SubmitButton onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
+                        {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
                                     <div className="smallBothMargin">
                                         <span>Dividend Tracker Address</span>
                                         <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
@@ -307,76 +318,20 @@ class Home extends React.Component {
                                                placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
                                     </div>
                                 }
-                            </div>
                             {this.state.response.status === false &&
                                 <div className="flex w-100 justify-center smallPaddingBottom">
                                     <span style={{textAlign: "center"}}>{this.state.response.message}</span>
                                 </div>
                             }
-
-                            <div className="flex w-100 justify-center smallPaddingBottom">
-                                <button id="showDividend" className="coolButton " onClick={() => this.showDividend()}> Show my dividends
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div className="tableContainer w-100 flex column align-center justify-center smallMarginTop">
-                    <div className="w-65 flex column align-center">
-                        <div style={{paddingBottom: "4%"}} className="w-70 flex column">
-                            {this.state.fetching === true &&
-                            <>
-                                <div ref={(el) => { this.table = el }} className="flex column">
-                                    <span> Global Gains : {this.state.globalGain}</span>
-                                    <span> Today Gains : {this.state.todayGain}</span>
-                                    <DatePicker placeholderText="Filter by date (YYYY/MM/DD)" dateFormat="yyyy/MM/dd"
-                                                selected={this.state.dateRange}
-                                                onChange={(date) => this.handleDate(date)}/>
-
-                                    {this.state.dateRange !== "" &&
-                                        <div className="smallMarginTop">
-                                            <span>Gains on <Moment format="YYYY/MM/DD">{this.state.dateRange}</Moment> : {this.state.dateGain} $</span>
-                                        </div>
-                                    }
-                                </div>
-                                <table  className="styled-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>$ Value</th>
-                                        <th>Reward Amount</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {this.state.dividends.length > 0 && this.state.dividends.map((row, i) => {
-                                        return (
-                                            <tr key={i}>
-                                                <td><Moment unix format="YYYY/MM/DD">{row.timestamp}</Moment></td>
-                                                <td>{row.dollarValue}</td>
-                                                <td>{row.bnbValue}</td>
-                                            </tr>
-                                        )
-                                    })}
-                                    </tbody>
-                                </table>
-                            </>
-                            }
-
-                            {this.state.dividends.length === 0 && this.state.fetching === true &&
-                                <div className="smallMarginTop">
-                                    <span>No data</span>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
+                    </Form>
+                    :
+                    <>
+                        <Results dividendsSave={this.state.dividendsSave} token={this.state.address} wallet={this.state.wallet} dividends={this.state.dividends} globalGain={this.state.globalGain} todayGain={this.state.todayGain} />
+                    </>
+                }
+                </TrackerWrapper>
+            </>
         )
     }
-}
 
-export default Home;
+}
