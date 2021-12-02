@@ -18,7 +18,7 @@ const PromoteMessage = () => <Box color="#B1B5C4" sx={{'a': {color: 'inherit', t
 export const Ads = () => {
     return (
         <>
-            <AdWrapper href="https://www.green-snkrs.com">
+            <AdWrapper target='_blank' href="https://www.green-snkrs.com">
                 <img src={SNKRSGif} alt="" />
             </AdWrapper>
             <PromoteMessage />
