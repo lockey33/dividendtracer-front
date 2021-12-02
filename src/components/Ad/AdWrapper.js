@@ -1,7 +1,7 @@
 import React from 'react';
 import {Heading, Box} from "rebass";
 import styled from 'styled-components';
-import SNKRSGif from '../../images/ads/snkrs.gif';
+import SNKRSGif from '../../images/ads/snkrs-2.gif';
 
 const AdWrapper = styled.a`
     border-radius: 10px;
