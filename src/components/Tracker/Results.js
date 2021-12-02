@@ -1,8 +1,6 @@
 import React, {useEffect, createRef} from 'react';
 import {Flex, Text, Box, Heading} from "rebass";
 import styled from "styled-components";
-import Moment from "react-moment"
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {registerables, Chart} from "chart.js"
 import { TableWrapper } from '../Table/Table';
@@ -11,23 +9,17 @@ const AddressLink = styled.a`
     color: #fff;
     font-family 'ABeeZee';
     font-size: 16px;
+    ${'' /* flex: 1; */}
+    ${'' /* min-width: 0; */}
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-decoration: none;
+    @media screen and (max-width: 768px) {
+        font-size: 12px;
+    }
 ` 
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-`
-
-const Action = styled.a`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-`
 
 const ChartWrapper = ({dividends}) => {
 
@@ -136,13 +128,13 @@ const ChartWrapper = ({dividends}) => {
 export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
     return(
         <Box width={'100%'}>
-            <Box width={'100%'} pb={5}>
+            <Box width={'100%'} py={4}>
                 <Flex justifyContent="space-between" flexDirection="column">
-                    <Flex sx={{gap: '5px', flexWrap: 'wrap'}} mb={3} alignItems="center">
+                    <Flex sx={{gap: '8px', flexWrap: 'wrap'}} mb={3} alignItems="center">
                         <Text color="#B1B5C4" fontSize={2} display="flex" alignItems="center" gap={2} fontFamily={'DM Sans'}>Token : </Text>
                         <AddressLink>{token}</AddressLink>
                     </Flex>
-                    <Flex sx={{gap: '5px', flexWrap: 'wrap'}} alignItems="center">
+                    <Flex sx={{gap: '8px', flexWrap: 'wrap'}} alignItems="center">
                         <Text color="#B1B5C4" fontSize={2} fontFamily={'DM Sans'}>Wallet : </Text>
                         <AddressLink target="_blank" href={`https://bscscan.com/address/${wallet}`}>{wallet}</AddressLink>
                     </Flex>
@@ -151,12 +143,12 @@ export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
             <Flex justifyContent="space-between">
                 <Flex flex={1} justifyContent="center" flexDirection="column">
                     <Flex sx={{gap: '5px'}} mb={3} flexDirection="column">
-                        <Text color="#B1B5C4" fontSize={3} display="flex" alignItems="center" gap={2} fontFamily={'DM Sans'}>Total profit : </Text>
-                        <Text color="white" fontSize={5} fontFamily={'ABeeZee'}>{globalGain}</Text>
+                        <Text color="#B1B5C4" fontSize={[1, 3]} display="flex" alignItems="center" gap={2} fontFamily={'DM Sans'}>Total profit : </Text>
+                        <Text color="white" fontSize={[4]} fontFamily={'ABeeZee'}>{globalGain}</Text>
                     </Flex>
                     <Flex sx={{gap: '5px'}} flexDirection="column">
-                        <Text color="#B1B5C4" fontSize={3} fontFamily={'DM Sans'}>Today : </Text>
-                        <Text color="white" fontSize={5} fontFamily={'ABeeZee'}>{todayGain}</Text>
+                        <Text color="#B1B5C4" fontSize={[1, 3]} fontFamily={'DM Sans'}>Today : </Text>
+                        <Text color="white" fontSize={[4]}  fontFamily={'ABeeZee'}>{todayGain}</Text>
                     </Flex>
                 </Flex>
                 <Flex flex={1} justifyContent="center">
@@ -165,7 +157,7 @@ export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
                     </Box>
                 </Flex>
             </Flex>
-            <Box mt={5} width={'100%'}>
+            <Box mt={5} mb={3} width={'100%'}>
                 <TableWrapper data={dividends} />
             </Box>
         </Box>

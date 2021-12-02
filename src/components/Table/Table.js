@@ -5,65 +5,7 @@ import { useTable, usePagination } from 'react-table'
 import {Box, Heading, Text, Flex} from "rebass";
 import DatePicker from "react-datepicker";
 import * as moment from 'moment';
-
-const StyledTable = styled.table`
-    width: 100%;
-    color: white;
-    td, th{
-        text-align: left;
-        padding: 10px 0;
-    }
-    thead > tr:first-child{
-        display: none;
-    }
-    tr{
-        >:first-child{
-            width: 50%;
-        }
-        >:nth-child(2){
-            width: 25%;
-            text-align: right;
-        }
-        >:nth-child(3){
-            width: 25%;
-            text-align: right;
-        }
-    }
-    thead{
-        position: relative;
-        ::before{
-            content: "";
-            display: block;
-            width: 100%;
-            height: 1px;
-            background: #fff;
-            bottom: 0;
-            position: absolute;
-        }
-    }
-`
-
-const PageButton = styled.button`
-    background: #669566;
-    border: solid 1px transparent;
-    border-radius: 3px;
-    height: 30px;
-    width: 30px;
-    margin: 0 10px;
-    font-family: 'DM Sans';
-    font-size: 14px;
-    color: #FFFFFF;
-    margin-left: auto;
-    cursor: pointer;    
-    &:hover {
-        border: solid 1px #6CF057;
-    }
-    &.active{
-        background: #6CF057;
-        color: #fff;
-        border: solid 1px #6CF057;
-    }
-`
+import { PageButton, StyledTable } from './styled';
 
 export const TableWrapper = ({data}) => {
 
@@ -73,9 +15,10 @@ export const TableWrapper = ({data}) => {
     const [previousDividends, setPreviousDividends] = React.useState([]);
 
     useEffect(() => {
-        let newDate = [...data].reverse().map(item => {
+        let newDate = data.reverse().map(item => {
             return {
-                ...item,
+                tokenValue: parseFloat(item.rawTokenValue).toFixed(3),
+                dollarValue: parseFloat(item.rawDollarValue).toFixed(0),
                 date: new Date(parseInt(item.timestamp)*1000).toLocaleDateString()
             }
         });
@@ -97,7 +40,7 @@ export const TableWrapper = ({data}) => {
                   },
                   {
                     Header: 'Tokens',
-                    accessor: 'bnbValue',
+                    accessor: 'tokenValue',
                   },
             ],
           },
@@ -176,7 +119,7 @@ export const TableWrapper = ({data}) => {
                 return (
                 <tr {...row.getRowProps()}>
                     {row.cells.map(cell => {
-                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        return <td {...cell.getCellProps()}>{cell.render('Cell')} {cell.column.Header === 'Rewards' && '$' || cell.column.Header === 'Tokens' && 'BNB'}</td>
                     })}
                 </tr>
                 )

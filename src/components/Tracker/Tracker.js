@@ -5,6 +5,9 @@ import axios from 'axios';
 import * as moment from 'moment';
 import { ethers } from 'ethers';
 import { Results } from "./Results";
+import { CustomLoader } from "../Loader/Loader";
+import {Box, Flex, Text} from 'rebass';
+import { VscDebugRestart } from "react-icons/vsc";
 
 const TrackerWrapper = styled.div`
     display: flex;
@@ -14,7 +17,7 @@ const TrackerWrapper = styled.div`
     margin-top: 1rem;
     margin-bottom: 3rem;
     @media (max-width: 768px) {
-        padding: 40px;
+        padding: 40px 15px;
     }
 `
 
@@ -31,6 +34,9 @@ const AdBlock = styled.div`
     align-items: center;
     justify-content: center;
     color: #FFFFFF;
+    @media (max-width: 768px) {
+            font-size: 14px;
+    }
 `
 
 const SubmitButton = styled.button`
@@ -62,7 +68,15 @@ const ItemForm = styled.div`
         font-family: 'DM Sans';
         font-weight: bold;
         font-size: 16px;
-        margin-bottom: 10px;
+        margin-bottom: 10px;        
+    }
+    @media (max-width: 768px) {
+        &:not(:nth-child(2)) {
+            margin-bottom: 1rem;
+        }
+        label{
+            font-size: 14px;
+        }
     }
 `
 
@@ -85,6 +99,30 @@ const Input = styled.input`
     &:focus, &:active, &:focus-visible{
         outline: none;
         border: solid 1px #6CF057;
+   }
+   @media (max-width: 768px) {
+        font-size: 14px;
+        padding: 15px 20px;
+    }
+`
+
+const Button = styled.button`
+    background-color: transparent;
+    border: 1px solid #a9a9a9;
+    border-radius: 5px;
+    color: #a9a9a9;
+    font-family 'DM Sans';
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 20px;
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    &:hover {
+        background-color: #a9a9a9;
+        color: #fff;
     }
 `
 
@@ -251,6 +289,7 @@ export class Tracker extends React.Component {
                     timestamp: transaction.timeStamp,
                     rawDollarValue: dollarValue.toFixed(4),
                     dollarValue: dollarValue.toFixed(4) + " $",
+                    rawTokenValue: tokenValue,
                     bnbValue: tokenValue + " " + (transaction.tokenSymbol ? transaction.tokenSymbol : "BNB")
                 }
                 globalGain += dollarValue
@@ -285,6 +324,10 @@ export class Tracker extends React.Component {
         this.setState({wallet:  e.target.value})
     }
 
+    restart = async () => {
+        this.setState({dividends: [], dividendsSave: [], globalGain: "", todayGain: "", fetching: false, tracker: "", customTracker: "", response: {status: false, message: ""}})
+    }
+
     render(){
         console.log(this.state)
         return(
@@ -293,41 +336,57 @@ export class Tracker extends React.Component {
                     <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
                 }
                 <TrackerWrapper>
-                {!this.state.fetching ?
-                    <Form  action="">
-                        <ItemForm>
-                            <label htmlFor="item">Token address</label>
-                            <Input onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." />
-                        </ItemForm>
-                        <ItemForm>
-                            <label htmlFor="item">Wallet address</label>
-                            <Input onChange={(e) => this.handleWallet(e)} type="text" name="walletaddr" placeholder="0x..." />
-                        </ItemForm>
-                        <SubmitButton onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
-                        {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
-                                    <div className="smallBothMargin">
-                                        <span>Dividend Tracker Address</span>
-                                        <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
-                                            placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
+                {this.state.loading ? 
+                    <Flex width={'100%'} alignItems="center" flexDirection='column'>
+                        <CustomLoader /> 
+                        <Text color="white" mt={3} fontFamily="DM Sans">Calculating your dividends...</Text>
+                    </Flex>
+                    : 
+                    !this.state.fetching ?
+                        <Form  action="">
+                            <ItemForm>
+                                <label htmlFor="item">Token address</label>
+                                <Input onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." />
+                            </ItemForm>
+                            <ItemForm>
+                                <label htmlFor="item">Wallet address</label>
+                                <Input onChange={(e) => this.handleWallet(e)} type="text" name="walletaddr" placeholder="0x..." />
+                            </ItemForm>
+                            <SubmitButton onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
+                            {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
+                                        <div className="smallBothMargin">
+                                            <span>Dividend Tracker Address</span>
+                                            <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
+                                                placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
+                                        </div>
+                                    }
+                                    {this.state.customTracker !== ""  && this.state.response.status === true &&
+                                        <div className="smallBothMargin">
+                                            <span>Dividend Tracker Address</span>
+                                            <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
+                                                placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
+                                        </div>
+                                    }
+                                {this.state.response.status === false &&
+                                    <div className="flex w-100 justify-center smallPaddingBottom">
+                                        <span style={{textAlign: "center"}}>{this.state.response.message}</span>
                                     </div>
                                 }
-                                {this.state.customTracker !== ""  && this.state.response.status === true &&
-                                    <div className="smallBothMargin">
-                                        <span>Dividend Tracker Address</span>
-                                        <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
-                                               placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
-                                    </div>
-                                }
-                            {this.state.response.status === false &&
-                                <div className="flex w-100 justify-center smallPaddingBottom">
-                                    <span style={{textAlign: "center"}}>{this.state.response.message}</span>
-                                </div>
-                            }
-                    </Form>
-                    :
-                    <>
-                        <Results dividendsSave={this.state.dividendsSave} token={this.state.address} wallet={this.state.wallet} dividends={this.state.dividends} globalGain={this.state.globalGain} todayGain={this.state.todayGain} />
-                    </>
+                        </Form>
+                        :
+                        <Flex width={'100%'} alignItems="start" flexDirection='column'>
+                            <Flex justifyContent={'start'} alignItems={'center'}>
+                                <Button onClick={() => this.restart()}>
+                                    Start again <VscDebugRestart />
+                                </Button>
+                            </Flex>
+                            <Results dividendsSave={this.state.dividendsSave} token={this.state.address} wallet={this.state.wallet} dividends={this.state.dividends} globalGain={this.state.globalGain} todayGain={this.state.todayGain} />
+                            <Flex mt={2} justifyContent={'start'} alignItems={'center'}>
+                                <Button onClick={() => this.restart()}>
+                                    Start again <VscDebugRestart />
+                                </Button>
+                            </Flex>
+                        </Flex>
                 }
                 </TrackerWrapper>
             </>

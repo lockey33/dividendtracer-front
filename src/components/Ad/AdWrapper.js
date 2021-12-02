@@ -14,9 +14,8 @@ const PromoteMessage = () => <Box color="#B1B5C4" sx={{'a': {color: 'inherit', t
 export const Ads = () => {
     return (
         <>
-            {/* <Heading fontSize={[3]} fontFamily='DM Sans' color="white">Sponsored content</Heading> */}
             <AdWrapper>
-
+                
             </AdWrapper>
             <PromoteMessage />
         </>
