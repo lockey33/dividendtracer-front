@@ -8,6 +8,8 @@ const AdWrapper = styled.a`
     overflow: hidden;
     text-decoration: none;
     cursor: pointer;
+    display: flex;
+    height: 100%;
     img{
         width: 100%;
     }

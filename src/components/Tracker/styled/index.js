@@ -39,7 +39,7 @@ export const SubmitButton = styled.button`
     font-family: 'DM Sans';
     font-weight: bold;
     font-size: 16px;
-    color: #FFFFFF;
+    color: #6CF057;
     margin-left: auto;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
