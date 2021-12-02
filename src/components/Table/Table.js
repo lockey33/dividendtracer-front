@@ -17,6 +17,7 @@ export const TableWrapper = ({data}) => {
     useEffect(() => {
         let newDate = data.reverse().map(item => {
             return {
+                ...item,
                 tokenValue: parseFloat(item.rawTokenValue).toFixed(3),
                 dollarValue: parseFloat(item.rawDollarValue).toFixed(0),
                 date: new Date(parseInt(item.timestamp)*1000).toLocaleDateString()
@@ -77,7 +78,7 @@ export const TableWrapper = ({data}) => {
         let filteredData = []
         let momentDate = moment(date)
         let dateGain = 0
-        dividends.map((row) => {
+        dividends.map((row) => {            
             let isCurrentDate = moment.unix(row.timestamp).isSame(momentDate, 'day')
             if (isCurrentDate) {
                 dateGain += parseFloat(row.rawDollarValue)
