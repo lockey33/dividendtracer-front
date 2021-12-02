@@ -57,6 +57,28 @@ export const WalletButton = styled.button`
     @media (min-width: 768px) {
         font-size: 18px;
     }
+    @media (max-width: 768px) {
+        display: none;
+    }
+`
+
+export const TelegramButton = styled.a`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(94,94,94,0.15);
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 16px;
+    gap: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover {        
+        border: solid 1px #6CF057;
+    }
 `
 
 export const OptionsButton = styled.button`
@@ -89,6 +111,7 @@ export const OptionsMenu = styled.div`
         color: rgb(195, 197, 203);
         text-decoration: none;
         cursor: pointer;
+        svg{opacity: 0.6;}
         &:hover{
             color: white;
         }
