@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
     "chart.js": "^3.6.1",
+    "emailjs-com": "^3.2.0",
     "ethereum-input-data-decoder": "^0.3.2",
     "ethereum-tx-decoder": "^3.0.0",
     "ethereumjs-common": "^1.5.2",

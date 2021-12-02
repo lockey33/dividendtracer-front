@@ -61,9 +61,7 @@ export const ItemForm = styled.div`
         margin-bottom: 10px;        
     }
     @media (max-width: 768px) {
-        &:not(:nth-child(2)) {
-            margin-bottom: 1rem;
-        }
+            margin-bottom: 1.5rem;
         label{
             font-size: 14px;
         }
@@ -71,7 +69,8 @@ export const ItemForm = styled.div`
 `
 
 export const Form = styled.form`
-    width: 100%;
+    width: auto;
+    flex: 1;
 `
 
 export const Input = styled.input`
@@ -102,6 +101,32 @@ export const Input = styled.input`
         transition: background-color 5000s ease-in-out 0s;
     }
 `
+
+export const Textarea = styled.textarea`
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(119, 126, 144, 1);
+    color: white;
+    font-family: 'DM Sans';
+    font-weight: bold;
+    font-size: 16px;
+    border: solid 1px transparent;
+    &.error{
+        border: solid 1px #ff4545;
+    }
+    &::placeholder{
+        color: rgba(255, 255, 255, 0.5);
+    }
+    &:focus, &:active, &:focus-visible{
+        outline: none;
+        border: solid 1px #6CF057;
+    }
+    @media (max-width: 768px) {
+        font-size: 14px;
+        padding: 15px 20px;
+    }
+`
+
 
 export const ErrorMessage = styled.div`
     color: #ff4545;

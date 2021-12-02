@@ -88,6 +88,7 @@ export const OptionsMenu = styled.div`
         justify-content: space-between;
         color: rgb(195, 197, 203);
         text-decoration: none;
+        cursor: pointer;
         &:hover{
             color: white;
         }

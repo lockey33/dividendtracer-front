@@ -15,7 +15,7 @@ const AdWrapper = styled.a`
     }
 `
 
-const PromoteMessage = () => <Box color="#B1B5C4" sx={{'a': {color: 'inherit', textDecoration: 'none'}}} fontSize={1} fontFamily='DM Sans' mt={2} textAlign="center">Want to promote your token ? Contact us at <a href="mailto:dividendtracer@gmail.com"><strong>dividendtracer@gmail.com</strong></a></Box>
+const PromoteMessage = () => <Box color="#B1B5C4" sx={{'a': {color: 'inherit', textDecoration: 'none'}}} fontSize={['12px', 1]} fontFamily='DM Sans' mt={2} textAlign="center">Want to promote your token ? Contact us at <a href="mailto:dividendtracer@gmail.com"><strong>dividendtracer@gmail.com</strong></a></Box>
 
 export const Ads = () => {
     return (

@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import { ethers } from 'ethers';
 import { Results } from "./Results";
 import { CustomLoader } from "../Loader/Loader";
-import {Box, Flex, Text} from 'rebass';
+import {Box, Flex, Text, Heading} from 'rebass';
 import { VscDebugRestart } from "react-icons/vsc";
 import { TrackerWrapper, AdBlock, SubmitButton, ItemForm, Form, Input, Button, ErrorMessage } from "./styled";
 
@@ -217,7 +217,7 @@ export class Tracker extends React.Component {
 
     render(){
         return(
-            <Box width={'100%'} my={[3, 4, 5]}>
+            <Box width={'100%'} my={[4, 5]}>
                 {!this.state.fetching &&
                     <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
                 }
@@ -230,6 +230,7 @@ export class Tracker extends React.Component {
                     : 
                     !this.state.fetching ?
                         <Form  action="">
+                            <Heading fontFamily="DM Sans" color="white" fontSize={[3, 4]} mb={3} mt={0} textAlign="center">Start tracking your dividends</Heading>
                             <ItemForm>
                                 <label htmlFor="item">Token address</label>
                                 <Input className={this.state.errorToken ? 'error' : ''} onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." required />

@@ -6,12 +6,16 @@ import {ReactComponent as Docs} from "../../images/docs.svg";
 import {ReactComponent as Ask} from "../../images/ask.svg";
 import {ReactComponent as Coffee} from "../../images/coffee.svg";
 import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu, WalletButton} from "./styled";
+import { Modal } from "../Modal/Modal";
 
 const Header = () => {
 
     const [isOptionsOpen, setIsOptionsOpen] = React.useState(false);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [modalTitle, setModalTitle] = React.useState('');
 
     return (
+        <>
         <HeaderWrapper justifyContent="space-between" alignItems="center">
             <LogoWrapper>
                 <Logo />
@@ -29,15 +33,19 @@ const Header = () => {
                         { isOptionsOpen &&
                             <OptionsMenuWrapper>
                                 <OptionsMenu>
-                                    <a href="#">Contact us <Ask /></a>
-                                    <a href="#">Request features <Coffee /></a>
-                                    <a href="#">Legal & privacy <Docs /></a>
+                                    <a onClick={() => {setIsModalOpen(true); setModalTitle('Contact us')}}>Contact us <Ask /></a>
+                                    <a onClick={() => {setIsModalOpen(true); setModalTitle('Request features')}}>Request features <Coffee /></a>
+                                    <a>Legal & privacy <Docs /></a>
                                 </OptionsMenu>
                             </OptionsMenuWrapper>
                         }
                 </OptionsWrapper>
             </ActionsWrapper>
         </HeaderWrapper>
+        { isModalOpen &&
+            <Modal title={modalTitle} onClose={() => setIsModalOpen(false)} />
+        }
+        </>
     );
 }
 
