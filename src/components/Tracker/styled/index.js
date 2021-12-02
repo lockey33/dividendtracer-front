@@ -6,7 +6,6 @@ export const TrackerWrapper = styled.div`
     border-radius: 10px;
     padding: 40px 50px;
     margin-top: 1rem;
-    margin-bottom: 3rem;
     @media (max-width: 768px) {
         padding: 40px 15px;
     }

@@ -15,17 +15,17 @@ export const TableWrapper = ({data}) => {
     const [previousDividends, setPreviousDividends] = React.useState([]);
 
     useEffect(() => {
-        let newDate = data.reverse().map(item => {
+        let newDate = data.map(item => {
             return {
                 ...item,
                 tokenValue: parseFloat(item.rawTokenValue).toFixed(3),
                 dollarValue: parseFloat(item.rawDollarValue).toFixed(0),
                 date: new Date(parseInt(item.timestamp)*1000).toLocaleDateString()
             }
-        });
+        }).sort((a,b) => {return new Date(parseInt(b.timestamp)*1000) - new Date(parseInt(a.timestamp)*1000)});
         setDividends(newDate);
         setPreviousDividends(newDate);
-    }, [data])
+    }, [])
     
     const columns = React.useMemo(() => [
           {
@@ -47,7 +47,7 @@ export const TableWrapper = ({data}) => {
           },
     ], []);
 
-      const {
+    const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
@@ -62,7 +62,7 @@ export const TableWrapper = ({data}) => {
         previousPage,
         setPageSize,
         state: { pageIndex, pageSize },
-      } = useTable({columns, data: dividends, initialState: { pageIndex: 0 }}, usePagination);
+    } = useTable({columns, data: dividends, initialState: { pageIndex: 0 }}, usePagination);
 
     const handleDate = async (date) => {
         if(date == null){

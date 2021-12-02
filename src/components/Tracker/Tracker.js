@@ -214,9 +214,8 @@ export class Tracker extends React.Component {
     }
 
     render(){
-        console.log(this.state)
         return(
-            <>
+            <Box width={'100%'} my={5}>
                 {!this.state.fetching &&
                     <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
                 }
@@ -274,7 +273,7 @@ export class Tracker extends React.Component {
                         </Flex>
                 }
                 </TrackerWrapper>
-            </>
+            </Box>
         )
     }
 
