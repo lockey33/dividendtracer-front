@@ -85,11 +85,11 @@ export class Tracker extends React.Component {
     }
 
     checkForm = async() => {
-        if(this.state.wallet === "" || this.state.address === ""){
-            this.setState({response: {status: false, message: "Please enter value for all the inputs"}, errorForm: true})
-        }else if(await this.checkAddress(this.state.wallet) === false){
+        if(this.state.wallet === "" && this.state.address === ""){
+            this.setState({response: {status: false, message: "Please enter value for all the inputs"}, errorWallet: true, errorToken: true})
+        }else if(await this.checkAddress(this.state.wallet) === false || this.state.wallet === ''){
             this.setState({response: {status:false}, errorWallet: true})
-        }else if(await this.checkAddress(this.state.address) === false){
+        }else if(await this.checkAddress(this.state.address) === false || this.state.address === ''){
             this.setState({response: {status:false},  errorToken: true})
         }else{
             this.setState({response: {status:true, message: "ok"}})
@@ -232,29 +232,28 @@ export class Tracker extends React.Component {
                         <Form  action="">
                             <ItemForm>
                                 <label htmlFor="item">Token address</label>
-                                <Input className={this.state.errorToken || this.state.errorForm ? 'error' : ''} onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." required />
-                                <ErrorMessage>{this.state.errorWallet ? 'Please check token address' : ''}</ErrorMessage>
+                                <Input className={this.state.errorToken ? 'error' : ''} onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." required />
+                                <ErrorMessage>{this.state.errorToken ? 'Please check token address' : ''}</ErrorMessage>
                             </ItemForm>
                             <ItemForm>
                                 <label htmlFor="item">Wallet address</label>
-                                <Input className={this.state.errorWallet || this.state.errorForm ? 'error' : ''} onChange={(e) => this.handleWallet(e)} type="text" name="walletaddr" placeholder="0x..." required />
+                                <Input className={this.state.errorWallet ? 'error' : ''} onChange={(e) => this.handleWallet(e)} type="text" name="walletaddr" placeholder="0x..." required />
                                 <ErrorMessage>{this.state.errorWallet ? 'Please check your wallet address' : ''}</ErrorMessage>
                             </ItemForm>
-                            <SubmitButton onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
                             {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
-                                <div className="smallBothMargin">
-                                    <span>Dividend Tracker Address</span>
-                                    <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
-                                        placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
-                                </div>
+                                
+                                <ItemForm>
+                                    <label htmlFor="item">Dividend Tracker Address</label>
+                                    <Input onChange={(e) => this.handleTracker(e)} type="text" name="tracker" placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker} />
+                                </ItemForm>
                             }
                             {this.state.customTracker !== ""  && this.state.response.status === true &&
-                                <div className="smallBothMargin">
-                                    <span>Dividend Tracker Address</span>
-                                    <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
-                                        placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
-                                </div>
+                                <ItemForm>
+                                    <label htmlFor="item">Dividend Tracker Address</label>
+                                    <Input onChange={(e) => this.handleTracker(e)} type="text" name="tracker" placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker} />
+                                </ItemForm>
                             }
+                            <SubmitButton onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
                         </Form>
                         :
                         <Flex width={'100%'} alignItems="start" flexDirection='column'>
