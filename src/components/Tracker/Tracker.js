@@ -8,7 +8,7 @@ import { Results } from "./Results";
 import { CustomLoader } from "../Loader/Loader";
 import {Box, Flex, Text} from 'rebass';
 import { VscDebugRestart } from "react-icons/vsc";
-import { TrackerWrapper, AdBlock, SubmitButton, ItemForm, Form, Input, Button } from "./styled";
+import { TrackerWrapper, AdBlock, SubmitButton, ItemForm, Form, Input, Button, ErrorMessage } from "./styled";
 
 
 export class Tracker extends React.Component {
@@ -32,7 +32,9 @@ export class Tracker extends React.Component {
             dateGain: 0,
             dateRange: "",
             fetching: false,
-    
+            errorWallet: false,
+            errorToken: false,
+            errorForm: false,
         }
     }
 
@@ -84,11 +86,11 @@ export class Tracker extends React.Component {
 
     checkForm = async() => {
         if(this.state.wallet === "" || this.state.address === ""){
-            this.setState({response: {status: false, message: "Please enter value for all the inputs"}})
+            this.setState({response: {status: false, message: "Please enter value for all the inputs"}, errorForm: true})
         }else if(await this.checkAddress(this.state.wallet) === false){
-            this.setState({response: {status:false, message: "Wallet address incorrect"}})
+            this.setState({response: {status:false}, errorWallet: true})
         }else if(await this.checkAddress(this.state.address) === false){
-            this.setState({response: {status:false, message: "Token address incorrect"}})
+            this.setState({response: {status:false},  errorToken: true})
         }else{
             this.setState({response: {status:true, message: "ok"}})
         }
@@ -201,12 +203,12 @@ export class Tracker extends React.Component {
     }
 
     handleAddress = async (e) => {
-        this.setState({address: e.target.value})
+        this.setState({errorToken: false, address: e.target.value});        
 
     }
 
     handleWallet = async (e) => {
-        this.setState({wallet:  e.target.value})
+        this.setState({errorWallet: false, wallet:  e.target.value})
     }
 
     restart = async () => {
@@ -215,7 +217,7 @@ export class Tracker extends React.Component {
 
     render(){
         return(
-            <Box width={'100%'} my={5}>
+            <Box width={'100%'} my={[3, 4, 5]}>
                 {!this.state.fetching &&
                     <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
                 }
@@ -230,32 +232,29 @@ export class Tracker extends React.Component {
                         <Form  action="">
                             <ItemForm>
                                 <label htmlFor="item">Token address</label>
-                                <Input onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." />
+                                <Input className={this.state.errorToken || this.state.errorForm ? 'error' : ''} onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." required />
+                                <ErrorMessage>{this.state.errorWallet ? 'Please check token address' : ''}</ErrorMessage>
                             </ItemForm>
                             <ItemForm>
                                 <label htmlFor="item">Wallet address</label>
-                                <Input onChange={(e) => this.handleWallet(e)} type="text" name="walletaddr" placeholder="0x..." />
+                                <Input className={this.state.errorWallet || this.state.errorForm ? 'error' : ''} onChange={(e) => this.handleWallet(e)} type="text" name="walletaddr" placeholder="0x..." required />
+                                <ErrorMessage>{this.state.errorWallet ? 'Please check your wallet address' : ''}</ErrorMessage>
                             </ItemForm>
                             <SubmitButton onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
                             {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
-                                        <div className="smallBothMargin">
-                                            <span>Dividend Tracker Address</span>
-                                            <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
-                                                placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
-                                        </div>
-                                    }
-                                    {this.state.customTracker !== ""  && this.state.response.status === true &&
-                                        <div className="smallBothMargin">
-                                            <span>Dividend Tracker Address</span>
-                                            <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
-                                                placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
-                                        </div>
-                                    }
-                                {this.state.response.status === false &&
-                                    <div className="flex w-100 justify-center smallPaddingBottom">
-                                        <span style={{textAlign: "center"}}>{this.state.response.message}</span>
-                                    </div>
-                                }
+                                <div className="smallBothMargin">
+                                    <span>Dividend Tracker Address</span>
+                                    <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
+                                        placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
+                                </div>
+                            }
+                            {this.state.customTracker !== ""  && this.state.response.status === true &&
+                                <div className="smallBothMargin">
+                                    <span>Dividend Tracker Address</span>
+                                    <input className="w-100 smallMarginTop" onChange={(e) => this.handleTracker(e)}  name="wallet"
+                                        placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker}/>
+                                </div>
+                            }
                         </Form>
                         :
                         <Flex width={'100%'} alignItems="start" flexDirection='column'>

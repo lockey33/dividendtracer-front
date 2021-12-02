@@ -83,6 +83,9 @@ export const Input = styled.input`
     font-weight: bold;
     font-size: 16px;
     border: solid 1px transparent;
+    &.error{
+        border: solid 1px #ff4545;
+    }
     &::placeholder{
         color: rgba(255, 255, 255, 0.5);
     }
@@ -93,6 +96,21 @@ export const Input = styled.input`
    @media (max-width: 768px) {
         font-size: 14px;
         padding: 15px 20px;
+    }
+    &:-webkit-autofill {
+        -webkit-text-fill-color: white;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+`
+
+export const ErrorMessage = styled.div`
+    color: #ff4545;
+    font-family: 'DM Sans';
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+    @media (max-width: 768px) {
+        font-size: 14px;
     }
 `
 

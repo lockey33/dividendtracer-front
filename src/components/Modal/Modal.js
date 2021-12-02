@@ -2,6 +2,16 @@ import React from "react";
 
 
 export default class Modal extends React.Component {
+
+
+    close(e) {
+        e.preventDefault()
+
+        if (this.props.onClose) {
+            this.props.onClose()
+        }
+    }
+
     render() {
         if (this.props.isOpen === false)
             return null
@@ -14,13 +24,5 @@ export default class Modal extends React.Component {
                 <div className="bg" onClick={e => this.close(e)}/>
             </div>
         )
-    }
-
-    close(e) {
-        e.preventDefault()
-
-        if (this.props.onClose) {
-            this.props.onClose()
-        }
     }
 }
