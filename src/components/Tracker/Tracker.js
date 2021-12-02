@@ -212,7 +212,25 @@ export class Tracker extends React.Component {
     }
 
     restart = async () => {
-        this.setState({dividends: [], dividendsSave: [], globalGain: "", todayGain: "", fetching: false, tracker: "", customTracker: "", response: {status: false, message: ""}})
+        this.setState({
+            trending: [],
+            response: {},
+            tracker: "",
+            customTracker: "",
+            address: "",
+            wallet: "",
+            loading: false,
+            dividends: [],
+            dividendsSave: [],
+            todayGain: 0,
+            globalGain: 0,
+            dateGain: 0,
+            dateRange: "",
+            fetching: false,
+            errorWallet: false,
+            errorToken: false,
+            errorForm: false,
+        })
     }
 
     render(){
