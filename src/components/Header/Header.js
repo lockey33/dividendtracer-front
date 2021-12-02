@@ -26,23 +26,23 @@ const Header = () => {
             </LogoWrapper>
             <ActionsWrapper>
                 <Flex alignItems="center" color="white">
-                    <TelegramButton target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
+                    <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
                 </Flex>
-                <WalletButton data-place="bottom" data-tip='Coming Soon'>
+                <WalletButton id="walletButton" data-place="bottom" data-tip='Coming Soon'>
                     Connect Wallet
                     <ReactTooltip />
                 </WalletButton>
                 <OptionsWrapper onMouseEnter={() => setIsOptionsOpen(true)} onMouseLeave={() => setIsOptionsOpen(false)}>
-                    <OptionsButton>
+                    <OptionsButton id="openMenuTop">
                         <Dots />
                     </OptionsButton>
                         {isOptionsOpen &&
                             <OptionsMenuWrapper>
                                 <OptionsMenu>
-                                    <a target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane /></a>
-                                    <a onClick={() => {setIsModalOpen(true); setModalTitle('Contact us')}}>Contact us <Ask /></a>
-                                    <a onClick={() => {setIsModalOpen(true); setModalTitle('Request features')}}>Request features <Coffee /></a>
-                                    <a>Legal & privacy <Docs /></a>
+                                    <a id="telegramMenu" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane /></a>
+                                    <div id="contactUs" onClick={() => {setIsModalOpen(true); setModalTitle('Contact us')}}>Contact us <Ask /></div>
+                                    <div id="requestFeatures" onClick={() => {setIsModalOpen(true); setModalTitle('Request features')}}>Request features <Coffee /></div>
+                                    <div id="legalsMenu">Legal & privacy <Docs /></div>
                                 </OptionsMenu>
                             </OptionsMenuWrapper>
                         }

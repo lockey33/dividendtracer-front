@@ -1,5 +1,5 @@
 import React from 'react';
-import {Heading, Box} from "rebass";
+import {Box} from "rebass";
 import styled from 'styled-components';
 import SNKRSGif from '../../images/ads/snkrs-2.gif';
 
@@ -20,7 +20,7 @@ const PromoteMessage = () => <Box color="#B1B5C4" sx={{'a': {color: 'inherit', t
 export const Ads = () => {
     return (
         <>
-            <AdWrapper target='_blank' href="https://www.green-snkrs.com">
+            <AdWrapper id='adWrapper' target='_blank' href="https://www.green-snkrs.com">
                 <img src={SNKRSGif} alt="" />
             </AdWrapper>
             <PromoteMessage />

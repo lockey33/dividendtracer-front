@@ -1,5 +1,5 @@
-import React, {useEffect, createRef} from 'react';
-import {Flex, Text, Box, Heading} from "rebass";
+import React from 'react';
+import {Flex, Text, Box} from "rebass";
 import styled from "styled-components";
 import "react-datepicker/dist/react-datepicker.css";
 import { TableWrapper } from '../Table/Table';
@@ -28,11 +28,11 @@ export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
                 <Flex justifyContent="space-between" flexDirection="column">
                     <Flex sx={{gap: '8px', flexWrap: 'wrap'}} mb={3} alignItems="center">
                         <Text color="#B1B5C4" fontSize={2} display="flex" alignItems="center" gap={2} fontFamily={'DM Sans'}>Token : </Text>
-                        <AddressLink>{token}</AddressLink>
+                        <AddressLink id="tokenBscscan" target="_blank" href={`https://bscscan.com/address/${token}`}>{token}</AddressLink>
                     </Flex>
                     <Flex sx={{gap: '8px', flexWrap: 'wrap'}} alignItems="center">
                         <Text color="#B1B5C4" fontSize={2} fontFamily={'DM Sans'}>Wallet : </Text>
-                        <AddressLink target="_blank" href={`https://bscscan.com/address/${wallet}`}>{wallet}</AddressLink>
+                        <AddressLink id="walletBscscan" target="_blank" href={`https://bscscan.com/address/${wallet}`}>{wallet}</AddressLink>
                     </Flex>
                 </Flex>
             </Box>

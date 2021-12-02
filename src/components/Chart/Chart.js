@@ -1,5 +1,5 @@
 
-import React, {useEffect, createRef} from 'react';
+import React, {useEffect} from 'react';
 import {registerables, Chart} from "chart.js"
 
 
@@ -92,7 +92,7 @@ export const ChartWrapper = ({dividends}) => {
         });
     }
 
-    const useMountEffect = (a) => useEffect(a, [])
+    const useMountEffect = (a) => useEffect((a), [])
 
     useMountEffect(() => {
         setChart();

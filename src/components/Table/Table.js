@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import styled from 'styled-components';
 import Moment from 'react-moment';
 import { useTable, usePagination } from 'react-table'
 import {Box, Heading, Text, Flex} from "rebass";
@@ -53,15 +52,9 @@ export const TableWrapper = ({data}) => {
         headerGroups,
         prepareRow,
         page,
-        canPreviousPage,
-        canNextPage,
         pageOptions,
-        pageCount,
         gotoPage,
-        nextPage,
-        previousPage,
-        setPageSize,
-        state: { pageIndex, pageSize },
+        state: { pageIndex },
     } = useTable({columns, data: dividends, initialState: { pageIndex: 0 }}, usePagination);
 
     const handleDate = async (date) => {
@@ -84,6 +77,7 @@ export const TableWrapper = ({data}) => {
                 dateGain += parseFloat(row.rawDollarValue)
                 filteredData.push(row)
             }
+            return row;
         })
         setDividends(filteredData)
         setDateGain(dateGain.toFixed(2))
@@ -94,7 +88,7 @@ export const TableWrapper = ({data}) => {
         <Box mb={3}>
             <Heading mb={2} fontFamily={'DM Sans'} fontSize={[2, 4]} color="white">Filter by date</Heading>
             <Box alignItems="center" display="inline-flex">
-                <DatePicker placeholderText="YYYY/MM/DD" dateFormat="yyyy/MM/dd"
+                <DatePicker id="datePicker" placeholderText="YYYY/MM/DD" dateFormat="yyyy/MM/dd"
                     selected={dateRange}
                     onChange={(date) => handleDate(date)}
                     isClearable={true}
@@ -120,7 +114,7 @@ export const TableWrapper = ({data}) => {
                 return (
                 <tr {...row.getRowProps()}>
                     {row.cells.map(cell => {
-                        return <td {...cell.getCellProps()}>{cell.render('Cell')} {cell.column.Header === 'Rewards' && '$' || cell.column.Header === 'Tokens' && 'BNB'}</td>
+                        return <td {...cell.getCellProps()}>{cell.render('Cell')} {(cell.column.Header === 'Rewards' && '$') || (cell.column.Header === 'Tokens' && 'BNB')}</td>
                     })}
                 </tr>
                 )
@@ -130,8 +124,8 @@ export const TableWrapper = ({data}) => {
         <Box mt={4}>
             <Flex justifyContent="center">
                 <Box>
-                   {pageOptions.map(page => (
-                        <PageButton key={page} className={pageIndex === page ? 'active' : ''} onClick={() => gotoPage(page)}>
+                   {pageOptions.map((page, i) => (
+                        <PageButton id={`pagination-${i}`}  key={page} className={pageIndex === page ? 'active' : ''} onClick={() => gotoPage(page)}>
                             {page}
                         </PageButton>
                    )

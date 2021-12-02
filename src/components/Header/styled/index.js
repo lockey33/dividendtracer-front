@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {Flex, Box} from "rebass";
+import {Flex} from "rebass";
 
 export const HeaderWrapper = styled(Flex)`
     padding: 20px 40px;
@@ -101,7 +101,7 @@ export const OptionsMenu = styled.div`
     border: 1px solid rgb(25, 27, 31);
     display: grid;
     grid-template-columns: 1fr;
-    a{
+    a, div{
         display: flex;
         flex: 1 1 0%;
         flex-direction: row;

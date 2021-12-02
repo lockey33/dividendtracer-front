@@ -38,16 +38,16 @@ export const Modal = ({onClose, title}) => {
         if(name === '') {
             setErrorName(true);
         }
-        if(email == ''){
+        if(email === ''){
             setErrorEmail(true)
         }
-        if(message == ''){
+        if(message === ''){
             setErrorMessage(true)
         }
-        if(subject ==''){
+        if(subject ===''){
             setErrorSubject(true)
         }
-        if(name == '' && email == '' && message == '' && subject == ''){
+        if(name === '' && email === '' && message === '' && subject === ''){
             setErrorName(true)
             setErrorEmail(true)
             setErrorSubject(true)

@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { GlobalContext } from "../../provider/GlobalProvider";
 import axios from 'axios';
 import * as moment from 'moment';
@@ -59,6 +58,7 @@ export class Tracker extends React.Component {
                 transaction.bnb = true
                 dividends.push(transaction)
             }
+            return transaction;
         })
         if(dividends.length === 0){
             let url = "https://api.bscscan.com/api?module=account&action=tokentx&address="+this.state.wallet+"&startblock=0&endblock="+latest+"&sort=asc&apikey=JA73AMF9FJTNR1XV6GCITABDQT1XS4KJI7"
@@ -68,6 +68,7 @@ export class Tracker extends React.Component {
                 if (ethers.utils.getAddress(bepData.from) === this.state.tracker) {
                     dividends.push(bepData)
                 }
+                return bepData;
             })
 
         }
@@ -154,7 +155,6 @@ export class Tracker extends React.Component {
         bnbPrice = bnbPrice.ethusd
         let todayGain = 0
         let globalGain = 0
-        let profit = 0;
         await Promise.all(data.map(async(transaction) => {
             if (ethers.utils.getAddress(transaction.from) === this.state.tracker) {
                 let tokenAddress = transaction.contractAddress
@@ -254,18 +254,18 @@ export class Tracker extends React.Component {
                                     <Input onChange={(e) => this.handleTracker(e)} type="text" name="tracker" placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker} />
                                 </ItemForm>
                             }
-                            <SubmitButton onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
+                            <SubmitButton id="searchDividendBtn" onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
                         </Form>
                         :
                         <Flex width={'100%'} alignItems="start" flexDirection='column'>
                             <Flex justifyContent={'start'} alignItems={'center'}>
-                                <Button onClick={() => this.restart()}>
+                                <Button id="startAgainTop" onClick={() => this.restart()}>
                                     Start again <VscDebugRestart />
                                 </Button>
                             </Flex>
                             <Results dividendsSave={this.state.dividendsSave} token={this.state.address} wallet={this.state.wallet} dividends={this.state.dividends} globalGain={this.state.globalGain} todayGain={this.state.todayGain} />
                             <Flex mt={2} justifyContent={'start'} alignItems={'center'}>
-                                <Button onClick={() => this.restart()}>
+                                <Button id="startAgainBottom" onClick={() => this.restart()}>
                                     Start again <VscDebugRestart />
                                 </Button>
                             </Flex>
