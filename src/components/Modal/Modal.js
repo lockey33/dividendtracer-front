@@ -1,6 +1,6 @@
 import React from "react";
 import { ModalHeaderWrapper, ModalInner, ModalWrapper } from "./styled";
-import { Form, Input, ItemForm, SubmitButton, Textarea } from "../Tracker/styled";
+import { FormWrapper, Input, ItemForm, SubmitButton, Textarea } from "../Forms/styled";
 import {Heading, Flex} from "rebass";
 import emailjs from 'emailjs-com';
 import { CustomLoader } from "../Loader/Loader";
@@ -89,7 +89,7 @@ export const Modal = ({onClose, title}) => {
             <ModalInner>
                 <ModalHeader title={title} close={(e) => close(e)} />
                 {!mailSent ?
-                    <Form ref={form} onSubmit={(e) => sendEmail(e)}>
+                    <FormWrapper ref={form} onSubmit={(e) => sendEmail(e)}>
                         <ItemForm>
                             <Input className={errorName ? 'error' : ''} onChange={(e) => {setErrorName(false); setName(e.target.value)}} type="text" name="name" placeholder="Name"/>
                         </ItemForm>
@@ -109,7 +109,7 @@ export const Modal = ({onClose, title}) => {
                                 <CustomLoader size={50} />
                             </Flex>
                         }
-                    </Form>
+                    </FormWrapper>
                     :
                     <Flex justifyContent="center" alignItems="center" flexDirection="column">
                         <Heading color="white" fontFamily="DM Sans" fontSize={[4]}>Thank you for your message!</Heading>

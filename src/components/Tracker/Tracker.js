@@ -7,7 +7,9 @@ import { Results } from "./Results";
 import { CustomLoader } from "../Loader/Loader";
 import {Box, Flex, Text, Heading} from 'rebass';
 import { VscDebugRestart } from "react-icons/vsc";
-import { TrackerWrapper, AdBlock, SubmitButton, ItemForm, Form, Input, Button, ErrorMessage } from "./styled";
+import { SubmitButton, ItemForm, FormWrapper, Input, ErrorMessage } from "../Forms/styled";
+import {TrackerWrapper, AdBlock, Button} from './styled';
+import { Form } from "../Forms/TrackerForm";
 
 
 export class Tracker extends React.Component {
@@ -31,9 +33,8 @@ export class Tracker extends React.Component {
             dateGain: 0,
             dateRange: "",
             fetching: false,
-            errorWallet: false,
             errorToken: false,
-            errorForm: false,
+            errorWallet: false,
         }
     }
 
@@ -45,6 +46,9 @@ export class Tracker extends React.Component {
             this.setState({trending: trending})
         }
 
+        if(this.context.wallet.state && this.context.wallet.actions){
+            return this.context.wallet.state.currentAccount ? this.setState({wallet: this.context.wallet.state.currentAccount}) : this.setState({wallet: ''});
+        }
     }
 
     getData = async() => {
@@ -208,7 +212,7 @@ export class Tracker extends React.Component {
     }
 
     handleWallet = async (e) => {
-        this.setState({errorWallet: false, wallet:  e.target.value})
+        this.setState({errorWallet: false, wallet:  e})
     }
 
     restart = async () => {
@@ -229,7 +233,6 @@ export class Tracker extends React.Component {
             fetching: false,
             errorWallet: false,
             errorToken: false,
-            errorForm: false,
         })
     }
 
@@ -247,33 +250,7 @@ export class Tracker extends React.Component {
                     </Flex>
                     : 
                     !this.state.fetching ?
-                        <Form  action="">
-                            <Heading fontFamily="DM Sans" color="white" fontSize={[3, 4]} mb={3} mt={0} textAlign="center">Start tracking your dividends</Heading>
-                            <ItemForm>
-                                <label htmlFor="item">Token address</label>
-                                <Input className={this.state.errorToken ? 'error' : ''} onChange={(e) => this.handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." required />
-                                <ErrorMessage>{this.state.errorToken ? 'Please check token address' : ''}</ErrorMessage>
-                            </ItemForm>
-                            <ItemForm>
-                                <label htmlFor="item">Wallet address</label>
-                                <Input className={this.state.errorWallet ? 'error' : ''} onChange={(e) => this.handleWallet(e)} type="text" name="walletaddr" placeholder="0x..." required />
-                                <ErrorMessage>{this.state.errorWallet ? 'Please check your wallet address' : ''}</ErrorMessage>
-                            </ItemForm>
-                            {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
-                                
-                                <ItemForm>
-                                    <label htmlFor="item">Dividend Tracker Address</label>
-                                    <Input onChange={(e) => this.handleTracker(e)} type="text" name="tracker" placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker} />
-                                </ItemForm>
-                            }
-                            {this.state.customTracker !== ""  && this.state.response.status === true &&
-                                <ItemForm>
-                                    <label htmlFor="item">Dividend Tracker Address</label>
-                                    <Input onChange={(e) => this.handleTracker(e)} type="text" name="tracker" placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker} />
-                                </ItemForm>
-                            }
-                            <SubmitButton id="searchDividendBtn" onClick={(e) => this.showDividend(e)} type="submit">Track your dividend</SubmitButton>
-                        </Form>
+                        <Form action={this.showDividend} handleAddress={this.handleAddress} handleTracker={this.handleTracker} handleWallet={this.handleWallet} response={this.state.response} customTracker={this.state.customTracker} errorWallet={this.state.errorWallet} errorToken={this.state.errorToken} />
                         :
                         <Flex width={'100%'} alignItems="start" flexDirection='column'>
                             <Flex justifyContent={'start'} alignItems={'center'}>

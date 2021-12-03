@@ -21,9 +21,9 @@ class HomePage extends React.Component {
     render(){
         return (
         <Container>
-            <Ads />
+            {/* <Ads /> */}
             <Tracker />
-            <Ads />
+            {/* <Ads /> */}
         </Container>
         );
     }

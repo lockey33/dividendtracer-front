@@ -1,46 +1,84 @@
-import React from 'react';
-import { InjectedConnector } from '@web3-react/injected-connector'
-import { useWeb3React } from "@web3-react/core"
+import React, {useEffect, useState} from 'react';
+
 
 const WalletContext = React.createContext({});
 
 const WalletProvider = ({children}) => {
-    const injected = new InjectedConnector({
-        supportedChainIds: [1, 3, 4, 5, 42],
-    })
-    const { activate, active, deactivate, account } = useWeb3React();
+    
+    const [currentAccount, setCurrentAccount] = useState(null);
 
-    const connect = () => {
-        try{
-            if (active) {
-                return;
+    const checkWalletIsConnected = async() => { 
+        const { ethereum } = window;
+
+        if(!ethereum){
+            console.log("No wallet detected");
+        }else{
+            console.log("Wallet detected");
+            const accounts = await ethereum.request({ method: 'eth_accounts' });
+            if(accounts.length > 0){
+                setCurrentAccount(accounts[0]);
+            }else{
+                console.log("No accounts detected");
             }
-            activate(injected, true);
-        } catch (err) {
-            console.log(err);
+            ethereum.on('accountsChanged', function (accounts) {
+                setCurrentAccount(accounts[0]);
+            })
+        } 
+
+    }
+
+    
+    
+    const connectWalletHandler = async() => {
+
+        const { ethereum } = window;
+
+        if(!ethereum){
+            console.log("Please install MetaMask");
+        }else{
+            try{
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                setCurrentAccount(accounts[0]);
+            }catch(error){
+                console.log(error);
+            }
+        }
+     }
+
+    const disconnectWalletHandler = async() => {
+        const { ethereum } = window;
+
+        if(!ethereum){
+            console.log("Please install MetaMask");
+        }else{
+            try{
+                await ethereum.request({
+                    method: "eth_requestAccounts",
+                    params: [{eth_accounts: {}}]
+                })
+                setCurrentAccount(null);
+            }catch(error){
+                console.log(error);
+            }
         }
     }
 
-    const disconnect = () => {
-        try{
-           deactivate();
-        } catch (err) {
-            console.log(err);
-        }
+    useEffect(() => {
+        checkWalletIsConnected();      
+    }, []);
+
+    const state = {
+        currentAccount
     }
 
     const actions = {
-        connect,
-        disconnect
-    }
-
-    const state = {
-        account,
-        active
+        checkWalletIsConnected,
+        connectWalletHandler,
+        disconnectWalletHandler
     }
 
     return (
-        <WalletContext.Provider value={{actions: actions, state: state}}>
+        <WalletContext.Provider value={{state: state, actions: actions}}>
             {children}
         </WalletContext.Provider>
     )
