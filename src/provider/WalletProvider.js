@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { LocaleStorageContext } from './LocalStorageProvider';
 
 
 const WalletContext = React.createContext({});
@@ -6,7 +7,7 @@ const WalletContext = React.createContext({});
 const WalletProvider = ({children}) => {
     
     const [currentAccount, setCurrentAccount] = useState(null);
-
+    const context = React.useContext(LocaleStorageContext);
     const checkWalletIsConnected = async() => { 
         const { ethereum } = window;
 
@@ -27,8 +28,6 @@ const WalletProvider = ({children}) => {
 
     }
 
-    
-    
     const connectWalletHandler = async() => {
 
         const { ethereum } = window;
@@ -78,7 +77,7 @@ const WalletProvider = ({children}) => {
     }
 
     return (
-        <WalletContext.Provider value={{state: state, actions: actions}}>
+        <WalletContext.Provider value={{wallet: {state: state, actions: actions}, locale: context}}>
             {children}
         </WalletContext.Provider>
     )

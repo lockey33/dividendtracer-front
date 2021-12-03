@@ -4,6 +4,7 @@ import {Helmet, HelmetProvider } from "react-helmet-async";
 import { WalletProvider } from "./provider/WalletProvider";
 import { Web3ReactProvider } from '@web3-react/core'
 import Web3 from 'web3'
+import { LocaleStorageProvider } from "./provider/LocalStorageProvider";
 
 export default function App() {
   
@@ -13,6 +14,7 @@ export default function App() {
 
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
+      <LocaleStorageProvider>
         <WalletProvider>
           <GlobalProvider>
               <HelmetProvider>
@@ -23,6 +25,7 @@ export default function App() {
               </HelmetProvider>
           </GlobalProvider>
         </WalletProvider>
+      </LocaleStorageProvider>
       </Web3ReactProvider>
   );
 }

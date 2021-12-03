@@ -57,6 +57,8 @@ class GlobalProvider extends Component {
             getFreeContractInstance: this.getFreeContractInstance,
             callContractMethod: this.callContractMethod,
             getTracker: this.getTracker,
+            getTokenName: this.getTokenName,
+            getTokenSymbol: this.getTokenSymbol,
             getContractABI: this.getContractABI,
             getBnbPrice: this.getBnbPrice,
             readableValue: this.readableValue,
@@ -258,7 +260,22 @@ class GlobalProvider extends Component {
     getTracker = async (address, tokenContract) => {
         const tokenContractInstance = await this.getFreeContractInstance(address, tokenContract)
         let tracker = await this.callContractMethod(tokenContractInstance, "dividendTracker")
+        
         return tracker
+    }
+
+    getTokenName = async (address) => {
+        const tokenContract = await this.getFreeContractInstance(address, ERC20)
+        const tokenName = await this.callContractMethod(tokenContract, "name");
+
+        return tokenName
+    }
+
+    getTokenSymbol = async (address) => {
+        const tokenContract = await this.getFreeContractInstance(address, ERC20)
+        const tokenSymbol = await this.callContractMethod(tokenContract, "symbol");
+
+        return tokenSymbol
     }
 
     callContractMethod = async (contractInstance, methodName, options = {}) =>{
@@ -294,7 +311,7 @@ class GlobalProvider extends Component {
 
     render() {
         return (
-            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, wallet: this.context}}>
+            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, wallet: this.context.wallet, locale: this.context.locale}}>
                 {this.props.children}
             </GlobalContext.Provider>
         )

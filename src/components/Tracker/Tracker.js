@@ -138,7 +138,6 @@ export class Tracker extends React.Component {
                 //this.context.global.actions.pushContractABI(contractAbi, this.state.address)
                 this.setState({dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, fetching: true, loading: false})
                 // this.table.scrollIntoView({ behavior: "smooth" });
-
             }
         }catch(err){
             console.log(err)

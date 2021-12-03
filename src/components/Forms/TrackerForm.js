@@ -51,7 +51,7 @@ export const Form = ({action, handleAddress, handleTracker, handleWallet, respon
             </ItemForm>
             <ItemForm>
                 <label htmlFor="item">Wallet address</label>
-                <Input className={errorWallet ? 'error' : ''} ref={walletInputRef} onChange={(e) => handleWallet(e.target.value)} type="text" name="walletaddr1" placeholder="0x..." required />
+                <Input className={errorWallet ? 'error' : ''} ref={walletInputRef} onChange={(e) => handleWallet(e.target.value)} type="text" name="walletaddr" placeholder="0x..." required />
                 {errorWallet ? <ErrorMessage>Please check your wallet address</ErrorMessage> : null}
                 <Box>
                     {currentAccount ? <Box sx={{'&:hover':{opacity: 0.5, cursor: 'pointer'}}} display="inline-block" fontFamily="DM Sans" fontSize={[1]} color="white" onClick={() => changeWallet()} mt={2}>{wallet !== '' ? 'Use another wallet' : 'Use your wallet'}</Box> : null}
