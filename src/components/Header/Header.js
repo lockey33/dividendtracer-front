@@ -9,6 +9,7 @@ import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButto
 import { Modal } from "../Modal/Modal";
 import {FaTelegramPlane} from 'react-icons/fa';
 import {Flex} from "rebass"
+import { GlobalContext } from "../../provider/GlobalProvider";
 
 
 const Header = () => {
@@ -16,7 +17,8 @@ const Header = () => {
     const [isOptionsOpen, setIsOptionsOpen] = React.useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [modalTitle, setModalTitle] = React.useState('');
-
+    const context = React.useContext(GlobalContext);
+    console.log(context)
     return (
         <>
         <HeaderWrapper justifyContent="space-between" alignItems="center">
@@ -28,9 +30,9 @@ const Header = () => {
                 <Flex alignItems="center" color="white">
                     <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
                 </Flex>
-                <WalletButton id="walletButton" data-place="bottom" data-tip='Coming Soon'>
+                <WalletButton id="walletButton" onClick={() => context.wallet.actions.connect()}>
                     Connect Wallet
-                    <ReactTooltip />
+                    {/* <ReactTooltip /> */}
                 </WalletButton>
                 <OptionsWrapper onMouseEnter={() => setIsOptionsOpen(true)} onMouseLeave={() => setIsOptionsOpen(false)}>
                     <OptionsButton id="openMenuTop">

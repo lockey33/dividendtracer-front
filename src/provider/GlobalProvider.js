@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import PANCAKE from '../abi/pancake.json';
 import {ERC20} from "../abi/erc20";
 import firebase from 'firebase';
+import { WalletContext } from "./WalletProvider";
 
 const GlobalContext = React.createContext({});
 const mainNet = "https://bsc-dataseed.binance.org/";
@@ -31,6 +32,7 @@ const database = firebase.database();
 
 class GlobalProvider extends Component {
 
+    static contextType = WalletContext;
     constructor(props) {
         super(props)
 
@@ -292,7 +294,7 @@ class GlobalProvider extends Component {
 
     render() {
         return (
-            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}}}>
+            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, wallet: this.context}}>
                 {this.props.children}
             </GlobalContext.Provider>
         )
