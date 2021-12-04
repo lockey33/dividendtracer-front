@@ -32,7 +32,10 @@ export const Form = ({action, handleAddress, handleTracker, handleWallet, respon
             resetWallet();
         }
     }
-            
+
+    const watchlist = context.locale.state.watchlist;
+    console.log(watchlist);
+    
     useEffect(() => {
         if(currentAccount) {
             setWallet();

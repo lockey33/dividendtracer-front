@@ -114,3 +114,10 @@ export const ErrorMessage = styled.div`
         font-size: 14px;
     }
 `
+
+export const AutocompleteWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    min-height: 20vh;
+    background: black;
+`

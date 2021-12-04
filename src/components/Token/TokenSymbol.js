@@ -20,9 +20,12 @@ const getCoin = (coin) => {
 const AddressLink = styled.a`
     color: #B1B5C4;
     font-family 'ABeeZee';
-    margin-top: 6px;
+    margin-top: 4px;
     font-size: 14px;
     text-decoration: none;
+    &:hover{
+        opacity: 0.8;
+    }
     @media screen and (max-width: 768px) {
         font-size: 12px;
     }
@@ -33,6 +36,7 @@ export const TokenSymbolWrapper = ({ token }) => {
 
     const [icon, setIcon] = React.useState('');
     const [tokenName, setTokenName] = React.useState('');
+    const [isInWatchList, setIsInWatchlist] = React.useState(false);
     const context = React.useContext(GlobalContext)
 
     const getTokenInfo = async() => {
@@ -41,7 +45,24 @@ export const TokenSymbolWrapper = ({ token }) => {
         return {name, symbol};
     }
 
+    const saveWatchlist = async() => {
+        if(!isInWatchList){
+            await context.locale.actions.addToWatchlist(token, tokenName);
+        }else{
+            await context.locale.actions.removeFromWatchlist(token);
+        }
+        checkWatchlist()
+    }
+
+
+    const checkWatchlist = async() => {
+        let watchlist = await context.locale.actions.getWatchlist();
+        let isInWatchlist = watchlist.some(item => item.address === token);
+        setIsInWatchlist(isInWatchlist)
+    }
+
     useEffect(() => {
+        checkWatchlist()
         getTokenInfo().then(info => { 
             setIcon(getCoin(info.symbol));
             setTokenName(info.name);
@@ -50,8 +71,8 @@ export const TokenSymbolWrapper = ({ token }) => {
 
     return (
         <Flex alignItems="center" mb={3} sx={{gap: '15px'}}>
-            <Box sx={{'&:hover':{opacity: 0.5, cursor: 'pointer'}}}>
-                <FaRegStar color="#B1B5C4" size={30} />
+            <Box sx={{'&:hover':{opacity: 0.8, cursor: 'pointer'}}} onClick={saveWatchlist}>
+                {isInWatchList ? <FaStar color="#B1B5C4" size={26} /> : <FaRegStar color="#B1B5C4" size={26} />}
             </Box>
             <Flex sx={{gap: '15px'}}>
                 <TokenIcon className="token-symbol" src={icon} />
