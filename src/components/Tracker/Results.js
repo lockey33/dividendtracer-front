@@ -32,7 +32,11 @@ export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
     }
 
     const saveInLocalStorage = () => {
-        context.locale.actions.addToSearchHistory(token, tokenName);
+        if(context.wallet.state.currentAccount){
+            context.user.actions.addToSearchHistory(context.wallet.state.currentAccount, token, tokenName);
+        }else{
+            context.locale.actions.addToSearchHistory(token, tokenName);
+        }
     }
 
     useEffect(() => {

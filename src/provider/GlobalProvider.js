@@ -311,7 +311,7 @@ class GlobalProvider extends Component {
 
     render() {
         return (
-            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, wallet: this.context.wallet, locale: this.context.locale}}>
+            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, wallet: this.context.wallet, locale: this.context.locale, user: this.context.user}}>
                 {this.props.children}
             </GlobalContext.Provider>
         )

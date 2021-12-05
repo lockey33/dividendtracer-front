@@ -46,19 +46,31 @@ export const TokenSymbolWrapper = ({ token }) => {
     }
 
     const saveWatchlist = async() => {
-        if(!isInWatchList){
-            await context.locale.actions.addToWatchlist(token, tokenName);
+        if(context.wallet.state.currentAccount){
+            if(!isInWatchList){
+                await context.user.actions.addToWatchlist(context.wallet.state.currentAccount, token, tokenName).then(() => {checkWatchlist()});
+            }else{
+                await context.user.actions.removeFromWatchlist(context.wallet.state.currentAccount, token).then(() => {checkWatchlist()});
+            }
         }else{
-            await context.locale.actions.removeFromWatchlist(token);
+            if(!isInWatchList){
+                await context.locale.actions.addToWatchlist(token, tokenName);
+            }else{
+                await context.locale.actions.removeFromWatchlist(token);
+            }
         }
-        checkWatchlist()
     }
 
 
     const checkWatchlist = async() => {
-        let watchlist = await context.locale.actions.getWatchlist();
-        let isInWatchlist = watchlist.some(item => item.address === token);
-        setIsInWatchlist(isInWatchlist)
+        if(context.wallet.state.currentAccount){
+            let isInWatchlist = await context.user.actions.isInWatchlist(context.wallet.state.currentAccount, token);
+            setIsInWatchlist(isInWatchlist);
+        }else{
+            let watchlist = await context.locale.actions.getWatchlist();
+            let isInWatchlist = watchlist.some(item => item.address === token);
+            setIsInWatchlist(isInWatchlist)
+        }
     }
 
     useEffect(() => {

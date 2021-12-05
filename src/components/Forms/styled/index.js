@@ -1,4 +1,6 @@
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import {Flex} from "rebass"
 
 export const SubmitButton = styled.button`
     background: #669566;
@@ -52,6 +54,7 @@ export const Input = styled.input`
     font-family: 'DM Sans';
     font-weight: bold;
     font-size: 16px;
+    width: -webkit-fill-available;
     border: solid 1px transparent;
     &.error{
         border: solid 1px #ff4545;
@@ -115,9 +118,76 @@ export const ErrorMessage = styled.div`
     }
 `
 
-export const AutocompleteWrapper = styled.div`
-    position: relative;
+const StyledSearchHistory = styled.div`
+    position: absolute;
     width: 100%;
     min-height: 20vh;
+    padding-top: 2rem;
     background: black;
+    bottom: 0;
+    z-index: 1;
+    transform: translateY(95%);
+    display: ${props => props.isOpen ? 'block' : 'none'};
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 `
+
+export const SearchHistoryWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    input{
+        position: relative;
+        z-index: 2;
+    }
+`
+
+const SearchHistoryItem = styled.div`
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'DM Sans';
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    &:hover{
+        cursor: pointer;
+    }
+    @media (max-width: 768px) {
+        font-size: 12px;
+        padding: 10px 15px;
+    }
+`
+
+export const SearchHistory = ({isOpen}) => {
+
+    const [searchHistory, setSearchHistory] = useState([]);
+
+    const getSearchHistory = () => {
+        const searchHistory = localStorage.getItem('searchHistory');
+        if(searchHistory){
+            setSearchHistory(JSON.parse(searchHistory));
+        }
+    }
+
+    useEffect(() => {
+        getSearchHistory();
+    }, [isOpen])
+
+    return (
+        <StyledSearchHistory isOpen={isOpen}>
+            {searchHistory.length > 0 &&
+                searchHistory.map((item, index) => {
+                    return (
+                        <SearchHistoryItem key={index} style={{color: 'white'}}>
+                            <Flex alignItems="center" sx={{gap: '15px'}}>
+                                {item.address}
+                            </Flex>
+                        </SearchHistoryItem>
+                    )
+                })               
+            }
+        </StyledSearchHistory>
+    )
+}

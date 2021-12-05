@@ -5,6 +5,7 @@ import { WalletProvider } from "./provider/WalletProvider";
 import { Web3ReactProvider } from '@web3-react/core'
 import Web3 from 'web3'
 import { LocaleStorageProvider } from "./provider/LocalStorageProvider";
+import { UserProvider } from "./provider/UserProvider";
 
 export default function App() {
   
@@ -15,18 +16,20 @@ export default function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <LocaleStorageProvider>
-        <WalletProvider>
-          <GlobalProvider>
-              <HelmetProvider>
-                  <Helmet>
-                      <title>DividendTracer</title>
-                  </Helmet>
-                  <AppRouter />
-              </HelmetProvider>
-          </GlobalProvider>
-        </WalletProvider>
+        <UserProvider>
+          <WalletProvider>
+            <GlobalProvider>
+                <HelmetProvider>
+                    <Helmet>
+                        <title>DividendTracer</title>
+                    </Helmet>
+                    <AppRouter />
+                </HelmetProvider>
+            </GlobalProvider>
+          </WalletProvider>
+          </UserProvider>
       </LocaleStorageProvider>
-      </Web3ReactProvider>
+    </Web3ReactProvider>
   );
 }
 

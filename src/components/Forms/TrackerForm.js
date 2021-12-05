@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Heading, Flex, Box } from 'rebass';
 import { GlobalContext } from '../../provider/GlobalProvider';
-import { FormWrapper, ItemForm, ErrorMessage, Input, SubmitButton } from './styled';
+import { FormWrapper, ItemForm, ErrorMessage, Input, SubmitButton, AutoComplete, SearchHistoryWrapper, SearchHistory } from './styled';
 
 
 export const Form = ({action, handleAddress, handleTracker, handleWallet, response, customTracker, errorWallet, errorToken}) => {
@@ -10,7 +10,7 @@ export const Form = ({action, handleAddress, handleTracker, handleWallet, respon
     const walletInputRef = React.createRef();
 
     const [wallet, setWalletState] = React.useState('');
-
+    const [showSearchhistory, setShowSearchhistory] = React.useState(false);
     const setWallet = () => {
         setWalletState(currentAccount);
         handleWallet(currentAccount)
@@ -49,7 +49,10 @@ export const Form = ({action, handleAddress, handleTracker, handleWallet, respon
             <Heading fontFamily="DM Sans" color="white" fontSize={[3, 4]} mb={3} mt={0} textAlign="center">Start tracking your dividends</Heading>
             <ItemForm>
                 <label htmlFor="item">Token address</label>
-                <Input className={errorToken ? 'error' : ''} onChange={(e) => handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." required />
+                <SearchHistoryWrapper>
+                    <Input autoComplete="off" onFocus={() => setShowSearchhistory(true)} onBlur={() => setShowSearchhistory(false)} className={errorToken ? 'error' : ''} onChange={(e) => handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." required />
+                    <SearchHistory isOpen={showSearchhistory} />
+                </SearchHistoryWrapper>
                 <ErrorMessage>{errorToken ? 'Please check token address' : ''}</ErrorMessage>
             </ItemForm>
             <ItemForm>

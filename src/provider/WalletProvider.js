@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { LocaleStorageContext } from './LocalStorageProvider';
+import { UserContext } from './UserProvider';
 
 
 const WalletContext = React.createContext({});
@@ -7,7 +8,7 @@ const WalletContext = React.createContext({});
 const WalletProvider = ({children}) => {
     
     const [currentAccount, setCurrentAccount] = useState(null);
-    const context = React.useContext(LocaleStorageContext);
+    const context = React.useContext(UserContext);
     const checkWalletIsConnected = async() => { 
         const { ethereum } = window;
 
@@ -37,6 +38,7 @@ const WalletProvider = ({children}) => {
         }else{
             try{
                 const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                context.user.actions.createUser(accounts[0]);
                 setCurrentAccount(accounts[0]);
             }catch(error){
                 console.log(error);
@@ -77,7 +79,7 @@ const WalletProvider = ({children}) => {
     }
 
     return (
-        <WalletContext.Provider value={{wallet: {state: state, actions: actions}, locale: context}}>
+        <WalletContext.Provider value={{wallet: {state: state, actions: actions}, locale: context.locale, user: context.user}}>
             {children}
         </WalletContext.Provider>
     )
