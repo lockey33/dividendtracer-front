@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Flex, Text, Box} from "rebass";
 import styled from "styled-components";
 import "react-datepicker/dist/react-datepicker.css";
 import { TableWrapper } from '../Table/Table';
 import { ChartWrapper } from '../Chart/Chart';
+import { GlobalContext } from '../../provider/GlobalProvider';
+import { TokenSymbolWrapper } from '../Token/TokenSymbol';
 
 const AddressLink = styled.a`
     color: #fff;
@@ -20,19 +22,32 @@ const AddressLink = styled.a`
 ` 
 
 export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
+
+    const context = React.useContext(GlobalContext);
+    const [tokenName, setTokenName] = React.useState('');
+
+    const getName = async() => {
+        const name = await context.global.actions.getTokenName(token);    
+        setTokenName(name);    
+    }
+
+    const saveInLocalStorage = () => {
+        if(context.wallet.state.currentAccount){
+            context.user.actions.addToSearchHistory(context.wallet.state.currentAccount, token, tokenName);
+        }else{
+            context.locale.actions.addToSearchHistory(token, tokenName);
+        }
+    }
+
+    useEffect(() => {
+        getName();
+        if(token !== '' && tokenName !== '') saveInLocalStorage();
+    }, [tokenName]);
+
     return(
         <Box width={'100%'}>
             <Box width={'100%'} py={4}>
-                <Flex justifyContent="space-between" flexDirection="column">
-                    <Flex sx={{gap: '8px', flexWrap: 'wrap'}} mb={3} alignItems="center">
-                        <Text color="#B1B5C4" fontSize={2} display="flex" alignItems="center" gap={2} fontFamily={'DM Sans'}>Token : </Text>
-                        <AddressLink id="tokenBscscan" target="_blank" href={`https://bscscan.com/address/${token}`}>{token}</AddressLink>
-                    </Flex>
-                    <Flex sx={{gap: '8px', flexWrap: 'wrap'}} alignItems="center">
-                        <Text color="#B1B5C4" fontSize={2} fontFamily={'DM Sans'}>Wallet : </Text>
-                        <AddressLink id="walletBscscan" target="_blank" href={`https://bscscan.com/address/${wallet}`}>{wallet}</AddressLink>
-                    </Flex>
-                </Flex>
+                <TokenSymbolWrapper token={token} />
             </Box>
             <Flex justifyContent="space-between">
                 <Flex flex={1} justifyContent="center" flexDirection="column">

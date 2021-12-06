@@ -57,8 +57,52 @@ export const WalletButton = styled.button`
     @media (min-width: 768px) {
         font-size: 18px;
     }
+`
+
+export const AccountWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`
+
+export const AccountAddress = styled.div`
+    font-family: 'DM Sans';
+    font-size: 18px;
+    color: #FFFFFF;
     @media (max-width: 768px) {
+        font-size: 14px;
+    }
+`
+
+export const AccountIcon = styled.div`
+    width: 40px;
+    height: 40px;  
+    border-radius: 100%;    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    svg{
+        z-index: 1000;
+        position: absolute;
+        color: white;
         display: none;
+        width: 20px;
+        height: 20px
+    }
+    &:hover{
+        cursor: pointer;
+        svg{
+            display: block;
+        }
+        canvas{
+            opacity: 0.5;
+        }
+    }
+    canvas{
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 100%;
     }
 `
 
@@ -79,6 +123,9 @@ export const TelegramButton = styled.a`
     &:hover {        
         border: solid 1px #6CF057;
     }
+    @media (max-width: 768px) {
+        display: none;
+    }
 `
 
 export const OptionsButton = styled.button`
@@ -90,6 +137,7 @@ export const OptionsButton = styled.button`
     align-items: center;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
+    min-height: 40px;
     height: 100%;
 `
 

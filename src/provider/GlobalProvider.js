@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import PANCAKE from '../abi/pancake.json';
 import {ERC20} from "../abi/erc20";
 import firebase from 'firebase';
+import { WalletContext } from "./WalletProvider";
 
 const GlobalContext = React.createContext({});
 const mainNet = "https://bsc-dataseed.binance.org/";
@@ -31,6 +32,7 @@ const database = firebase.database();
 
 class GlobalProvider extends Component {
 
+    static contextType = WalletContext;
     constructor(props) {
         super(props)
 
@@ -55,6 +57,8 @@ class GlobalProvider extends Component {
             getFreeContractInstance: this.getFreeContractInstance,
             callContractMethod: this.callContractMethod,
             getTracker: this.getTracker,
+            getTokenName: this.getTokenName,
+            getTokenSymbol: this.getTokenSymbol,
             getContractABI: this.getContractABI,
             getBnbPrice: this.getBnbPrice,
             readableValue: this.readableValue,
@@ -256,7 +260,22 @@ class GlobalProvider extends Component {
     getTracker = async (address, tokenContract) => {
         const tokenContractInstance = await this.getFreeContractInstance(address, tokenContract)
         let tracker = await this.callContractMethod(tokenContractInstance, "dividendTracker")
+        
         return tracker
+    }
+
+    getTokenName = async (address) => {
+        const tokenContract = await this.getFreeContractInstance(address, ERC20)
+        const tokenName = await this.callContractMethod(tokenContract, "name");
+
+        return tokenName
+    }
+
+    getTokenSymbol = async (address) => {
+        const tokenContract = await this.getFreeContractInstance(address, ERC20)
+        const tokenSymbol = await this.callContractMethod(tokenContract, "symbol");
+
+        return tokenSymbol
     }
 
     callContractMethod = async (contractInstance, methodName, options = {}) =>{
@@ -292,7 +311,7 @@ class GlobalProvider extends Component {
 
     render() {
         return (
-            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}}}>
+            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, wallet: this.context.wallet, locale: this.context.locale, user: this.context.user}}>
                 {this.props.children}
             </GlobalContext.Provider>
         )

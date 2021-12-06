@@ -7,7 +7,9 @@ import { Results } from "../Results/Results";
 import { CustomLoader } from "../Loader/Loader";
 import {Box, Flex, Text, Heading} from 'rebass';
 import { VscDebugRestart } from "react-icons/vsc";
-import { TrackerWrapper, AdBlock, SubmitButton, ItemForm, Form, Input, Button, ErrorMessage } from "./styled";
+import { SubmitButton, ItemForm, FormWrapper, Input, ErrorMessage } from "../Forms/styled";
+import {TrackerWrapper, AdBlock, Button} from './styled';
+import { Form } from "../Forms/TrackerForm";
 
 
 export class Tracker extends React.Component {

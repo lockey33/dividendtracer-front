@@ -9,10 +9,12 @@ import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButto
 import { ModalContact } from "../Modal/Modal";
 import {FaTelegramPlane} from 'react-icons/fa';
 import {Flex} from "rebass"
+import { GlobalContext } from "../../provider/GlobalProvider";
+import { WalletWrapper } from "./Wallet";
 
 
 const Header = () => {
-
+    
     const [isOptionsOpen, setIsOptionsOpen] = React.useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [modalTitle, setModalTitle] = React.useState('');
@@ -28,10 +30,7 @@ const Header = () => {
                 <Flex alignItems="center" color="white">
                     <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
                 </Flex>
-                <WalletButton id="walletButton" data-place="bottom" data-tip='Coming Soon'>
-                    Connect Wallet
-                    <ReactTooltip />
-                </WalletButton>
+                <WalletWrapper />
                 <OptionsWrapper onMouseEnter={() => setIsOptionsOpen(true)} onMouseLeave={() => setIsOptionsOpen(false)}>
                     <OptionsButton id="openMenuTop">
                         <Dots />
