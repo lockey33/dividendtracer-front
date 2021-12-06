@@ -1,4 +1,4 @@
-export default [
+export const ERC20 = [
     {
         "constant": false,
         "inputs": [],

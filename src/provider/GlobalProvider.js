@@ -3,7 +3,7 @@ import axios from 'axios';
 import web3 from "web3";
 import { ethers } from 'ethers';
 import PANCAKE from '../abi/pancake.json';
-import ERC20 from "../abi/erc20";
+import {ERC20} from "../abi/erc20";
 import firebase from 'firebase';
 
 const GlobalContext = React.createContext({});
@@ -234,13 +234,13 @@ class GlobalProvider extends Component {
         }
     }
     getContractABI= async (contract) => {
-        const url = "https://api.bscscan.com/api?module=contract&action=getabi&address="+contract+"&apikey=JA73AMF9FJTNR1XV6GCITABDQT1XS4KJI7"
+        const url = "https://api.bscscan.com/api?module=contract&action=getabi&address="+contract+"&apikey=Q9ZQ3W73JY63ATR9Y5AIXZTGA3Q68TCZ1C"
         const response = await axios.get(url)
         const data = response.data.result
         return data
     }
     getBnbPrice = async () => {
-        const url = "https://api.bscscan.com/api?module=stats&action=bnbprice&apikey=" + "JA73AMF9FJTNR1XV6GCITABDQT1XS4KJI7"
+        const url = "https://api.bscscan.com/api?module=stats&action=bnbprice&apikey=Q9ZQ3W73JY63ATR9Y5AIXZTGA3Q68TCZ1C"
         const response = await axios.get(url)
         const data = response.data.result
         return data
@@ -299,4 +299,4 @@ class GlobalProvider extends Component {
     }
 }
 
-export { GlobalProvider as default, GlobalContext }
+export { GlobalProvider, GlobalContext }
