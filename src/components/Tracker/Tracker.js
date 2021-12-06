@@ -1,13 +1,7 @@
 import React from "react";
 import { GlobalContext } from "../../provider/GlobalProvider";
-import axios from 'axios';
-import * as moment from 'moment';
 import { ethers } from 'ethers';
-import { Results } from "../Results/Results";
-import { CustomLoader } from "../Loader/Loader";
 import {Box, Flex, Text, Heading} from 'rebass';
-import { VscDebugRestart } from "react-icons/vsc";
-import { SubmitButton, ItemForm, FormWrapper, Input, ErrorMessage } from "../Forms/styled";
 import {TrackerWrapper, AdBlock, Button} from './styled';
 import { Form } from "../Forms/TrackerForm";
 
@@ -47,7 +41,7 @@ export class Tracker extends React.Component {
     }
 
     handleWallet = async (e) => {
-        this.setState({errorWallet: false, wallet:  e.target.value})
+        this.setState({errorWallet: false, wallet: e})
     }
 
     checkAddress = async (address) => {
@@ -86,20 +80,7 @@ export class Tracker extends React.Component {
             <Box width={'100%'} my={[4, 5]}>
                 <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
                 <TrackerWrapper>
-                    <Form  action="">
-                        <Heading fontFamily="DM Sans" color="white" fontSize={[3, 4]} mb={3} mt={0} textAlign="center">Start tracking your dividends</Heading>
-                        <ItemForm>
-                            <label htmlFor="item">Token address</label>
-                            <Input className={this.state.errorToken ? 'error' : ''} onChange={(e) => this.handleAddress(e)} type="text" name="token" placeholder="0x..." required />
-                            <ErrorMessage>{this.state.errorToken ? 'Please check token address' : ''}</ErrorMessage>
-                        </ItemForm>
-                        <ItemForm>
-                            <label htmlFor="item">Wallet address</label>
-                            <Input className={this.state.errorWallet ? 'error' : ''} onChange={(e) => this.handleWallet(e)} type="text" name="wallet" placeholder="0x..." required />
-                            <ErrorMessage>{this.state.errorWallet ? 'Please check your wallet address' : ''}</ErrorMessage>
-                        </ItemForm>
-                        <SubmitButton id="searchDividendBtn" onClick={(e) => this.results(e)} type="submit">Track your dividend</SubmitButton>
-                    </Form>
+                    <Form action={this.results} handleAddress={this.handleAddress} handleWallet={this.handleWallet} response={this.state.response} errorWallet={this.state.errorWallet} errorToken={this.state.errorToken} />
                 </TrackerWrapper>
             </Box>
         )

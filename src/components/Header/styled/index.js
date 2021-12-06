@@ -8,12 +8,13 @@ export const HeaderWrapper = styled(Flex)`
     }
 `
 
-export const LogoWrapper = styled.div`
+export const LogoWrapper = styled.a`
     display: flex;
     align-items: center;
     gap: 20px;
     font-family: 'DM Sans';
     color: white;
+    text-decoration: none;
     svg{
         max-width: 60px;
         height: auto;
@@ -27,7 +28,10 @@ export const LogoWrapper = styled.div`
         }
         @media (max-width: 500px) {
         display: none;
+        }
     }
+    &:hover{
+        text-decoration: none;
     }
 `
 
@@ -52,7 +56,6 @@ export const WalletButton = styled.button`
     align-items: center;
     text-align: center;
     color: #6CF057;
-    opacity: 0.5;
     cursor: pointer;
     @media (min-width: 768px) {
         font-size: 18px;

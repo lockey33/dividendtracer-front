@@ -5,11 +5,13 @@ import * as moment from 'moment';
 import { ethers } from 'ethers';
 import { CustomLoader } from "../components/Loader/Loader";
 import styled from 'styled-components';
-import {Flex, Text} from 'rebass';
+import {Flex, Text, Heading} from 'rebass';
 import { TrackerWrapper } from "../components/Tracker/styled";
 import { ResultsContainer } from '../components/Results/styled';
-import { ItemForm, Input } from '../components/Tracker/styled';
-import { Modal } from '../components/Modal/Modal';
+import { Button } from '../components/Tracker/styled';
+import { InputWallet } from '../components/Forms/TrackerForm';
+import { ErrorTracker, ErrorWallet } from '../components/Forms/styled';
+
 const Container = styled.div`
     display: block;
     margin: 0 auto;
@@ -42,12 +44,9 @@ export default class ResultsPage extends React.Component {
             dateGain: 0,
             dateRange: "",
             fetching: false,
-            errorWallet: false,
-            errorToken: false,
-            errorForm: false,
-            tokenRequired: false,
+            errorWallet: false,    
+            errorTracker: false,       
             walletRequired: false,
-            isModalOpen: false,
         }
     }
 
@@ -60,6 +59,7 @@ export default class ResultsPage extends React.Component {
     componentWillMount(){
         const windowUrl = window.location.search;
         const params = new URLSearchParams(windowUrl);
+
         if(params.has('token')){
             this.setState({address: params.get('token')});
         }else{
@@ -69,7 +69,7 @@ export default class ResultsPage extends React.Component {
         if(params.has('wallet')){
             this.setState({wallet: params.get('wallet')});
         }else{
-            this.setState({wallet: "", errorWallet: true, isModalOpen: true});
+            this.setState({wallet: "", walletRequired: true});
         }
     }
 
@@ -111,7 +111,7 @@ export default class ResultsPage extends React.Component {
     showDividend = async () => {
         try{
             await this.checkSum();
-
+            this.setState({fetching: false})
             let contractAbi = await this.context.global.actions.getContractABI(this.state.address)
             let tracker = await this.context.global.actions.getTracker(this.state.address, contractAbi);
             if(this.state.customTracker !== "" && tracker === false){
@@ -126,14 +126,12 @@ export default class ResultsPage extends React.Component {
             this.setState({tracker: tracker})
 
             let calculatedData = await this.calculate();
-            this.setState({dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, fetching: true})
+            this.setState({walletRequired: false, tokenRequired: false, dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, fetching: true})
         }catch(err){
             if(err === "dividendTracker"){                
-                this.setState({isModalOpen: true, tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
+                this.setState({tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
             }else{
-                // alert('An error occured, please retry')
-                this.setState({isModalOpen: true});
-                console.log(this.state)
+                alert('An error occured, please retry')
             }
         }
 
@@ -194,23 +192,70 @@ export default class ResultsPage extends React.Component {
     }
 
     handleTracker = async (e) => {
-        this.setState({customTracker:  e.target.value})
+        this.setState({customTracker: e.target.value})
+    }
+
+    handleWallet = async (e) => {
+        this.setState({wallet:  e, errorWallet: false})
+    }
+
+    handleShowDividend = async (e) => {
+        if(this.state.wallet === ""){
+            this.setState({errorWallet: true})
+        }else{
+            this.props.history.push('/results?token='+this.state.address+'&wallet='+this.state.wallet);
+            this.showDividend();
+        }
+    }
+
+    handleShowDividendTracker = async (e) => {
+        if(this.state.customTracker === ""){
+            this.setState({errorTracker: true})
+        }else{
+            this.setState({response: {}})
+            this.props.history.push('/results?token='+this.state.address+'&wallet='+this.state.wallet+'&tracker='+this.state.customTracker);
+            this.showDividend();
+        }
     }
 
     render() {
         return (
             <Container>
                 <TrackerWrapper>
-                    {this.state.dividends.length > 0 ?
-                        <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGain} globalGain={this.state.globalGain} wallet={this.state.wallet} token={this.state.address} />
+                    {!this.state.walletRequired ?
+                        <>
+                            {this.state.dividends.length > 0 ?
+                                <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGain} globalGain={this.state.globalGain} wallet={this.state.wallet} token={this.state.address} />
+                            :
+                            <>
+                                {this.state.response.status !== false &&
+                                    <>
+                                        {!this.state.fetching ?
+                                            <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
+                                                <CustomLoader />
+                                                <Text fontFamily="ABeeZee" mt={2} color="white">Loading your rewards...</Text>
+                                            </Flex>
+                                            :                                    
+                                            <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
+                                                <p>No data</p>
+                                            </Flex>
+                                        }
+                                    </>
+                                }
+                                {this.state.response.type === "dividendTracker" && this.state.response.status === false &&
+                                    <ErrorTracker handleTracker={this.handleTracker} action={this.handleShowDividendTracker} errorWallet={this.state.errorTracker} />
+                                }
+                            </>
+                            }
+                        </>
                         :
-                        <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
-                            <CustomLoader />
-                            <Text fontFamily="ABeeZee" mt={2} color="white">Loading your rewards...</Text>
-                        </Flex>
+                        <>
+                            
+                            <ErrorWallet handleWallet={this.handleWallet} action={this.handleShowDividend} errorWallet={this.state.errorWallet} />
+                        </>
                     }
                 </TrackerWrapper>
-                {this.state.isModalOpen &&
+                {/* {this.state.isModalOpen &&
                     <Modal title={''} onClose={() => this.setIsModalOpen(false)}>
                         {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
                             <ItemForm>
@@ -225,7 +270,7 @@ export default class ResultsPage extends React.Component {
                             </ItemForm>
                         }
                     </Modal>
-                }
+                } */}
             </Container>
         );
     }

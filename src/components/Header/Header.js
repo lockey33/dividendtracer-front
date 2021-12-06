@@ -22,7 +22,7 @@ const Header = () => {
     return (
         <>
         <HeaderWrapper justifyContent="space-between" alignItems="center">
-            <LogoWrapper>
+            <LogoWrapper href="/">
                 <Logo />
                 <h1>Dividend Tracer</h1>
             </LogoWrapper>

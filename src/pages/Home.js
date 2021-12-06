@@ -22,7 +22,7 @@ class HomePage extends React.Component {
         return (
         <Container>
             {/* <Ads /> */}
-            <Tracker />
+            <Tracker history={this.props.history} />
             {/* <Ads /> */}
         </Container>
         );

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {Flex} from "rebass"
+import {Flex, Heading, Text} from "rebass"
+import { WalletButton } from '../../Header/styled';
+import { GlobalContext } from '../../../provider/GlobalProvider';
+import { Button } from '../../Tracker/styled';
+import { InputWallet } from '../TrackerForm';
 
 export const SubmitButton = styled.button`
     background: #669566;
@@ -26,6 +30,7 @@ export const ItemForm = styled.div`
     flex-direction: column;
     align-items: stretch;
     margin-bottom: 2rem;
+    width: 100%;
     label{
         color: white;
         font-family: 'DM Sans';
@@ -189,5 +194,49 @@ export const SearchHistory = ({isOpen}) => {
                 })               
             }
         </StyledSearchHistory>
+    )
+}
+
+
+export const ErrorWallet = ({handleWallet, action, errorWallet}) => {
+
+    const context = React.useContext(GlobalContext)
+    const [inputValue, setInputValue] = useState(null);
+
+    useEffect(() => {
+        if(context.wallet.state.currentAccount){
+            setInputValue(context.wallet.state.currentAccount);
+        }else{
+            setInputValue(null);
+        }
+    }, [context.wallet.state.currentAccount])
+
+    return(
+            <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
+                <Heading mb={4} fontFamily='DM Sans' color="white" fontSize={[3, 4]}>Oops, we need your wallet address</Heading>
+                {!context.wallet.state.currentAccount &&
+                    <>
+                        <WalletButton id="walletButton" onClick={() => context.wallet.actions.connectWalletHandler()}>
+                            Connect Wallet
+                        </WalletButton>
+                        <Text mt={3} color="white" fontFamily='DM Sans' fontSize={[2, 3]}>or</Text>
+                    </>
+                }
+                <InputWallet value={inputValue} handleWallet={(e) => handleWallet(e)} errorWallet={errorWallet} />
+                <Button style={{padding: '10px 20px'}} onClick={action}>Show my dividends</Button>
+            </Flex>
+    )
+}
+
+
+export const ErrorTracker = ({handleTracker, action}) => {
+
+    return(
+            <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
+                <Heading fontFamily='DM Sans' color="white" fontSize={[3, 4]}>Oops, we need your tracker address</Heading>
+                <Text mb={4}  fontFamily='DM Sans' color="white" fontSize={[1, 2]}>You cand find it in your transactions details</Text>
+                <Input onChange={(e) => handleTracker(e)} />
+                <Button style={{padding: '10px 20px', marginTop: '20px'}} onClick={action}>Show my dividends</Button>
+            </Flex>
     )
 }
