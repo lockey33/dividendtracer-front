@@ -17,7 +17,7 @@ const ModalHeader = ({title, close}) => {
 };
 
 
-export const Modal = ({onClose, title}) => {
+export const ModalContact = ({onClose, title}) => {
 
     const form = React.useRef();
     const [name, setName] = React.useState('');
@@ -119,4 +119,24 @@ export const Modal = ({onClose, title}) => {
             </ModalInner>
         </ModalWrapper>
     )
+}
+
+export const Modal = ({onClose, title, children}) => {
+
+    const close = (e) => {
+        e.preventDefault()
+        if (onClose) {
+            onClose()
+        }
+    };
+
+    return(
+        <ModalWrapper>
+            <ModalInner>
+                <ModalHeader title={title} close={(e) => close(e)} />
+                {children}
+            </ModalInner>            
+        </ModalWrapper>
+    )
+
 }

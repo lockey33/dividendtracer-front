@@ -9,8 +9,6 @@ const AddressLink = styled.a`
     color: #fff;
     font-family 'ABeeZee';
     font-size: 16px;
-    ${'' /* flex: 1; */}
-    ${'' /* min-width: 0; */}
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
