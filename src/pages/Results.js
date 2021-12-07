@@ -71,6 +71,10 @@ export default class ResultsPage extends React.Component {
         }else{
             this.setState({wallet: "", walletRequired: true});
         }
+
+        if(params.has('tracker')){
+            this.setState({customTracker: params.get('tracker')});
+        }
     }
 
     getData = async() => {
@@ -118,8 +122,7 @@ export default class ResultsPage extends React.Component {
                 tracker = this.state.customTracker
             }else if(this.state.customTracker !== "" && tracker !== false){
                 this.setState({customTracker: tracker})
-            }
-            else if(tracker === false){
+            }else if(tracker === false){
                 throw 'dividendTracker'
             }
 
@@ -131,7 +134,8 @@ export default class ResultsPage extends React.Component {
             if(err === "dividendTracker"){                
                 this.setState({tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
             }else{
-                alert('An error occured, please retry')
+                console.log(err)
+                // alert('An error occured, please retry')
             }
         }
 
@@ -145,6 +149,7 @@ export default class ResultsPage extends React.Component {
         let todayGain = 0
         let globalGain = 0
         await Promise.all(data.map(async(transaction) => {
+            console.log(transaction)
             if (ethers.utils.getAddress(transaction.from) === this.state.tracker) {
                 let tokenAddress = transaction.contractAddress
                 let tokenParsedValue = transaction.value
@@ -212,8 +217,8 @@ export default class ResultsPage extends React.Component {
         if(this.state.customTracker === ""){
             this.setState({errorTracker: true})
         }else{
-            this.setState({response: {}})
             this.props.history.push('/results?token='+this.state.address+'&wallet='+this.state.wallet+'&tracker='+this.state.customTracker);
+            this.setState({response: {}});
             this.showDividend();
         }
     }
@@ -243,7 +248,7 @@ export default class ResultsPage extends React.Component {
                                     </>
                                 }
                                 {this.state.response.type === "dividendTracker" && this.state.response.status === false &&
-                                    <ErrorTracker handleTracker={this.handleTracker} action={this.handleShowDividendTracker} errorWallet={this.state.errorTracker} />
+                                    <ErrorTracker handleTracker={this.handleTracker} action={this.handleShowDividendTracker} errorTracker={this.state.errorTracker} customTracker={this.state.customTracker} />
                                 }
                             </>
                             }

@@ -35,6 +35,7 @@ const WalletProvider = ({children}) => {
 
         if(!ethereum){
             console.log("Please install MetaMask");
+            alert('Please install or reload MetaMask');
         }else{
             try{
                 const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -51,6 +52,7 @@ const WalletProvider = ({children}) => {
 
         if(!ethereum){
             console.log("Please install MetaMask");
+            alert('Please install or reload MetaMask');
         }else{
             try{
                 await ethereum.request({

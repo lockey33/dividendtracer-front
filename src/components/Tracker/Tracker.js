@@ -36,8 +36,7 @@ export class Tracker extends React.Component {
     }
 
     handleAddress = async (e) => {
-        this.setState({errorToken: false, address: e.target.value});        
-
+        this.setState({errorToken: false, address: e});
     }
 
     handleWallet = async (e) => {

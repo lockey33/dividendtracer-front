@@ -125,14 +125,14 @@ export const ErrorMessage = styled.div`
 
 const StyledSearchHistory = styled.div`
     position: absolute;
-    width: 100%;
+    width: -webkit-fill-available;
     min-height: 20vh;
-    padding-top: 2rem;
+    padding: 2rem 20px;
     background: black;
     bottom: 0;
     z-index: 1;
     transform: translateY(95%);
-    display: ${props => props.isOpen ? 'block' : 'none'};
+    ${'' /* display: ${props => props.isOpen ? 'block' : 'none'}; */}
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 `
@@ -147,7 +147,7 @@ export const SearchHistoryWrapper = styled.div`
 `
 
 const SearchHistoryItem = styled.div`
-    padding: 10px 20px;
+    padding: 10px 0;
     border-radius: 10px;
     color: white;
     font-family: 'DM Sans';
@@ -165,10 +165,17 @@ const SearchHistoryItem = styled.div`
     }
 `
 
-export const SearchHistory = ({isOpen}) => {
+const SearchHistoryHeader = styled.div`
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`
+
+export const SearchHistory = ({handleClick, isOpen}) => {
 
     const [searchHistory, setSearchHistory] = useState([]);
-
+    const [active, setActive] = useState('search');
     const getSearchHistory = () => {
         const searchHistory = localStorage.getItem('searchHistory');
         if(searchHistory){
@@ -181,11 +188,15 @@ export const SearchHistory = ({isOpen}) => {
     }, [isOpen])
 
     return (
-        <StyledSearchHistory isOpen={isOpen}>
-            {searchHistory.length > 0 &&
+        <StyledSearchHistory>
+            <SearchHistoryHeader>
+                <Text color="white" fontSize={[1]}>Search History</Text>
+                <Text color="white" fontSize={[1]}>Watchlist</Text>
+            </SearchHistoryHeader>
+            {searchHistory.length > 0 && active === 'search' &&
                 searchHistory.map((item, index) => {
                     return (
-                        <SearchHistoryItem key={index} style={{color: 'white'}}>
+                        <SearchHistoryItem onClick={() => handleClick(item.address)}  key={index} style={{color: 'white'}}>
                             <Flex alignItems="center" sx={{gap: '15px'}}>
                                 {item.address}
                             </Flex>
@@ -193,6 +204,19 @@ export const SearchHistory = ({isOpen}) => {
                     )
                 })               
             }
+
+            {/* {searchHistory.length > 0 && active === 'search' &&
+                searchHistory.map((item, index) => {
+                    return (
+                        <SearchHistoryItem onClick={() => handleClick(item.address)}  key={index} style={{color: 'white'}}>
+                            <Flex alignItems="center" sx={{gap: '15px'}}>
+                                {item.address}
+                            </Flex>
+                        </SearchHistoryItem>
+                    )
+                })               
+            } */}
+            
         </StyledSearchHistory>
     )
 }
@@ -229,13 +253,13 @@ export const ErrorWallet = ({handleWallet, action, errorWallet}) => {
 }
 
 
-export const ErrorTracker = ({handleTracker, action}) => {
+export const ErrorTracker = ({handleTracker, action, customTracker, errorTracker}) => {
 
     return(
             <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
                 <Heading fontFamily='DM Sans' color="white" fontSize={[3, 4]}>Oops, we need your tracker address</Heading>
                 <Text mb={4}  fontFamily='DM Sans' color="white" fontSize={[1, 2]}>You cand find it in your transactions details</Text>
-                <Input onChange={(e) => handleTracker(e)} />
+                <Input className={errorTracker ? 'error' : ''} onChange={(e) => handleTracker(e)} value={customTracker} />
                 <Button style={{padding: '10px 20px', marginTop: '20px'}} onClick={action}>Show my dividends</Button>
             </Flex>
     )
