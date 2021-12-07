@@ -58,10 +58,10 @@ class UserProvider extends React.Component {
         })
     }
 
-    getUserSearchHistory = async(address) => {
-        axios({
-            method: 'get',
-            url: 'http://localhost:3001/v1/users/getUserSearchList',
+    getUserSearchHistory = async (address) => {
+        let data = await axios({
+            method: 'post',
+            url: 'http://localhost:3001/v1/users/getUserSearchHistory',
             data: {
                 address: address
             }
@@ -72,16 +72,19 @@ class UserProvider extends React.Component {
         .catch(err => {
             console.log('user not found');
         })
+        return data;
     }
 
-    addToSearchHistory = async(wallet, tokenAddress, tokenName) => {
+    addToSearchHistory = async(wallet, tokenAddress, tokenName, symbol) => {
+        console.log(wallet, tokenAddress, tokenName);
         axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/addToSearchHistory',
             data: {
                 address: wallet,
                 tokenAddress: tokenAddress,
-                tokenName: tokenName
+                tokenName: tokenName,
+                symbol: symbol
             }
         })
         .then(res => {
@@ -109,14 +112,15 @@ class UserProvider extends React.Component {
         })
     }
 
-    addToWatchlist = async(wallet, tokenAddress, tokenName) => {
+    addToWatchlist = async(wallet, tokenAddress, tokenName, symbol) => {
         axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/addToWatchlist',
             data: {
                 address: wallet,
                 tokenAddress: tokenAddress,
-                tokenName: tokenName
+                tokenName: tokenName,
+                symbol: symbol
             }
         })
         .then(res => {
@@ -165,8 +169,8 @@ class UserProvider extends React.Component {
     isInWatchlist = async(address, tokenAddress) => {
         let isInWatchlist = await this.getUserWatchlist(address)
         .then(res => {
-                let isInWatchlist = res.some(item => item.tokenAddress === tokenAddress);
-                return isInWatchlist;
+            let isInWatchlist = res.some(item => item.address === tokenAddress);
+            return isInWatchlist;
         })
         .catch(err => {
             console.log(err);

@@ -57,9 +57,7 @@ const InputTracker = ({handleAddress, errorToken}) => {
             <label htmlFor="item">Token address</label>
             <SearchHistoryWrapper ref={wrapperRef}>
                 <Input ref={inputRef} autoComplete="off" onFocus={() => setShowSearchhistory(true)} className={errorToken ? 'error' : ''} onChange={(e) => handleAddress(e.target.value)} type="text" name="tokenaddr" placeholder="0x..." required />
-                {showSearchhistory &&
-                    <SearchHistory handleClick={handleClick} isOpen={showSearchhistory} />
-                }
+                <SearchHistory handleClick={handleClick} isOpen={showSearchhistory} />
             </SearchHistoryWrapper>
             <ErrorMessage>{errorToken ? 'Please check token address' : ''}</ErrorMessage>
         </ItemForm>

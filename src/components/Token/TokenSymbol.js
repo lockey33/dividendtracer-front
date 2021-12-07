@@ -35,6 +35,7 @@ const AddressLink = styled.a`
 export const TokenSymbolWrapper = ({ token }) => {
 
     const [icon, setIcon] = React.useState('');
+    const [symbol, setSymbol] = React.useState('');
     const [tokenName, setTokenName] = React.useState('');
     const [isInWatchList, setIsInWatchlist] = React.useState(false);
     const context = React.useContext(GlobalContext)
@@ -48,15 +49,19 @@ export const TokenSymbolWrapper = ({ token }) => {
     const saveWatchlist = async() => {
         if(context.wallet.state.currentAccount){
             if(!isInWatchList){
-                await context.user.actions.addToWatchlist(context.wallet.state.currentAccount, token, tokenName).then(() => {checkWatchlist()});
+                await context.user.actions.addToWatchlist(context.wallet.state.currentAccount, token, tokenName, symbol);
+                setIsInWatchlist(true);
             }else{
-                await context.user.actions.removeFromWatchlist(context.wallet.state.currentAccount, token).then(() => {checkWatchlist()});
+                await context.user.actions.removeFromWatchlist(context.wallet.state.currentAccount, token);
+                setIsInWatchlist(false);
             }
         }else{
             if(!isInWatchList){
-                await context.locale.actions.addToWatchlist(token, tokenName);
+                await context.locale.actions.addToWatchlist(token, tokenName, symbol);
+                setIsInWatchlist(true);
             }else{
                 await context.locale.actions.removeFromWatchlist(token);
+                setIsInWatchlist(false);
             }
         }
     }
@@ -74,10 +79,11 @@ export const TokenSymbolWrapper = ({ token }) => {
     }
 
     useEffect(() => {
-        checkWatchlist()
+        checkWatchlist();
         getTokenInfo().then(info => { 
             setIcon(getCoin(info.symbol));
             setTokenName(info.name);
+            setSymbol(info.symbol);
         });
     }, [token])
 

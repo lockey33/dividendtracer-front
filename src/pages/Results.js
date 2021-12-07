@@ -47,12 +47,17 @@ export default class ResultsPage extends React.Component {
             errorWallet: false,    
             errorTracker: false,       
             walletRequired: false,
+            tokenName: '',
+            tokenSymbol: '',
+            currentAccount: ''
         }
     }
 
     componentDidMount = async () => {
-        if(this.state.address !== '' && this.state.wallet !== ''){            
+        if(this.state.address !== '' && this.state.wallet !== ''){
+            if(this.context.wallet.state.currentAccount) this.setState({currentAccount: this.context.wallet.state.currentAccount})
             this.showDividend();
+            this.saveInLocalStorage();
         }
     }
 
@@ -222,6 +227,27 @@ export default class ResultsPage extends React.Component {
             this.showDividend();
         }
     }
+
+    getTokenInfo = async() => {
+        const name = await this.context.global.actions.getTokenName(this.state.address);   
+        const symbol = await this.context.global.actions.getTokenSymbol(this.state.address);
+        return {name: name, symbol: symbol}
+    }
+
+    saveInLocalStorage = async() => {
+        try{
+            let {name, symbol} = await this.getTokenInfo();
+            let {address} = this.state;
+            if(this.state.currentAccount){
+                this.context.user.actions.addToSearchHistory(this.state.currentAccount, address, name, symbol);
+            }else{
+                this.context.locale.actions.addToSearchHistory(address, name, symbol);
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
 
     render() {
         return (

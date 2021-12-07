@@ -23,27 +23,6 @@ const AddressLink = styled.a`
 
 export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
 
-    const context = React.useContext(GlobalContext);
-    const [tokenName, setTokenName] = React.useState('');
-
-    const getName = async() => {
-        const name = await context.global.actions.getTokenName(token);    
-        setTokenName(name);    
-    }
-
-    const saveInLocalStorage = () => {
-        if(context.wallet.state.currentAccount){
-            context.user.actions.addToSearchHistory(context.wallet.state.currentAccount, token, tokenName);
-        }else{
-            context.locale.actions.addToSearchHistory(token, tokenName);
-        }
-    }
-
-    useEffect(() => {
-        getName();
-        if(token !== '' && tokenName !== '') saveInLocalStorage();
-    }, [tokenName]);
-
     return(
         <Box width={'100%'}>
             <Box width={'100%'} py={4}>
