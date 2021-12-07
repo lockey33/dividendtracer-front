@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {Flex, Heading, Text} from "rebass"
 import { WalletButton } from '../../Header/styled';
 import { GlobalContext } from '../../../provider/GlobalProvider';
 import { Button } from '../../Tracker/styled';
 import { InputWallet } from '../TrackerForm';
+import { getCoin } from '../../Token/TokenSymbol';
+import { TokenIcon } from '../../Token/styled';
+import { CustomLoader } from '../../Loader/Loader';
 
 export const SubmitButton = styled.button`
     background: #669566;
@@ -126,7 +129,8 @@ export const ErrorMessage = styled.div`
 const StyledSearchHistory = styled.div`
     position: absolute;
     width: -webkit-fill-available;
-    min-height: 20vh;
+    height: 30vh;
+    overflow: scroll;
     padding: 2rem 20px;
     background: black;
     bottom: 0;
@@ -146,8 +150,8 @@ export const SearchHistoryWrapper = styled.div`
     }
 `
 
-const SearchHistoryItem = styled.div`
-    padding: 10px 0;
+const StyledSearchHistoryItem = styled.div`
+    padding: 10px 10px;
     border-radius: 10px;
     color: white;
     font-family: 'DM Sans';
@@ -156,8 +160,23 @@ const SearchHistoryItem = styled.div`
     cursor: pointer;
     display: flex;
     align-items: center;
+    position: relative;   
+    &:not(:last-child)::after{
+        content: '';
+        position: absolute;
+        height: 1px;
+        background: white;
+        bottom: 0;
+        left: 10px;
+        right: 10px;
+        opacity: 0.6;
+    }
     &:hover{
         cursor: pointer;
+        opacity: 0.8;
+        &::after{
+            opacity: 0.6;
+        }
     }
     @media (max-width: 768px) {
         font-size: 12px;
@@ -169,40 +188,93 @@ const SearchHistoryHeader = styled.div`
     padding: 10px 0;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
 `
+
+const SearchHistoryAction = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: white;
+    font-family: 'DM Sans';
+    cursor: pointer;
+    &.active{
+        border-bottom: solid 1px white;
+        font-weight: bold;
+    }
+    &:hover{
+        &:not(.active){
+            opacity: 0.5;
+        }
+    }
+    @media (max-width: 768px) {
+        font-size: 12px;
+    }
+`
+
+const SearchHistoryItem = ({handleClick, index, item}) => {
+
+    const context = React.useContext(GlobalContext);
+    const [icon, setIcon] = React.useState(null);
+
+    const getTokenInfo = async() => {
+        let symbol = await context.global.actions.getTokenSymbol(item.address);        
+        return {symbol};
+    }
+
+    const memoIcon = React.useMemo(async() => {
+        let {symbol} = await getTokenInfo();
+        return getCoin(symbol)
+    }, []);
+
+    useEffect(() => {
+        memoIcon.then((icon) => {
+            setIcon(icon);
+        });
+    }, [index]);
+
+    return(
+        <StyledSearchHistoryItem onClick={() => handleClick(item.address)}  key={index} style={{color: 'white'}}>
+            <Flex alignItems="center" sx={{gap: '10px'}}>
+                <TokenIcon size={'30px'} src={icon} />
+                <Flex flexDirection={'column'}>
+                    <span>{item.name}</span>
+                    <small>{item.address}</small>
+                </Flex>
+            </Flex>
+        </StyledSearchHistoryItem>
+    )
+
+}
 
 export const SearchHistory = ({handleClick, isOpen}) => {
 
     const [searchHistory, setSearchHistory] = useState([]);
     const [active, setActive] = useState('search');
-    const getSearchHistory = () => {
-        const searchHistory = localStorage.getItem('searchHistory');
-        if(searchHistory){
-            setSearchHistory(JSON.parse(searchHistory));
-        }
-    }
-
-    useEffect(() => {
-        getSearchHistory();
+    
+    const getSearchHistory = React.useMemo(() => {
+        return JSON.parse(localStorage.getItem('searchHistory'));
     }, [isOpen])
 
+    useEffect(() => {
+        getSearchHistory && setSearchHistory(getSearchHistory);
+    }, [])
+
+    
     return (
         <StyledSearchHistory>
             <SearchHistoryHeader>
-                <Text color="white" fontSize={[1]}>Search History</Text>
-                <Text color="white" fontSize={[1]}>Watchlist</Text>
+                <SearchHistoryAction className={active === 'search' && 'active'} onClick={() => setActive('search')}>Search History</SearchHistoryAction>
+                <SearchHistoryAction className={active === 'watchlist' && 'active'} onClick={() => setActive('watchlist')}>Watchlist</SearchHistoryAction>
             </SearchHistoryHeader>
-            {searchHistory.length > 0 && active === 'search' &&
+            {searchHistory.length > 0 && active === 'search' ?
                 searchHistory.map((item, index) => {
                     return (
-                        <SearchHistoryItem onClick={() => handleClick(item.address)}  key={index} style={{color: 'white'}}>
-                            <Flex alignItems="center" sx={{gap: '15px'}}>
-                                {item.address}
-                            </Flex>
-                        </SearchHistoryItem>
+                        <SearchHistoryItem handleClick={handleClick} index={index} item={item} />
                     )
-                })               
+                })
+                :
+                <CustomLoader />              
             }
 
             {/* {searchHistory.length > 0 && active === 'search' &&

@@ -5,7 +5,7 @@ import {Flex, Text, Box} from "rebass";
 import {FaRegStar, FaStar} from 'react-icons/fa';
 import styled from 'styled-components';
 
-const getCoin = (coin) => {
+export const getCoin = (coin) => {
     try{
         coin = coin.toLowerCase();
         let icon = require('../../images/coins/'+coin+'.png');

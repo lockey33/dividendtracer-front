@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const TokenIcon = styled.img`
-    max-width: 60px;
-    max-height: 60px;
-    border-radius: 50%;
+    width: ${props => props.size ? props.size : '60px'};
+    height: ${props => props.size ? props.size : '60px'};
+    border-radius: 100%;
 `
 
 export const TokenName = styled.div`

@@ -16,14 +16,30 @@ export const Form = ({action, handleAddress, handleWallet, errorWallet, errorTok
     )
 }
 
+function useOutsideAlerter(ref, setShowSearchhistory) {
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (ref.current && !ref.current.contains(event.target)) {
+                setShowSearchhistory(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [ref]);
+}
+
 const InputTracker = ({handleAddress, errorToken}) => {
 
     const [showSearchhistory, setShowSearchhistory] = React.useState(false);
     const [selectedToken, setSelectedToken] = React.useState('');
     const inputRef = React.createRef();
-    
+    const wrapperRef = React.useRef(null);
+
     const handleClick = (token) => {
-        console.log(token);
+        setShowSearchhistory(false);
         setSelectedToken(token);
     }
 
@@ -34,11 +50,13 @@ const InputTracker = ({handleAddress, errorToken}) => {
         }
     }, [selectedToken])
 
+    useOutsideAlerter(wrapperRef, setShowSearchhistory);
+    
     return(
         <ItemForm>
             <label htmlFor="item">Token address</label>
-            <SearchHistoryWrapper>
-                <Input ref={inputRef} autoComplete="off" onFocus={() => setShowSearchhistory(true)} onBlur={() => setTimeout(() => {setShowSearchhistory(false)}, 150)} className={errorToken ? 'error' : ''} onChange={(e) => handleAddress(e.target.value)} type="text" name="tokenaddr" placeholder="0x..." required />
+            <SearchHistoryWrapper ref={wrapperRef}>
+                <Input ref={inputRef} autoComplete="off" onFocus={() => setShowSearchhistory(true)} className={errorToken ? 'error' : ''} onChange={(e) => handleAddress(e.target.value)} type="text" name="tokenaddr" placeholder="0x..." required />
                 {showSearchhistory &&
                     <SearchHistory handleClick={handleClick} isOpen={showSearchhistory} />
                 }
