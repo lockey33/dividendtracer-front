@@ -12,7 +12,6 @@ export default function App() {
   function getLibrary(provider) {
     return new Web3(provider)
   }
-
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <LocaleStorageProvider>

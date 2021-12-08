@@ -10,7 +10,9 @@ class UserProvider extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            
+            watchlist: [],
+            searchHistory: [],
+            fetched: false,
         }
 
         this.actions = {
@@ -22,8 +24,9 @@ class UserProvider extends React.Component {
             removeFromWatchlist: this.removeFromWatchlist,
             addToWatchlist: this.addToWatchlist,
             isInWatchlist: this.isInWatchlist,
+            removeFromSearchHistory: this.removeFromSearchHistory,
         }
-    }
+    }        
 
     createUser = async(address) => {
         axios({
@@ -72,6 +75,7 @@ class UserProvider extends React.Component {
         .catch(err => {
             console.log('user not found');
         })
+        this.setState({searchHistory: data});
         return data;
     }
 
@@ -88,6 +92,7 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
+            this.setState({searchHistory: res.data});
             console.log('added to search list');
         })
         .catch(err => {
@@ -105,6 +110,7 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
+            this.setState({searchHistory: res.data});
             console.log('removed from search list');
         })
         .catch(err => {
@@ -124,6 +130,7 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
+            this.setState({watchlist: res.data});
             console.log('added to watchlist');
         })
         .catch(err => {
@@ -132,7 +139,7 @@ class UserProvider extends React.Component {
     }
 
     removeFromWatchlist = async(wallet, tokenAddress) => {
-        axios({
+        await axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/removeFromWatchlist',
             data: {
@@ -141,7 +148,8 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
-            console.log('removed from watchlist');
+            this.setState({watchlist: res.data});
+            console.log(res)
         })
         .catch(err => {
             console.log(err);
@@ -162,7 +170,7 @@ class UserProvider extends React.Component {
         .catch(err => {
             console.log('user not found');
         })
-
+        this.setState({watchlist: userWatchlist});        
         return userWatchlist;
     }
 

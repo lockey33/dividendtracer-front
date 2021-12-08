@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {Flex, Heading, Text} from "rebass"
 import { WalletButton } from '../../Header/styled';
@@ -156,11 +156,12 @@ const StyledSearchHistoryItem = styled.div`
     color: white;
     font-family: 'DM Sans';
     font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
+    font-size: 14px;    
     display: flex;
     align-items: center;
     position: relative;   
+    justify-content: space-between;
+    gap: 20px;
     &:not(:last-child)::after{
         content: '';
         position: absolute;
@@ -171,9 +172,14 @@ const StyledSearchHistoryItem = styled.div`
         right: 10px;
         opacity: 0.6;
     }
+    >:first-child{
+        flex: 1;
+        &:hover{
+            cursor: pointer;
+            opacity: 0.8;
+        }
+    }
     &:hover{
-        cursor: pointer;
-        opacity: 0.8;
         &::after{
             opacity: 0.6;
         }
@@ -212,86 +218,134 @@ const SearchHistoryAction = styled.div`
     }
 `
 
-const SearchHistoryItem = ({handleClick, index, item}) => {
+const SearchHistoryItem = ({handleClick, index, item, handleRemove}) => {
 
     const [icon, setIcon] = React.useState(null);
 
-    const memoIcon = React.useMemo(async() => {
-        return getCoin(item.symbol)
-    }, []);
-
     useEffect(() => {
-        memoIcon.then((icon) => {
-            setIcon(icon);
-        });
-    }, []);
+        setIcon(getCoin(item.symbol))
+    }, [item]);
 
     return(
-        <StyledSearchHistoryItem onClick={() => handleClick(item.address)} style={{color: 'white'}}>
-            <Flex alignItems="center" sx={{gap: '10px'}}>
+        <StyledSearchHistoryItem style={{color: 'white'}}>
+            <Flex onClick={() => handleClick(item.address)} alignItems="center" sx={{gap: '10px'}}>
                 <TokenIcon size={'30px'} src={icon} />
                 <Flex flexDirection={'column'}>
-                    <span>{item.name}</span>
+                    <Flex alignItems="center" sx={{gap: '5px'}}>
+                        <span>{item.name}</span>
+                        <span><small>${item.symbol}</small></span>
+                    </Flex>
                     <small>{item.address}</small>
                 </Flex>
+            </Flex>
+            <Flex onClick={() => handleRemove(item.address)} alignItems="center">
+                <div>x</div>
             </Flex>
         </StyledSearchHistoryItem>
     )
 
 }
 
-const SearchHistoryList = ({handleClick, list}) => {
+const SearchHistoryList = ({handleClick, active}) => {
 
-    const [newList, setNewList] = React.useState([]);
+    const context = React.useContext(GlobalContext);
+    const currentAccount = context.wallet.state.currentAccount;
+    const [loading, setLoading] = React.useState(true);
+
+    const removeFromSearchHistory = async(address) => {
+        if(currentAccount){
+            context.user.actions.removeFromSearchHistory(currentAccount, address);
+        }else{
+            context.locale.actions.removeFromSearchHistory(address)
+        }
+    }
+
+    function loadUser(){
+        if(currentAccount){
+            setLoading(true);
+            context.user.actions.getUserSearchHistory(currentAccount);
+            context.user.actions.getUserWatchlist(currentAccount);
+            setLoading(false);
+        }else{
+            setLoading(true);
+            context.locale.actions.getSearchHistory();
+            context.locale.actions.getWatchlist();
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
-        setNewList(list);
-    }, [list])
+        loadUser();
+    }, []);
 
     return(
-        newList.length > 0 && newList.map((item, index) => {
-            return (
-                <SearchHistoryItem key={index} handleClick={handleClick} index={index} item={item} />
-            )
-        })
+        !loading ?
+            <>
+                {active === 'search' &&
+                    <>
+                        {currentAccount ?
+                            context.user.state.searchHistory.length > 0 ? 
+                                context.user.state.searchHistory.map((item, index) => {
+                                return (
+                                    <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
+                                )
+                            })
+                            :
+                            <Flex alignItems="center" justifyContent="center" mt={5}>
+                                <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in search history</Text>
+                            </Flex>
+                        :
+                        context.locale.state.searchHistory.length > 0 ? 
+                                context.locale.state.searchHistory.map((item, index) => {
+                                return (
+                                    <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
+                                )
+                            })
+                            :
+                            <Flex alignItems="center" justifyContent="center" mt={5}>
+                                <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in watchlist</Text>
+                            </Flex>
+                    }
+                    </>
+                }
+
+                {active === 'watchlist' &&
+                    <>
+                    {currentAccount ?
+                        context.user.state.watchlist.length > 0 ?
+                            context.user.state.watchlist.map((item, index) => {
+                                return (
+                                    <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
+                                )
+                            })
+                            :
+                            <Flex alignItems="center" justifyContent="center" mt={5}>
+                                <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in search history</Text>
+                            </Flex>
+                        :
+                            context.locale.state.watchlist.length > 0 ? 
+                                context.locale.state.watchlist.map((item, index) => {
+                                return (
+                                    <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
+                                )
+                            })
+                        :
+                            <Flex alignItems="center" justifyContent="center" mt={5}>
+                                <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in watchlist</Text>
+                            </Flex>
+                        }
+                    </>
+                }
+
+            </>
+        :
+        <CustomLoader />
     )
 
 }
 
 export const SearchHistory = ({handleClick, isOpen}) => {
-
-    const context = React.useContext(GlobalContext);
-    const currentAccount = context.wallet.state.currentAccount;
-    const [searchHistory, setSearchHistory] = useState([]);
-    const [watchlist, setWatchlist] = useState([]);
     const [active, setActive] = useState('search');
-    
-    const getSearchHistory = async() => {        
-        if(currentAccount){
-            let searchHistory = await context.user.actions.getUserSearchHistory(currentAccount);        
-            return searchHistory;
-        }else{
-           return JSON.parse(localStorage.getItem('searchHistory'));
-        }
-    }
-
-    const getWatchlist = async() => {
-        if(currentAccount){
-            let watchlist = await context.user.actions.getUserWatchlist(currentAccount);
-            return watchlist;
-        }else{
-            return JSON.parse(localStorage.getItem('watchlist'));
-        }
-    } 
-
-    useEffect(() => {        
-        getSearchHistory().then((searchHistory) => {
-            setSearchHistory(searchHistory);
-        });
-        getWatchlist().then((watchlist) => {
-            setWatchlist(watchlist);
-        });
-    }, [currentAccount])
     
     return (
         <StyledSearchHistory isOpen={isOpen}>
@@ -299,26 +353,7 @@ export const SearchHistory = ({handleClick, isOpen}) => {
                 <SearchHistoryAction className={active === 'search' && 'active'} onClick={() => setActive('search')}>Search History</SearchHistoryAction>
                 <SearchHistoryAction className={active === 'watchlist' && 'active'} onClick={() => setActive('watchlist')}>Watchlist</SearchHistoryAction>
             </SearchHistoryHeader>
-
-            {active === 'search' && 
-                <>
-                    {searchHistory.length > 0 ?
-                        <SearchHistoryList handleClick={handleClick} list={searchHistory} />
-                        :
-                        <CustomLoader />  
-                    }
-                </>         
-            } 
-
-            {active === 'watchlist' && 
-                <>
-                    {watchlist.length > 0 ?
-                        <SearchHistoryList handleClick={handleClick} list={watchlist} />
-                        :
-                        <CustomLoader /> 
-                    }
-                </>          
-            }             
+            {isOpen && <SearchHistoryList handleClick={handleClick} active={active} />}                   
         </StyledSearchHistory>
     )
 }
