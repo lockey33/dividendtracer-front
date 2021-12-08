@@ -25,6 +25,7 @@ class UserProvider extends React.Component {
             addToWatchlist: this.addToWatchlist,
             isInWatchlist: this.isInWatchlist,
             removeFromSearchHistory: this.removeFromSearchHistory,
+            fetchSearchHistory: this.fetchSearchHistory,
         }
     }        
 
@@ -76,11 +77,12 @@ class UserProvider extends React.Component {
             console.log('user not found');
         })
         this.setState({searchHistory: data});
+        this.fetchSearchHistory(address);
         return data;
     }
 
     addToSearchHistory = async(wallet, tokenAddress, tokenName, symbol) => {
-        console.log(wallet, tokenAddress, tokenName);
+        this.context.actions.addToSearchHistory(tokenAddress, tokenName, symbol);
         axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/addToSearchHistory',
@@ -92,15 +94,38 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
-            this.setState({searchHistory: res.data});
-            console.log('added to search list');
+            let {data} = res
+            this.setState({searchHistory: data});            
         })
         .catch(err => {
             console.log(err);
-        })
+        });
+    }
+
+    fetchSearchHistory = async(address) => {
+        let localData = this.context.actions.getSearchHistory();
+        
+        if(localData.length === 0 && this.state.searchHistory.length > 0){
+            return this.state.searchHistory.map(item => {
+                this.context.actions.addToSearchHistory(item.address, item.name, item.symbol);
+            });
+        }else if(this.state.searchHistory.length === 0 && localData.length > 0){
+            return localData.map(item => {
+                return this.addToSearchHistory(address, item.address, item.name, item.symbol);
+            });
+        }else{
+            return localData.map(item => {
+                this.state.searchHistory.map(item2 => {
+                    if(item.address !== item2.address){
+                        return this.addToSearchHistory(address, item.address, item.name, item.symbol);
+                    }
+                })
+            });
+        }
     }
     
     removeFromSearchHistory = async(wallet, tokenAddress) => {
+        this.context.actions.removeFromSearchHistory(tokenAddress);
         axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/removeFromSearchHistory',

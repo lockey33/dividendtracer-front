@@ -15,6 +15,7 @@ export const LogoWrapper = styled.a`
     font-family: 'DM Sans';
     color: white;
     text-decoration: none;
+    cursor: pointer;
     svg{
         max-width: 60px;
         height: auto;

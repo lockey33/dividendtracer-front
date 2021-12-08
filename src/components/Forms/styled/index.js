@@ -238,7 +238,7 @@ const SearchHistoryItem = ({handleClick, index, item, handleRemove}) => {
                     <small>{item.address}</small>
                 </Flex>
             </Flex>
-            <Flex onClick={() => handleRemove(item.address)} alignItems="center">
+            <Flex sx={{'&:hover': {cursor: 'pointer', opacity: 0.5}}} onClick={() => handleRemove(item.address)} alignItems="center">
                 <div>x</div>
             </Flex>
         </StyledSearchHistoryItem>

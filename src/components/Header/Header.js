@@ -11,10 +11,11 @@ import {FaTelegramPlane} from 'react-icons/fa';
 import {Flex} from "rebass"
 import { GlobalContext } from "../../provider/GlobalProvider";
 import { WalletWrapper } from "./Wallet";
+import {useHistory} from 'react-router-dom';
 
 
 const Header = () => {
-    
+    const history = useHistory();
     const [isOptionsOpen, setIsOptionsOpen] = React.useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [modalTitle, setModalTitle] = React.useState('');
@@ -22,7 +23,7 @@ const Header = () => {
     return (
         <>
         <HeaderWrapper justifyContent="space-between" alignItems="center">
-            <LogoWrapper href="/">
+            <LogoWrapper onClick={() => history.push('/')}>
                 <Logo />
                 <h1>Dividend Tracer</h1>
             </LogoWrapper>

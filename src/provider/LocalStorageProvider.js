@@ -27,7 +27,6 @@ class LocaleStorageProvider extends React.Component {
     }
 
     addToWatchlist = (tokenAddress, tokenName, symbol) => {
-        console.log('watchlist')
        let watchlist = localStorage.getItem('watchlist');
         watchlist = watchlist ? JSON.parse(watchlist) : [];
         if(!(watchlist.some(o => o.address === tokenAddress))){
