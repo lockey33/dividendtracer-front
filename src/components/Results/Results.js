@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Flex, Text, Box} from "rebass";
 import styled from "styled-components";
 import "react-datepicker/dist/react-datepicker.css";
 import { TableWrapper } from '../Table/Table';
 import { ChartWrapper } from '../Chart/Chart';
+import { GlobalContext } from '../../provider/GlobalProvider';
+import { TokenSymbolWrapper } from '../Token/TokenSymbol';
 
 const AddressLink = styled.a`
     color: #fff;
     font-family 'ABeeZee';
     font-size: 16px;
-    ${'' /* flex: 1; */}
-    ${'' /* min-width: 0; */}
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -22,6 +22,7 @@ const AddressLink = styled.a`
 ` 
 
 export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
+
     return(
         <Box width={'100%'}>
             <Flex justifyContent="space-between">
