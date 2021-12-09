@@ -10,7 +10,7 @@ export const ResultsContainer = ({dividendsSave, token, wallet, dividends, globa
     const restart = () => {
         history.push('/')
     }
-
+    
     return(
         <Flex width={'100%'} alignItems="start" flexDirection='column'>
             <Flex justifyContent={'start'} alignItems={'center'}>

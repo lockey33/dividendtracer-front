@@ -6,15 +6,13 @@ import {Flex} from "rebass";
 import { MetamaskButton, WalletConnectButton } from "./styled";
 import { Modal } from "../Modal/Modal";
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
+import { formatAddress } from "../../utils/format";
 
 export const WalletWrapper = () => {
     
     const context = React.useContext(GlobalContext);
     const account = context.wallet.state.currentAccount;
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const formatAddress = (address) => {
-        return address.substring(0, 6) + "..." + address.substring(address.length - 6);
-    }
 
     const connect = async(type) => {
         await context.wallet.actions.connect(type)

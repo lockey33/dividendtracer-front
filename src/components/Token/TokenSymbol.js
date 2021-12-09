@@ -4,6 +4,8 @@ import { TokenIcon, TokenName } from './styled';
 import {Flex, Text, Box} from "rebass";
 import {FaRegStar, FaStar} from 'react-icons/fa';
 import styled from 'styled-components';
+import { isMobile } from '../../utils/userAgent';
+import { formatAddress } from '../../utils/format';
 
 export const getCoin = (coin) => {
     try{
@@ -98,7 +100,7 @@ export const TokenSymbolWrapper = ({ token }) => {
                     <Flex justifyContent="space-between" alignItems="center">
                         <Text color="white" fontSize={4} fontWeight='bold' fontFamily={'ABeeZee'}>{tokenName}</Text>
                     </Flex>
-                    <AddressLink href={`https://www.bscscan.com/address/${token}`} target="_blank">{token}</AddressLink>
+                    <AddressLink href={`https://www.bscscan.com/address/${token}`} target="_blank">{isMobile ? formatAddress(token, 10) : token}</AddressLink>
                 </TokenName>
             </Flex>
         </Flex>
