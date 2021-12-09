@@ -66,7 +66,7 @@ class GlobalProvider extends Component {
             getTokenDecimals: this.getTokenDecimals,
             pushInDatabase: this.pushInDatabase,
             pushContractABI: this.pushContractABI,
-            getFireBaseContractABI: this.getFireBaseContractABI,
+            getBddContractABI: this.getBddContractABI,
             getTrendingTokens: this.getTrendingTokens,
             getAccountTransactions: this.getAccountTransactions,
             getAllContracts: this.getAllContracts
@@ -125,85 +125,29 @@ class GlobalProvider extends Component {
         })
     }
 
-    getFireBaseContractABI = async (tokenAddress) => {
-        return new Promise((resolve, reject) => {
-            try{
-                let abiRef = database.ref("contractABI").orderByChild('tokenAddress').equalTo(tokenAddress)
-                abiRef.once('value', async(snapshot) => {
-                    if(snapshot.exists()){
-                        let contractObject = snapshot.val()
-                        contractObject = contractObject[tokenAddress].abi
-                        resolve(contractObject)
-                    }else{
-                        resolve(this.getContractABI(tokenAddress))
-                    }
-                })
-            }catch(err){
-                reject(err)
+    getBddContractABI = async (tokenAddress) => {
+        try{
+            let contractResponse = await axios.get("http://localhost:3001/v1/contract/find/" + tokenAddress)
+            if(contractResponse.hasOwnProperty("data")){
+                if(contractResponse.hasOwnProperty("contractABI")){
+                    return contractResponse.contractABI
+                }else{
+                    return this.getContractABI(tokenAddress)
+                }
             }
+        }catch(err){
+            return err
+        }
 
-        })
     }
 
     pushContractABI = async (contractABI, tokenAddress) => {
-        let abiRef = database.ref("contractABI").orderByChild('tokenAddress').equalTo(tokenAddress)
-        await abiRef.once('value', async(snapshot) => {
-            if(snapshot.exists()){
-                console.log('contract already exist')
-            }else{
-                console.log('inserting contract')
-                await database.ref("contractABI").child(tokenAddress).set({
-                    tokenAddress : tokenAddress,
-                    abi : contractABI,
-                })
-            }
-        })
+        await axios.post("http://localhost:3001/v1/contract/create", {contractABI, tokenAddress})
     }
 
-    pushInDatabase = async (tokenAddress, wallet, globalReward, todayReward) =>{
-        let trendingRef = database.ref('trendingTokens').orderByChild('tokenAddress').equalTo(tokenAddress)
-        let increment = 1
-        await trendingRef.once('value', async (snapshot) => {
-            if(snapshot.exists()){
-                let tokenObject = snapshot.val()
-                console.log('token already in BDD', tokenObject[tokenAddress].increment)
-                increment = parseInt(tokenObject[tokenAddress].increment) + 1
-
-                await snapshot.ref.child(tokenAddress).set({
-                    tokenAddress : tokenAddress,
-                    increment: increment.toString()
-
-                })
-
-            }else{
-                await database.ref("trendingTokens").child(tokenAddress).set({
-                    tokenAddress : tokenAddress,
-                    increment: increment
-                })
-            }
-        })
-
-
-        let tokenAndWallet = tokenAddress+"_"+wallet
-        let ref = database.ref('users').orderByChild('tokenAndWallet').equalTo(tokenAndWallet)
-        await ref.once('value', snapshot => {
-            if (snapshot.exists()) {
-                console.log('User exist :', snapshot );
-            } else {
-                console.log('no user for this wallet')
-                database.ref("users").push({
-                    tokenAddress : tokenAddress,
-                    wallet : wallet,
-                    globalReward: globalReward,
-                    todayReward: todayReward,
-                    tokenAndWallet: tokenAndWallet
-                })
-            }
-        })
-
+    pushInDatabase = async (tokenAddress, wallet, globalReward, todayReward, globalRewardDollar, todayRewardDollar) =>{
+        await axios.post("http://localhost:3001/v1/coin/create", {tokenAddress, wallet, globalReward, todayReward, globalRewardDollar, todayRewardDollar})
     }
-
-
 
     readableValue(value, decimals) {
         let customValue = value / Math.pow(10, decimals)

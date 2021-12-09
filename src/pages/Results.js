@@ -41,6 +41,8 @@ export default class ResultsPage extends React.Component {
             dividendsSave: [],
             todayGain: 0,
             globalGain: 0,
+            todayGainDollar: 0,
+            globalGainDollar: 0,
             dateGain: 0,
             dateRange: "",
             fetching: false,
@@ -112,7 +114,7 @@ export default class ResultsPage extends React.Component {
         try{
             await this.checkSum();
             this.setState({fetching: false})
-            let contractAbi = await this.context.global.actions.getContractABI(this.state.address)
+            let contractAbi = await this.context.global.actions.getBddContractABI(this.state.address)
             let tracker = await this.context.global.actions.getTracker(this.state.address, contractAbi);
             if(this.state.customTracker !== "" && tracker === false){
                 tracker = this.state.customTracker
@@ -124,10 +126,12 @@ export default class ResultsPage extends React.Component {
             }
 
             this.setState({tracker: tracker})
-
             let calculatedData = await this.calculate();
-            this.setState({walletRequired: false, tokenRequired: false, dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, fetching: true})
+            await this.context.global.actions.pushInDatabase(this.state.address, this.state.wallet, calculatedData.globalGain, calculatedData.todayGain, calculatedData.globalGainDollar, calculatedData.todayGainDollar)
+            this.context.global.actions.pushContractABI(contractAbi, this.state.address)
+            this.setState({walletRequired: false, tokenRequired: false, dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, globalGainDollar: calculatedData.globalGainDollar, todayGainDollar: calculatedData.todayGainDollar, fetching: true})
         }catch(err){
+            console.log(err)
             if(err === "dividendTracker"){                
                 this.setState({tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
             }else{
@@ -178,13 +182,15 @@ export default class ResultsPage extends React.Component {
             }
         }))
 
-        globalGain = globalGain.toFixed(2) + " $"
-        todayGain = todayGain.toFixed(2) + " $"
+        const globalGainDollar = globalGain.toFixed(2) + " $"
+        const todayGainDollar = todayGain.toFixed(2) + " $"
+        globalGain = globalGain.toFixed(2)
+        todayGain = todayGain.toFixed(2)
+
         dividends.sort(function (x, y) {
             return y.timestamp - x.timestamp;
         })
-
-        return {dividends: dividends, globalGain: globalGain, todayGain: todayGain}
+        return {dividends: dividends, globalGain: globalGain, todayGain: todayGain, globalGainDollar, todayGainDollar}
     }
 
     setIsModalOpen = () => {
@@ -225,7 +231,7 @@ export default class ResultsPage extends React.Component {
                     {!this.state.walletRequired ?
                         <>
                             {this.state.dividends.length > 0 ?
-                                <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGain} globalGain={this.state.globalGain} wallet={this.state.wallet} token={this.state.address} />
+                                <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGainDollar} globalGain={this.state.globalGainDollar} wallet={this.state.wallet} token={this.state.address} />
                             :
                             <>
                                 {this.state.response.status !== false &&
