@@ -5,8 +5,8 @@ import {ReactComponent as Dots} from "../../images/dots.svg";
 import {ReactComponent as Docs} from "../../images/docs.svg";
 import {ReactComponent as Ask} from "../../images/ask.svg";
 import {ReactComponent as Coffee} from "../../images/coffee.svg";
-import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu, WalletButton, TelegramButton} from "./styled";
-import { ModalContact } from "../Modal/Modal";
+import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu, WalletButton, TelegramButton, MetamaskButton, WalletConnectButton} from "./styled";
+import { ModalContact, Modal} from "../Modal/Modal";
 import {FaTelegramPlane} from 'react-icons/fa';
 import {Flex} from "rebass"
 import { GlobalContext } from "../../provider/GlobalProvider";
@@ -49,7 +49,7 @@ const Header = () => {
                 </OptionsWrapper>
             </ActionsWrapper>
         </HeaderWrapper>
-        { isModalOpen &&
+        {isModalOpen &&
             <ModalContact title={modalTitle} onClose={() => setIsModalOpen(false)} />
         }
         </>

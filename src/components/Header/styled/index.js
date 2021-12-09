@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import {Flex} from "rebass";
+import MetamaskIcon from "../../../images/metamask.png";
+import WalletConnectIcon from "../../../images/walletconnect-logo.png";
 
 export const HeaderWrapper = styled(Flex)`
     padding: 20px 40px;
@@ -63,6 +65,10 @@ export const WalletButton = styled.button`
     }
 `
 
+export const WalletButtonWrapper = styled.div`
+  
+`
+
 export const AccountWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -86,7 +92,7 @@ export const AccountIcon = styled.div`
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    svg{
+    >:last-child{
         z-index: 1000;
         position: absolute;
         color: white;
@@ -96,7 +102,10 @@ export const AccountIcon = styled.div`
     }
     &:hover{
         cursor: pointer;
-        svg{
+        >:first-child{
+            opacity: 0.5
+        }
+        >:last-child{
             display: block;
         }
         canvas{
@@ -184,4 +193,68 @@ export const OptionsMenuWrapper = styled.div`
     right: 0;
     top: 100%;
     padding-top: 20px;
+`
+
+export const MetamaskButton = styled.button`
+    background: white;
+    border-radius: 10px;
+    padding: 10px 20px 10px 40px;
+    border: none;
+    font-family:'DM Sans';
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: black;
+    position: relative;
+    cursor: pointer;
+    @media (min-width: 768px) {
+        font-size: 14px;
+    }
+    &::before{
+        content: '';
+        background-image: url(${MetamaskIcon});
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        left: 10px;
+    }
+    &:hover{
+        opacity: 0.8;
+    }
+`
+
+export const WalletConnectButton = styled.button`
+    background: white;
+    border-radius: 10px;
+    padding: 10px 20px 10px 40px;
+    border: none;
+    font-family:'DM Sans';
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: black;
+    cursor: pointer;
+    position: relative;
+    @media (min-width: 768px) {
+        font-size: 14px;
+    }
+    &::before{
+        content: '';
+        background-image: url(${WalletConnectIcon});
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        left: 10px;
+    }
+    &:hover{
+        opacity: 0.8;
+    }
 `
