@@ -214,7 +214,8 @@ export default class ResultsPage extends React.Component {
             this.setState({errorWallet: true})
         }else{
             this.props.history.push('/results?token='+this.state.address+'&wallet='+this.state.wallet);
-            // useShowDividend(this.state.wallet, this.state.address)
+            let {calculatedData} = useShowDividend(this.state.wallet, this.state.address)
+            console.log(calculatedData)
         }
     }
 

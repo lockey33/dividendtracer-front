@@ -25,6 +25,9 @@ export const Results = ({ dividends, globalGain, todayGain, token, wallet}) => {
 
     return(
         <Box width={'100%'}>
+            <Box width={'100%'} py={4}>
+                <TokenSymbolWrapper token={token} />
+            </Box>
             <Flex justifyContent="space-between">
                 <Flex flex={1} justifyContent="center" flexDirection="column">
                     <Flex sx={{gap: '5px'}} mb={3} flexDirection="column">

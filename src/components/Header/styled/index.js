@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import {Flex} from "rebass";
+import MetamaskIcon from "../../../images/metamask.png";
+import WalletConnectIcon from "../../../images/walletconnect-logo.png";
 
 export const HeaderWrapper = styled(Flex)`
     padding: 20px 40px;
@@ -8,12 +10,14 @@ export const HeaderWrapper = styled(Flex)`
     }
 `
 
-export const LogoWrapper = styled.div`
+export const LogoWrapper = styled.a`
     display: flex;
     align-items: center;
     gap: 20px;
     font-family: 'DM Sans';
     color: white;
+    text-decoration: none;
+    cursor: pointer;
     svg{
         max-width: 60px;
         height: auto;
@@ -27,7 +31,10 @@ export const LogoWrapper = styled.div`
         }
         @media (max-width: 500px) {
         display: none;
+        }
     }
+    &:hover{
+        text-decoration: none;
     }
 `
 
@@ -52,13 +59,63 @@ export const WalletButton = styled.button`
     align-items: center;
     text-align: center;
     color: #6CF057;
-    opacity: 0.5;
     cursor: pointer;
     @media (min-width: 768px) {
         font-size: 18px;
     }
+`
+
+export const WalletButtonWrapper = styled.div`
+  
+`
+
+export const AccountWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`
+
+export const AccountAddress = styled.div`
+    font-family: 'DM Sans';
+    font-size: 18px;
+    color: #FFFFFF;
     @media (max-width: 768px) {
+        font-size: 14px;
+    }
+`
+
+export const AccountIcon = styled.div`
+    width: 40px;
+    height: 40px;  
+    border-radius: 100%;    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    >:last-child{
+        z-index: 1000;
+        position: absolute;
+        color: white;
         display: none;
+        width: 20px;
+        height: 20px
+    }
+    &:hover{
+        cursor: pointer;
+        >:first-child{
+            opacity: 0.5
+        }
+        >:last-child{
+            display: block;
+        }
+        canvas{
+            opacity: 0.5;
+        }
+    }
+    canvas{
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 100%;
     }
 `
 
@@ -79,6 +136,9 @@ export const TelegramButton = styled.a`
     &:hover {        
         border: solid 1px #6CF057;
     }
+    @media (max-width: 768px) {
+        display: none;
+    }
 `
 
 export const OptionsButton = styled.button`
@@ -90,6 +150,7 @@ export const OptionsButton = styled.button`
     align-items: center;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
+    min-height: 40px;
     height: 100%;
 `
 
@@ -132,4 +193,68 @@ export const OptionsMenuWrapper = styled.div`
     right: 0;
     top: 100%;
     padding-top: 20px;
+`
+
+export const MetamaskButton = styled.button`
+    background: white;
+    border-radius: 10px;
+    padding: 10px 20px 10px 40px;
+    border: none;
+    font-family:'DM Sans';
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: black;
+    position: relative;
+    cursor: pointer;
+    @media (min-width: 768px) {
+        font-size: 14px;
+    }
+    &::before{
+        content: '';
+        background-image: url(${MetamaskIcon});
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        left: 10px;
+    }
+    &:hover{
+        opacity: 0.8;
+    }
+`
+
+export const WalletConnectButton = styled.button`
+    background: white;
+    border-radius: 10px;
+    padding: 10px 20px 10px 40px;
+    border: none;
+    font-family:'DM Sans';
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: black;
+    cursor: pointer;
+    position: relative;
+    @media (min-width: 768px) {
+        font-size: 14px;
+    }
+    &::before{
+        content: '';
+        background-image: url(${WalletConnectIcon});
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        left: 10px;
+    }
+    &:hover{
+        opacity: 0.8;
+    }
 `
