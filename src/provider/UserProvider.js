@@ -26,6 +26,8 @@ class UserProvider extends React.Component {
             isInWatchlist: this.isInWatchlist,
             removeFromSearchHistory: this.removeFromSearchHistory,
             fetchSearchHistory: this.fetchSearchHistory,
+            reset: this.reset,
+            init: this.init,
         }
     }        
 
@@ -40,8 +42,7 @@ class UserProvider extends React.Component {
         .then(res => {
             console.log('user saved');
         })
-        .catch(err => {
-            // console.log(err);
+        .catch(err => {            
             this.getUser(address);
         });
     }
@@ -71,12 +72,13 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
+            console.log(res.data);
+            this.setState({searchHistory: res.data});
             return res.data;
         })
         .catch(err => {
             console.log('user not found');
         })
-        this.setState({searchHistory: data});
         this.fetchSearchHistory(address);
         return data;
     }
@@ -95,7 +97,7 @@ class UserProvider extends React.Component {
         })
         .then(res => {
             let {data} = res
-            this.setState({searchHistory: data});            
+            this.setState((prevProps) => ({searchHistory: data, ...prevProps.searchHistory}));             
         })
         .catch(err => {
             console.log(err);
@@ -155,7 +157,7 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
-            this.setState({watchlist: res.data});
+            this.setState((prevProps) => ({watchlist: res.data, ...prevProps.watchlist})); 
             console.log('added to watchlist');
         })
         .catch(err => {
@@ -190,12 +192,12 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
+            this.setState({watchlist: res.data})
             return res.data;
         })
         .catch(err => {
             console.log('user not found');
-        })
-        this.setState({watchlist: userWatchlist});        
+        })        
         return userWatchlist;
     }
 
@@ -209,6 +211,18 @@ class UserProvider extends React.Component {
             console.log(err);
         })
         return isInWatchlist
+    }
+
+    reset = () => {
+        this.setState({
+            searchHistory: [],
+            watchlist: []
+        })
+    }
+
+    init = async(address) => {
+        await this.getUserSearchHistory(address);
+        await this.getUserWatchlist(address);
     }
 
 

@@ -11,7 +11,7 @@ const WalletContext = React.createContext({});
 const WalletProvider = ({children}) => {
     
     const context = React.useContext(UserContext);
-    const { active, account, library, connector, activate, deactivate, error } = useWeb3React();
+    const { active, account, library, connector, activate, deactivate, } = useWeb3React();
 
     const walletConnect = new WalletConnectConnector({
         rpc: { 1: 'https://mainnet.infura.io/v3/5ac444b3c8014807ae1d035e482d996f', 56: 'https://bsc-dataseed.binance.org/' },
@@ -20,7 +20,12 @@ const WalletProvider = ({children}) => {
 
     const injected = new InjectedConnector({
         supportedChainIds: [1, 3, 4, 5, 42, 56],
-      })
+    })
+
+
+    useEffect(() => {
+        context.user.actions.createUser(account);
+    }, [account])
 
     const resetWalletConnector = () => {
         if (
@@ -34,9 +39,10 @@ const WalletProvider = ({children}) => {
 
     const connect  = async(type) => {
         if(type === "walletconnect"){
-            await activate(walletConnect).catch((err) => {
+            await activate(walletConnect)
+            .catch((err) => {
                 resetWalletConnector();
-              });
+            });
         }else if(type === "injected"){
             await activate(injected)
         }

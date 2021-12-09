@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { GlobalContext } from "../../provider/GlobalProvider";
 import { AccountAddress, AccountIcon, AccountWrapper, WalletButton, WalletButtonWrapper } from "./styled";
 import {IoPower} from "react-icons/io5";
@@ -10,6 +10,7 @@ import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 export const WalletWrapper = () => {
     
     const context = React.useContext(GlobalContext);
+    const account = context.wallet.state.currentAccount;
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const formatAddress = (address) => {
         return address.substring(0, 6) + "..." + address.substring(address.length - 6);
@@ -19,12 +20,20 @@ export const WalletWrapper = () => {
         await context.wallet.actions.connect(type)
         .then(() => {
             setIsModalOpen(false);
-        })
+            context.user.actions.init(account);
+        });
+    }
+
+    const disconnect = async() => {
+        await context.wallet.actions.disconnect()
+        .then(() => {
+            context.user.actions.reset()
+        });
     }
 
     return(
         <>
-            {!context.wallet.state.currentAccount ?
+            {!account ?
                     <WalletButtonWrapper>
                         <WalletButton onClick={() => setIsModalOpen(true)}>
                             Connect Wallet
@@ -33,11 +42,11 @@ export const WalletWrapper = () => {
 
             :
                 <AccountWrapper>
-                    <AccountAddress>{formatAddress(context.wallet.state.currentAccount)}</AccountAddress>
-                    <AccountIcon onClick={() => context.wallet.actions.disconnect()}>
+                    <AccountAddress>{formatAddress(account)}</AccountAddress>
+                    <AccountIcon onClick={() => disconnect()}>
                         <Jazzicon
                             diameter={40}
-                            seed={jsNumberForAddress(context.wallet.state.currentAccount)}
+                            seed={jsNumberForAddress(account)}
                         />
                         <IoPower/>
                     </AccountIcon>

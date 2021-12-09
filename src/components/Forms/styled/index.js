@@ -263,8 +263,7 @@ const SearchHistoryList = ({handleClick, active}) => {
     function loadUser(){
         if(currentAccount){
             setLoading(true);
-            context.user.actions.getUserSearchHistory(currentAccount);
-            context.user.actions.getUserWatchlist(currentAccount);
+            context.user.actions.init(currentAccount);
             setLoading(false);
         }else{
             setLoading(true);
