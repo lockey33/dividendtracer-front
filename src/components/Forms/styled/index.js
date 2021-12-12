@@ -5,9 +5,12 @@ import { WalletButton } from '../../Header/styled';
 import { GlobalContext } from '../../../provider/GlobalProvider';
 import { Button } from '../../Tracker/styled';
 import { InputWallet } from '../TrackerForm';
-import { getCoin } from '../../Token/TokenSymbol';
 import { TokenIcon } from '../../Token/styled';
 import { CustomLoader } from '../../Loader/Loader';
+import { TokenIconWrapper } from '../../Token/TokenSymbol';
+import { WalletButtonWrapper } from '../../Header/Wallet';
+import { useIsMobile, useIsMobileDevice } from '../../../hooks/useIsMobile';
+import { formatAddress } from '../../../utils/format';
 
 export const SubmitButton = styled.button`
     background: #669566;
@@ -184,6 +187,10 @@ const StyledSearchHistoryItem = styled.div`
             opacity: 0.6;
         }
     }
+    canvas{
+        width: 40px !important;
+        height: 40px !important;
+    }
     @media (max-width: 768px) {
         font-size: 12px;
         padding: 10px 15px;
@@ -219,23 +226,17 @@ const SearchHistoryAction = styled.div`
 `
 
 const SearchHistoryItem = ({handleClick, index, item, handleRemove}) => {
-
-    const [icon, setIcon] = React.useState(null);
-
-    useEffect(() => {
-        setIcon(getCoin(item.symbol))
-    }, [item]);
-
+    const isMobile = useIsMobile();
     return(
         <StyledSearchHistoryItem style={{color: 'white'}}>
             <Flex onClick={() => handleClick(item.address)} alignItems="center" sx={{gap: '10px'}}>
-                <TokenIcon size={'30px'} src={icon} />
+                <TokenIconWrapper symbol={item.symbol} address={item.address} size={'40px'} />
                 <Flex flexDirection={'column'}>
                     <Flex alignItems="center" sx={{gap: '5px'}}>
                         <span>{item.name}</span>
                         <span><small>${item.symbol}</small></span>
                     </Flex>
-                    <small>{item.address}</small>
+                    <small>{isMobile ? formatAddress(item.address, 6) : item.address}</small>
                 </Flex>
             </Flex>
             <Flex sx={{'&:hover': {cursor: 'pointer', opacity: 0.5}}} onClick={() => handleRemove(item.address)} alignItems="center">
@@ -373,12 +374,10 @@ export const ErrorWallet = ({handleWallet, action, errorWallet}) => {
 
     return(
             <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
-                <Heading mb={4} fontFamily='DM Sans' color="white" fontSize={[3, 4]}>Oops, we need your wallet address</Heading>
+                <Heading mb={4} textAlign='center' fontFamily='DM Sans' color="white" fontSize={[2, 3, 4]}>Oops, we need your wallet address</Heading>
                 {!context.wallet.state.currentAccount &&
                     <>
-                        <WalletButton id="walletButton" onClick={() => context.wallet.actions.connectWalletHandler()}>
-                            Connect Wallet
-                        </WalletButton>
+                        <WalletButtonWrapper />
                         <Text mt={3} color="white" fontFamily='DM Sans' fontSize={[2, 3]}>or</Text>
                     </>
                 }
@@ -393,7 +392,7 @@ export const ErrorTracker = ({handleTracker, action, customTracker, errorTracker
 
     return(
             <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
-                <Heading fontFamily='DM Sans' color="white" fontSize={[3, 4]}>Oops, we need your tracker address</Heading>
+                <Heading fontFamily='DM Sans' color="white" fontSize={[2, 3, 4]}>Oops, we need your tracker address</Heading>
                 <Text mb={4}  fontFamily='DM Sans' color="white" fontSize={[1, 2]}>You cand find it in your transactions details</Text>
                 <Input className={errorTracker ? 'error' : ''} onChange={(e) => handleTracker(e)} value={customTracker} />
                 <Button style={{padding: '10px 20px', marginTop: '20px'}} onClick={action}>Show my dividends</Button>

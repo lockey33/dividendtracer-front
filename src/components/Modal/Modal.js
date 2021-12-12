@@ -1,17 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ModalHeaderWrapper, ModalInner, ModalWrapper } from "./styled";
 import { FormWrapper, Input, ItemForm, SubmitButton, Textarea } from "../Forms/styled";
 import {Heading, Flex} from "rebass";
 import emailjs from 'emailjs-com';
 import { CustomLoader } from "../Loader/Loader";
+import { useIsMobile, useIsMobileDevice } from "../../hooks/useIsMobile";
+import { animated, useSpring, useTransition } from 'react-spring'
+import { useGesture } from 'react-use-gesture'
+import { DialogContent, DialogOverlay } from '@reach/dialog'
+import styled, { css } from 'styled-components/macro'
+import { transparentize } from 'polished'
+import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
+
 
 const ModalHeader = ({title, close}) => {
+
+    const isMobile = useIsMobile();
+
     return (
         <ModalHeaderWrapper>
-            <Heading color="white" fontFamily="DM Sans" fontSize={[4]}>{title}</Heading>
-            <button onClick={(e) => close(e)} type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
+                <>
+                    <Heading color="white" fontFamily="DM Sans" fontSize={[4]}>{title}</Heading>
+                    <button onClick={(e) => close(e)} type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </>
         </ModalHeaderWrapper>
     );
 };
@@ -52,7 +65,7 @@ export const ModalContact = ({onClose, title}) => {
             setErrorEmail(true)
             setErrorSubject(true)
             setErrorMessage(true)
-        }
+        } 
         return false;
     };
 
@@ -121,22 +134,27 @@ export const ModalContact = ({onClose, title}) => {
     )
 }
 
-export const Modal = ({onClose, title, children}) => {
+export const Modal = ({isOpen, onClose, title, children}) => {
+    const isMobileDevice = useIsMobileDevice();
+    const wrapperRef = React.createRef();
+    const clicked = useOutsideAlerter(wrapperRef);
 
-    const close = (e) => {
-        e.preventDefault()
-        if (onClose) {
-            onClose()
+    useEffect(() => {
+        if (clicked) {
+            onClose();
         }
-    };
+    }, [clicked])
 
     return(
-        <ModalWrapper>
-            <ModalInner>
-                <ModalHeader title={title} close={(e) => close(e)} />
-                {children}
-            </ModalInner>            
-        </ModalWrapper>
+        <>
+        {isOpen &&
+            <ModalWrapper>
+                <ModalInner ref={wrapperRef} isMobileDevice={isMobileDevice}>
+                    {!isMobileDevice && <ModalHeader title={title} close={(e) => onClose(e)} />}
+                    {children}
+                </ModalInner>            
+            </ModalWrapper>
+        }
+      </>
     )
-
 }

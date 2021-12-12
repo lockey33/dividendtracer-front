@@ -1,10 +1,10 @@
 import React from "react";
 import ReactTooltip from 'react-tooltip';
-import {ReactComponent as Logo} from "../../images/bills.svg";
-import {ReactComponent as Dots} from "../../images/dots.svg";
-import {ReactComponent as Docs} from "../../images/docs.svg";
-import {ReactComponent as Ask} from "../../images/ask.svg";
-import {ReactComponent as Coffee} from "../../images/coffee.svg";
+import {ReactComponent as Logo} from "../../assets/images/bills.svg";
+import {ReactComponent as Dots} from "../../assets/images/dots.svg";
+import {ReactComponent as Docs} from "../../assets/images/docs.svg";
+import {ReactComponent as Ask} from "../../assets/images/ask.svg";
+import {ReactComponent as Coffee} from "../../assets/images/coffee.svg";
 import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu, WalletButton, TelegramButton, MetamaskButton, WalletConnectButton} from "./styled";
 import { ModalContact, Modal} from "../Modal/Modal";
 import {FaTelegramPlane} from 'react-icons/fa';
@@ -32,7 +32,7 @@ const Header = () => {
                     <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
                 </Flex>
                 <WalletWrapper />
-                <OptionsWrapper onMouseEnter={() => setIsOptionsOpen(true)} onMouseLeave={() => setIsOptionsOpen(false)}>
+                <OptionsWrapper onClick={() => setIsOptionsOpen(!isOptionsOpen)}>
                     <OptionsButton id="openMenuTop">
                         <Dots />
                     </OptionsButton>

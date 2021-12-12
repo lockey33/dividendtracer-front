@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import {Flex} from "rebass";
-import MetamaskIcon from "../../../images/metamask.png";
-import WalletConnectIcon from "../../../images/walletconnect-logo.png";
+import MetamaskIcon from "../../../assets/images/metamask.png";
+import WalletConnectIcon from "../../../assets/images/walletconnect-logo.png";
 
 export const HeaderWrapper = styled(Flex)`
     padding: 20px 40px;
@@ -63,10 +63,6 @@ export const WalletButton = styled.button`
     @media (min-width: 768px) {
         font-size: 18px;
     }
-`
-
-export const WalletButtonWrapper = styled.div`
-  
 `
 
 export const AccountWrapper = styled.div`

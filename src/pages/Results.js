@@ -7,10 +7,11 @@ import { CustomLoader } from "../components/Loader/Loader";
 import styled from 'styled-components';
 import {Flex, Text, Heading} from 'rebass';
 import { TrackerWrapper } from "../components/Tracker/styled";
-import { ResultsContainer } from '../components/Results/styled';
+import { GainsGard, ResultsContainer } from '../components/Results/styled';
 import { Button } from '../components/Tracker/styled';
 import { InputWallet } from '../components/Forms/TrackerForm';
 import { ErrorTracker, ErrorWallet } from '../components/Forms/styled';
+import { TokenCard } from '../components/Results/styled';
 
 const Container = styled.div`
     display: block;
@@ -72,7 +73,7 @@ export default class ResultsPage extends React.Component {
         }
 
         if(params.has('wallet')){
-            this.setState({wallet: params.get('wallet')});
+            this.setState({wallet: params.get('wallet'), walletRequired: false});
         }else{
             this.setState({wallet: "", walletRequired: true});
         }
@@ -154,7 +155,6 @@ export default class ResultsPage extends React.Component {
         let todayGain = 0
         let globalGain = 0
         await Promise.all(data.map(async(transaction) => {
-            console.log(transaction)
             if (ethers.utils.getAddress(transaction.from) === this.state.tracker) {
                 let tokenAddress = transaction.contractAddress
                 let tokenParsedValue = transaction.value
@@ -214,6 +214,7 @@ export default class ResultsPage extends React.Component {
             this.setState({errorWallet: true})
         }else{
             this.props.history.push('/results?token='+this.state.address+'&wallet='+this.state.wallet);
+            this.setState({walletRequired: false})
             this.showDividend();
         }
     }
@@ -252,11 +253,15 @@ export default class ResultsPage extends React.Component {
     render() {
         return (
             <Container>
+                <TokenCard token={this.state.address} />
+                {this.state.dividends.length > 0 && <GainsGard globalGain={this.state.globalGain} todayGain={this.state.todayGain} />}
                 <TrackerWrapper>
                     {!this.state.walletRequired ?
                         <>
                             {this.state.dividends.length > 0 ?
-                                <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGain} globalGain={this.state.globalGain} wallet={this.state.wallet} token={this.state.address} />
+                                <>
+                                    <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGain} globalGain={this.state.globalGain} wallet={this.state.wallet} token={this.state.address} />
+                                </>
                             :
                             <>
                                 {this.state.response.status !== false &&
@@ -267,10 +272,10 @@ export default class ResultsPage extends React.Component {
                                                 <Text fontFamily="ABeeZee" mt={2} color="white">Loading your rewards...</Text>
                                             </Flex>
                                             :                                    
-                                            <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
-                                                <p>No data</p>
+                                            <Flex py={5} flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
+                                                <Text color="white" fontSize={[2, 3]} fontFamily="DM Sans" textAlign="center">Oops we can't find any data for this wallet</Text>
                                             </Flex>
-                                        }
+                                        }   
                                     </>
                                 }
                                 {this.state.response.type === "dividendTracker" && this.state.response.status === false &&

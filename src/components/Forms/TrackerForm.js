@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Heading, Flex, Box } from 'rebass';
+import { useOutsideAlerter } from '../../hooks/useOutsideAlerter';
 import { GlobalContext } from '../../provider/GlobalProvider';
 import { FormWrapper, ItemForm, ErrorMessage, Input, SubmitButton, AutoComplete, SearchHistoryWrapper, SearchHistory } from './styled';
 
@@ -16,27 +17,13 @@ export const Form = ({action, handleAddress, handleWallet, errorWallet, errorTok
     )
 }
 
-function useOutsideAlerter(ref, setShowSearchhistory) {
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (ref.current && !ref.current.contains(event.target)) {
-                setShowSearchhistory(false);
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [ref]);
-}
-
 const InputTracker = ({handleAddress, errorToken}) => {
 
-    const [showSearchhistory, setShowSearchhistory] = React.useState(false);
-    const [selectedToken, setSelectedToken] = React.useState('');
     const inputRef = React.createRef();
     const wrapperRef = React.useRef(null);
+    const [showSearchhistory, setShowSearchhistory] = React.useState(false);
+    const [selectedToken, setSelectedToken] = React.useState('');
+    const clicked = useOutsideAlerter(wrapperRef);
 
     const handleClick = (token) => {
         setShowSearchhistory(false);
@@ -50,7 +37,11 @@ const InputTracker = ({handleAddress, errorToken}) => {
         }
     }, [selectedToken])
 
-    useOutsideAlerter(wrapperRef, setShowSearchhistory);
+    useEffect(() => {
+        if(clicked) {
+            setShowSearchhistory(false);
+        }
+    }, [clicked])
     
     return(
         <ItemForm>

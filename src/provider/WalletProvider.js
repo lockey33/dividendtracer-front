@@ -27,6 +27,14 @@ const WalletProvider = ({children}) => {
         context.user.actions.createUser(account);
     }, [account])
 
+    useEffect(() => {
+        injected.isAuthorized().then((isAuthorized) => {
+            if (isAuthorized) {
+                activate(injected);
+            }
+        })    
+    }, [])
+
     const resetWalletConnector = () => {
         if (
             walletConnect &&
