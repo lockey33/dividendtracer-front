@@ -11,15 +11,15 @@ const WalletContext = React.createContext({});
 const WalletProvider = ({children}) => {
     
     const context = React.useContext(UserContext);
-    const { active, account, library, connector, activate, deactivate, } = useWeb3React();
+    const {active, account, library, connector, activate, deactivate} = useWeb3React();
 
     const walletConnect = new WalletConnectConnector({
-        rpc: { 1: 'https://mainnet.infura.io/v3/5ac444b3c8014807ae1d035e482d996f', 56: 'https://bsc-dataseed.binance.org/' },
+        rpc: {56: 'https://bsc-dataseed.binance.org/'},
         qrcode: true
     })
 
     const injected = new InjectedConnector({
-        supportedChainIds: [1, 3, 4, 5, 42, 56],
+        supportedChainIds: [56],
     })
 
 
@@ -28,12 +28,34 @@ const WalletProvider = ({children}) => {
     }, [account])
 
     useEffect(() => {
-        injected.isAuthorized().then((isAuthorized) => {
+        injected.isAuthorized().then(async(isAuthorized) => {
             if (isAuthorized) {
                 activate(injected);
             }
         })    
     }, [])
+
+    const switchChainToBsc = async () => {
+        try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x38' }],
+            });
+        } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        if (switchError.code === 4902) {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{ chainId: '0x38', rpcUrl: 'https://bsc-dataseed.binance.org/' }],
+                });
+            } catch (addError) {
+            // handle "add" error
+            }
+        }
+        // handle other "switch" errors
+        }
+    }
 
     const resetWalletConnector = () => {
         if (
@@ -43,6 +65,20 @@ const WalletProvider = ({children}) => {
           ) {
             walletConnect.walletConnectProvider = undefined
           }
+    }
+
+    useEffect(() => {
+        checkChainId();
+    }, [window.ethereum.networkVersion])
+
+    const checkChainId = async() => {
+        if(connector){ 
+            let chainId = await connector.getChainId();
+            if(chainId !== '0x38'){
+                alert('Please switch to Binance Chain');
+                switchChainToBsc();
+            }
+        }
     }
 
     const connect  = async(type) => {

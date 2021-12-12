@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactTooltip from 'react-tooltip';
 import {ReactComponent as Logo} from "../../assets/images/bills.svg";
 import {ReactComponent as Dots} from "../../assets/images/dots.svg";
@@ -12,13 +12,23 @@ import {Flex} from "rebass"
 import { GlobalContext } from "../../provider/GlobalProvider";
 import { WalletWrapper } from "./Wallet";
 import {useHistory} from 'react-router-dom';
+import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
 
 
 const Header = () => {
     const history = useHistory();
+    const wrapperRef = React.createRef();
     const [isOptionsOpen, setIsOptionsOpen] = React.useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [modalTitle, setModalTitle] = React.useState('');
+    const clickedOutside = useOutsideAlerter(wrapperRef);
+
+    useEffect(() => {
+        if(clickedOutside){
+            setIsOptionsOpen(false);
+        }
+    }, [clickedOutside])
+
 
     return (
         <>
@@ -32,7 +42,7 @@ const Header = () => {
                     <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
                 </Flex>
                 <WalletWrapper />
-                <OptionsWrapper onClick={() => setIsOptionsOpen(!isOptionsOpen)}>
+                <OptionsWrapper ref={wrapperRef} onClick={() => setIsOptionsOpen(!isOptionsOpen)}>
                     <OptionsButton id="openMenuTop">
                         <Dots />
                     </OptionsButton>
