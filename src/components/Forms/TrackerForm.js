@@ -1,33 +1,57 @@
 import React, { useEffect } from 'react';
 import { Heading, Flex, Box } from 'rebass';
+import { useOutsideAlerter } from '../../hooks/useOutsideAlerter';
 import { GlobalContext } from '../../provider/GlobalProvider';
 import { FormWrapper, ItemForm, ErrorMessage, Input, SubmitButton, AutoComplete, SearchHistoryWrapper, SearchHistory } from './styled';
 
 
 export const Form = ({action, handleAddress, handleWallet, errorWallet, errorToken}) => {
-    const context = React.useContext(GlobalContext);
-    const currentAccount = context.wallet.state.currentAccount;
-    const walletInputRef = React.createRef();
-    const [showSearchhistory, setShowSearchhistory] = React.useState(false);
-
-    const watchlist = context.locale.state.watchlist;
-    console.log(watchlist);
-    
 
     return(
         <FormWrapper  action="">
             <Heading fontFamily="DM Sans" color="white" fontSize={[3, 4]} mb={3} mt={0} textAlign="center">Start tracking your dividends</Heading>
-            <ItemForm>
-                <label htmlFor="item">Token address</label>
-                <SearchHistoryWrapper>
-                    <Input autoComplete="off" onFocus={() => setShowSearchhistory(true)} onBlur={() => setShowSearchhistory(false)} className={errorToken ? 'error' : ''} onChange={(e) => handleAddress(e)} type="text" name="tokenaddr" placeholder="0x..." required />
-                    <SearchHistory isOpen={showSearchhistory} />
-                </SearchHistoryWrapper>
-                <ErrorMessage>{errorToken ? 'Please check token address' : ''}</ErrorMessage>
-            </ItemForm>
+            <InputTracker handleAddress={handleAddress} errorToken={errorToken} />
             <InputWallet handleWallet={handleWallet} errorWallet={errorWallet} />
             <SubmitButton id="searchDividendBtn" onClick={(e) => action(e)} type="submit">Track your dividend</SubmitButton>
         </FormWrapper>
+    )
+}
+
+const InputTracker = ({handleAddress, errorToken}) => {
+
+    const inputRef = React.createRef();
+    const wrapperRef = React.useRef(null);
+    const [showSearchhistory, setShowSearchhistory] = React.useState(false);
+    const [selectedToken, setSelectedToken] = React.useState('');
+    const clicked = useOutsideAlerter(wrapperRef);
+
+    const handleClick = (token) => {
+        setShowSearchhistory(false);
+        setSelectedToken(token);
+    }
+
+    useEffect(() => {
+        if(selectedToken) {
+            inputRef.current.value = selectedToken;
+            handleAddress(selectedToken)        
+        }
+    }, [selectedToken])
+
+    useEffect(() => {
+        if(clicked) {
+            setShowSearchhistory(false);
+        }
+    }, [clicked])
+    
+    return(
+        <ItemForm>
+            <label htmlFor="item">Token address</label>
+            <SearchHistoryWrapper ref={wrapperRef}>
+                <Input ref={inputRef} autoComplete="off" onFocus={() => setShowSearchhistory(true)} className={errorToken ? 'error' : ''} onChange={(e) => handleAddress(e.target.value)} type="text" name="tokenaddr" placeholder="0x..." required />
+                <SearchHistory handleClick={handleClick} isOpen={showSearchhistory} />
+            </SearchHistoryWrapper>
+            <ErrorMessage>{errorToken ? 'Please check token address' : ''}</ErrorMessage>
+        </ItemForm>
     )
 }
 

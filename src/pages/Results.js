@@ -7,10 +7,11 @@ import { CustomLoader } from "../components/Loader/Loader";
 import styled from 'styled-components';
 import {Flex, Text, Heading} from 'rebass';
 import { TrackerWrapper } from "../components/Tracker/styled";
-import { ResultsContainer } from '../components/Results/styled';
+import { GainsGard, ResultsContainer } from '../components/Results/styled';
 import { Button } from '../components/Tracker/styled';
 import { InputWallet } from '../components/Forms/TrackerForm';
 import { ErrorTracker, ErrorWallet } from '../components/Forms/styled';
+import { TokenCard } from '../components/Results/styled';
 
 const Container = styled.div`
     display: block;
@@ -49,12 +50,17 @@ export default class ResultsPage extends React.Component {
             errorWallet: false,    
             errorTracker: false,       
             walletRequired: false,
+            tokenName: '',
+            tokenSymbol: '',
+            currentAccount: ''
         }
     }
 
     componentDidMount = async () => {
-        if(this.state.address !== '' && this.state.wallet !== ''){            
+        if(this.state.address !== '' && this.state.wallet !== ''){
+            if(this.context.wallet.state.currentAccount) this.setState({currentAccount: this.context.wallet.state.currentAccount})
             this.showDividend();
+            this.saveInLocalStorage();
         }
     }
 
@@ -69,9 +75,13 @@ export default class ResultsPage extends React.Component {
         }
 
         if(params.has('wallet')){
-            this.setState({wallet: params.get('wallet')});
+            this.setState({wallet: params.get('wallet'), walletRequired: false});
         }else{
             this.setState({wallet: "", walletRequired: true});
+        }
+
+        if(params.has('tracker')){
+            this.setState({customTracker: params.get('tracker')});
         }
     }
 
@@ -120,8 +130,7 @@ export default class ResultsPage extends React.Component {
                 tracker = this.state.customTracker
             }else if(this.state.customTracker !== "" && tracker !== false){
                 this.setState({customTracker: tracker})
-            }
-            else if(tracker === false){
+            }else if(tracker === false){
                 throw 'dividendTracker'
             }
 
@@ -132,9 +141,10 @@ export default class ResultsPage extends React.Component {
             this.setState({walletRequired: false, tokenRequired: false, dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, globalGainDollar: calculatedData.globalGainDollar, todayGainDollar: calculatedData.todayGainDollar, fetching: true})
         }catch(err){
             console.log(err)
-            if(err === "dividendTracker"){                
+            if(err === "dividendTracker"){
                 this.setState({tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
             }else{
+                console.log(err)
                 alert('An error occured, please retry')
             }
         }
@@ -210,6 +220,7 @@ export default class ResultsPage extends React.Component {
             this.setState({errorWallet: true})
         }else{
             this.props.history.push('/results?token='+this.state.address+'&wallet='+this.state.wallet);
+            this.setState({walletRequired: false})
             this.showDividend();
         }
     }
@@ -218,20 +229,45 @@ export default class ResultsPage extends React.Component {
         if(this.state.customTracker === ""){
             this.setState({errorTracker: true})
         }else{
-            this.setState({response: {}})
             this.props.history.push('/results?token='+this.state.address+'&wallet='+this.state.wallet+'&tracker='+this.state.customTracker);
+            this.setState({response: {}});
             this.showDividend();
         }
     }
 
+    getTokenInfo = async() => {
+        const name = await this.context.global.actions.getTokenName(this.state.address);
+        const symbol = await this.context.global.actions.getTokenSymbol(this.state.address);
+        return {name: name, symbol: symbol}
+    }
+
+    saveInLocalStorage = async() => {
+        try{
+            let {name, symbol} = await this.getTokenInfo();
+            let {address} = this.state;
+            if(this.state.currentAccount){
+                this.context.user.actions.addToSearchHistory(this.state.currentAccount, address, name, symbol);
+            }else{
+                this.context.locale.actions.addToSearchHistory(address, name, symbol);
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+
     render() {
         return (
             <Container>
+                <TokenCard token={this.state.address} />
+                {this.state.dividends.length > 0 && <GainsGard globalGain={this.state.globalGain} todayGain={this.state.todayGain} />}
                 <TrackerWrapper>
                     {!this.state.walletRequired ?
                         <>
                             {this.state.dividends.length > 0 ?
-                                <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGainDollar} globalGain={this.state.globalGainDollar} wallet={this.state.wallet} token={this.state.address} />
+                                <>
+                                    <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGain} globalGain={this.state.globalGain} wallet={this.state.wallet} token={this.state.address} />
+                                </>
                             :
                             <>
                                 {this.state.response.status !== false &&
@@ -242,14 +278,14 @@ export default class ResultsPage extends React.Component {
                                                 <Text fontFamily="ABeeZee" mt={2} color="white">Loading your rewards...</Text>
                                             </Flex>
                                             :                                    
-                                            <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
-                                                <p>No data</p>
+                                            <Flex py={5} flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
+                                                <Text color="white" fontSize={[2, 3]} fontFamily="DM Sans" textAlign="center">Oops we can't find any data for this wallet</Text>
                                             </Flex>
                                         }
                                     </>
                                 }
                                 {this.state.response.type === "dividendTracker" && this.state.response.status === false &&
-                                    <ErrorTracker handleTracker={this.handleTracker} action={this.handleShowDividendTracker} errorWallet={this.state.errorTracker} />
+                                    <ErrorTracker handleTracker={this.handleTracker} action={this.handleShowDividendTracker} errorTracker={this.state.errorTracker} customTracker={this.state.customTracker} />
                                 }
                             </>
                             }

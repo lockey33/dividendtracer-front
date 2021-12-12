@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Card } from '../../Card';
 
-export const TrackerWrapper = styled.div`
-    display: flex;
-    background: #23262F;
-    border-radius: 10px;
-    padding: 40px 50px;
-    margin-top: 1rem;
-    @media (max-width: 768px) {
-        padding: 40px 15px;
-    }
-`
+export const TrackerWrapper = styled(Card)``
 
 export const AdBlock = styled.div`
     margin-top: 1rem;

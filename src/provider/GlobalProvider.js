@@ -34,7 +34,7 @@ class GlobalProvider extends Component {
 
     static contextType = WalletContext;
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             currentWallet: null,

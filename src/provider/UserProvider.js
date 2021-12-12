@@ -10,7 +10,9 @@ class UserProvider extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            
+            watchlist: [],
+            searchHistory: [],
+            fetched: false,
         }
 
         this.actions = {
@@ -22,8 +24,12 @@ class UserProvider extends React.Component {
             removeFromWatchlist: this.removeFromWatchlist,
             addToWatchlist: this.addToWatchlist,
             isInWatchlist: this.isInWatchlist,
+            removeFromSearchHistory: this.removeFromSearchHistory,
+            fetchSearchHistory: this.fetchSearchHistory,
+            reset: this.reset,
+            init: this.init,
         }
-    }
+    }        
 
     createUser = async(address) => {
         axios({
@@ -36,8 +42,7 @@ class UserProvider extends React.Component {
         .then(res => {
             console.log('user saved');
         })
-        .catch(err => {
-            // console.log(err);
+        .catch(err => {            
             this.getUser(address);
         });
     }
@@ -58,41 +63,71 @@ class UserProvider extends React.Component {
         })
     }
 
-    getUserSearchHistory = async(address) => {
-        axios({
-            method: 'get',
-            url: 'http://localhost:3001/v1/users/getUserSearchList',
+    getUserSearchHistory = async (address) => {
+        let data = await axios({
+            method: 'post',
+            url: 'http://localhost:3001/v1/users/getUserSearchHistory',
             data: {
                 address: address
             }
         })
         .then(res => {
+            console.log(res.data);
+            this.setState({searchHistory: res.data});
             return res.data;
         })
         .catch(err => {
             console.log('user not found');
         })
+        this.fetchSearchHistory(address);
+        return data;
     }
 
-    addToSearchHistory = async(wallet, tokenAddress, tokenName) => {
+    addToSearchHistory = async(wallet, tokenAddress, tokenName, symbol) => {
+        this.context.actions.addToSearchHistory(tokenAddress, tokenName, symbol);
         axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/addToSearchHistory',
             data: {
                 address: wallet,
                 tokenAddress: tokenAddress,
-                tokenName: tokenName
+                tokenName: tokenName,
+                symbol: symbol
             }
         })
         .then(res => {
-            console.log('added to search list');
+            let {data} = res
+            this.setState((prevProps) => ({searchHistory: data, ...prevProps.searchHistory}));             
         })
         .catch(err => {
             console.log(err);
-        })
+        });
+    }
+
+    fetchSearchHistory = async(address) => {
+        let localData = this.context.actions.getSearchHistory();
+        
+        if(localData.length === 0 && this.state.searchHistory.length > 0){
+            return this.state.searchHistory.map(item => {
+                this.context.actions.addToSearchHistory(item.address, item.name, item.symbol);
+            });
+        }else if(this.state.searchHistory.length === 0 && localData.length > 0){
+            return localData.map(item => {
+                return this.addToSearchHistory(address, item.address, item.name, item.symbol);
+            });
+        }else{
+            return localData.map(item => {
+                this.state.searchHistory.map(item2 => {
+                    if(item.address !== item2.address){
+                        return this.addToSearchHistory(address, item.address, item.name, item.symbol);
+                    }
+                })
+            });
+        }
     }
     
     removeFromSearchHistory = async(wallet, tokenAddress) => {
+        this.context.actions.removeFromSearchHistory(tokenAddress);
         axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/removeFromSearchHistory',
@@ -102,6 +137,7 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
+            this.setState({searchHistory: res.data});
             console.log('removed from search list');
         })
         .catch(err => {
@@ -109,17 +145,19 @@ class UserProvider extends React.Component {
         })
     }
 
-    addToWatchlist = async(wallet, tokenAddress, tokenName) => {
+    addToWatchlist = async(wallet, tokenAddress, tokenName, symbol) => {
         axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/addToWatchlist',
             data: {
                 address: wallet,
                 tokenAddress: tokenAddress,
-                tokenName: tokenName
+                tokenName: tokenName,
+                symbol: symbol
             }
         })
         .then(res => {
+            this.setState((prevProps) => ({watchlist: res.data, ...prevProps.watchlist})); 
             console.log('added to watchlist');
         })
         .catch(err => {
@@ -128,7 +166,7 @@ class UserProvider extends React.Component {
     }
 
     removeFromWatchlist = async(wallet, tokenAddress) => {
-        axios({
+        await axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/removeFromWatchlist',
             data: {
@@ -137,7 +175,8 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
-            console.log('removed from watchlist');
+            this.setState({watchlist: res.data});
+            console.log(res)
         })
         .catch(err => {
             console.log(err);
@@ -153,25 +192,37 @@ class UserProvider extends React.Component {
             }
         })
         .then(res => {
+            this.setState({watchlist: res.data})
             return res.data;
         })
         .catch(err => {
             console.log('user not found');
-        })
-
+        })        
         return userWatchlist;
     }
 
     isInWatchlist = async(address, tokenAddress) => {
         let isInWatchlist = await this.getUserWatchlist(address)
         .then(res => {
-                let isInWatchlist = res.some(item => item.tokenAddress === tokenAddress);
-                return isInWatchlist;
+            let isInWatchlist = res.some(item => item.address === tokenAddress);
+            return isInWatchlist;
         })
         .catch(err => {
             console.log(err);
         })
         return isInWatchlist
+    }
+
+    reset = () => {
+        this.setState({
+            searchHistory: [],
+            watchlist: []
+        })
+    }
+
+    init = async(address) => {
+        await this.getUserSearchHistory(address);
+        await this.getUserWatchlist(address);
     }
 
 

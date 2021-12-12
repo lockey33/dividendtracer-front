@@ -1,81 +1,76 @@
-import React, {useEffect, useState} from 'react';
-import { LocaleStorageContext } from './LocalStorageProvider';
+import React, {useEffect, useState, useCallback} from 'react';
 import { UserContext } from './UserProvider';
+import { useWeb3React } from "@web3-react/core"
+import { InjectedConnector } from '@web3-react/injected-connector'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import {isMobile} from 'react-device-detect'
 
 
 const WalletContext = React.createContext({});
 
 const WalletProvider = ({children}) => {
     
-    const [currentAccount, setCurrentAccount] = useState(null);
     const context = React.useContext(UserContext);
-    const checkWalletIsConnected = async() => { 
-        const { ethereum } = window;
+    const { active, account, library, connector, activate, deactivate, } = useWeb3React();
 
-        if(!ethereum){
-            console.log("No wallet detected");
-        }else{
-            console.log("Wallet detected");
-            const accounts = await ethereum.request({ method: 'eth_accounts' });
-            if(accounts.length > 0){
-                setCurrentAccount(accounts[0]);
-            }else{
-                console.log("No accounts detected");
-            }
-            ethereum.on('accountsChanged', function (accounts) {
-                setCurrentAccount(accounts[0]);
-            })
-        } 
+    const walletConnect = new WalletConnectConnector({
+        rpc: { 1: 'https://mainnet.infura.io/v3/5ac444b3c8014807ae1d035e482d996f', 56: 'https://bsc-dataseed.binance.org/' },
+        qrcode: true
+    })
 
-    }
+    const injected = new InjectedConnector({
+        supportedChainIds: [1, 3, 4, 5, 42, 56],
+    })
 
-    const connectWalletHandler = async() => {
-
-        const { ethereum } = window;
-
-        if(!ethereum){
-            console.log("Please install MetaMask");
-        }else{
-            try{
-                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                context.user.actions.createUser(accounts[0]);
-                setCurrentAccount(accounts[0]);
-            }catch(error){
-                console.log(error);
-            }
-        }
-     }
-
-    const disconnectWalletHandler = async() => {
-        const { ethereum } = window;
-
-        if(!ethereum){
-            console.log("Please install MetaMask");
-        }else{
-            try{
-                await ethereum.request({
-                    method: "eth_requestAccounts",
-                    params: [{eth_accounts: {}}]
-                })
-                setCurrentAccount(null);
-            }catch(error){
-                console.log(error);
-            }
-        }
-    }
 
     useEffect(() => {
-        checkWalletIsConnected();      
-    }, []);
+        context.user.actions.createUser(account);
+    }, [account])
+
+    useEffect(() => {
+        injected.isAuthorized().then((isAuthorized) => {
+            if (isAuthorized) {
+                activate(injected);
+            }
+        })    
+    }, [])
+
+    const resetWalletConnector = () => {
+        if (
+            walletConnect &&
+            walletConnect instanceof WalletConnectConnector &&
+            walletConnect.walletConnectProvider?.wc?.uri
+          ) {
+            walletConnect.walletConnectProvider = undefined
+          }
+    }
+
+    const connect  = async(type) => {
+        if(type === "walletconnect"){
+            await activate(walletConnect)
+            .catch((err) => {
+                resetWalletConnector();
+            });
+        }else if(type === "injected"){
+            await activate(injected)
+        }
+    };
+
+    const disconnect = async() => {
+        try {
+            deactivate()
+        }catch(error){
+            console.log(error)
+        }
+    }
 
     const state = {
-        currentAccount
+        currentAccount: account
     }
 
     const actions = {
-        checkWalletIsConnected,
-        connectWalletHandler,
-        disconnectWalletHandler
+        connect,
+        disconnect
     }
 
     return (

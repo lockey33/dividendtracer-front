@@ -6,12 +6,19 @@ import DatePicker from "react-datepicker";
 import * as moment from 'moment';
 import { PageButton, StyledTable } from './styled';
 
+const ExampleCustomInput = ({ value, onClick }) => (
+    <button className="example-custom-input" onClick={onClick}>
+        set Date
+    </button>
+  );
+
 export const TableWrapper = ({data}) => {
 
     const [dateRange, setDateRange] = React.useState("");
     const [dateGain, setDateGain] = React.useState("");
     const [dividends, setDividends] = React.useState([]);
     const [previousDividends, setPreviousDividends] = React.useState([]);
+    const [datePickerVisible, setDatePickerVisible] = React.useState(false);
 
     useEffect(() => {
         let newDate = data.map(item => {
@@ -85,19 +92,20 @@ export const TableWrapper = ({data}) => {
 
     return(
         <>
-        <Box mb={3}>
-            <Heading mb={2} fontFamily={'DM Sans'} fontSize={[2, 4]} color="white">Filter by date</Heading>
+        <Flex mb={3} justifyContent={'space-between'} alignItems="center">
+            <Heading mb={2} fontFamily={'DM Sans'} fontSize={[2, 4]} color="white">Transactions</Heading>
             <Box alignItems="center" display="inline-flex">
                 <DatePicker id="datePicker" placeholderText="YYYY/MM/DD" dateFormat="yyyy/MM/dd"
                     selected={dateRange}
                     onChange={(date) => handleDate(date)}
                     isClearable={true}
-                    />
+                    customInput={<ExampleCustomInput />}
+                />
             </Box>
             {dateRange !== '' && 
                 <Text mt={3} color="white" fontSize={2}>Profit on <Moment format='YYYY/MM/DD'>{dateRange}</Moment> : <strong>{dateGain} $</strong></Text>
             }
-        </Box>
+        </Flex>
         <StyledTable {...getTableProps()}>
             <thead>
                 {headerGroups.map(headerGroup => (

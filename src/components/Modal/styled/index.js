@@ -42,8 +42,10 @@ export const ModalInner = styled.div`
     background-color: #23262F;
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    padding: 1rem 1rem 3rem;
+    padding: 2rem 1rem 2rem;
     form{
-        padding: 0 40px;
+        @media screen and (min-width: 760px){
+            padding: 0 40px;
+        }
     }
 `
