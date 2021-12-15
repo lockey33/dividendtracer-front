@@ -18,6 +18,11 @@ export const useTrendingCoins = () => {
             return setTrendingCoins(response);
         };
         fetchData();
+
+        return () => {
+            setTrendingCoins([]);
+        }
+
     }, []);
     
     return trendingCoins

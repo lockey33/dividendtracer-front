@@ -21,12 +21,14 @@ export const useTokenInfo = (token) => {
 
     useEffect(() => {
         async function fetchData() {
-            const tokenName = await getTokenName();
-            const tokenSymbol = await getTokenSymbol();
-            setTokenName(tokenName);
-            setTokenSymbol(tokenSymbol);
+            setTokenName(await getTokenName());
+            setTokenSymbol(await getTokenSymbol());
         }
         fetchData();
+        return () => {
+            setTokenName("");
+            setTokenSymbol("");
+        }
     }, [token])    
 
     return {tokenName, tokenSymbol} 

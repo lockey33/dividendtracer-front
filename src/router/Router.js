@@ -28,11 +28,11 @@ const AppRouter = () => {
 const ModalAnnouncement = () => {
 
     const [isModalOpen, setIsModalopen] = useState(false);
-    const modalViewed = localStorage.getItem('modalViewed');
+    const modalViewed = React.useMemo(() => {return localStorage.getItem('modalViewed')}, []);
 
     const closeModal = () => {
         setIsModalopen(false);
-        // localStorage.setItem('modalViewed', true);
+        localStorage.setItem('modalViewed', true);
     }
 
     useEffect(() => {
@@ -41,7 +41,7 @@ const ModalAnnouncement = () => {
                 setIsModalopen(true);
                 return;
             }
-        }, 100)
+        }, 20000);
     }, [])
 
     return(

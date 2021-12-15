@@ -66,6 +66,7 @@ export const useWeb3Wallet = () => {
             context.user.actions.createUser(account);
             sessionStorage.setItem('accountSaved', true);
         }
+        return () => {}
     }, [account])
 
     return {

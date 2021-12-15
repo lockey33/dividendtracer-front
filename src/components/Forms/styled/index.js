@@ -255,7 +255,7 @@ const SearchHistoryItem = ({handleClick, index, item, handleRemove}) => {
 const SearchHistoryList = ({handleClick, active}) => {
     
     const {searchHistory, fetched, removeFromSearchHistory} = useSearchHistory()
-    const {watchlist} = useWatchlist()
+    const {watchlist, removeFromWatchlist} = useWatchlist()
 
     return(
         fetched ?
@@ -278,7 +278,7 @@ const SearchHistoryList = ({handleClick, active}) => {
                    watchlist.length > 0 ?
                     watchlist.map((item, index) => {
                         return (
-                            <SearchHistoryItem key={index} handleClick={handleClick} index={index} item={item} />
+                            <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={() => removeFromWatchlist(item.address)} index={index} item={item} />
                         )
                     })
                     :

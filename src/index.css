@@ -24,3 +24,7 @@ code {
   background-color: white !important;
   color: black !important;
 }
+
+.marquee{
+  min-width: min-content !important;
+}

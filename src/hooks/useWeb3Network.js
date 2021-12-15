@@ -10,6 +10,7 @@ export const useWeb3Network = () => {
 
     useEffect(() => {
         checkChainId();
+        return () => null
     }, [active, account, library, connector]);
 
     const checkChainId = async() => {

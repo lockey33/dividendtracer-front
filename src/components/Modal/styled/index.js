@@ -25,30 +25,7 @@ export const ModalWrapper = styled.div`
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
-    ${props => props.isOpen && `
-        z-index: 9999;
-        opacity: 1;
-        animation: fadeInOpacity 0.6s ease;
-        @keyframes fadeInOpacity {
-        0% {
-            opacity: 0;
-        }
-        100%{
-            opacity: 1;
-        }
-    `}
-    ${props => !props.isOpen && `
-        z-index: -1;
-        opacity: 0;
-        animation: fadeOutOpacity 0.6s ease;
-        @keyframes fadeOutOpacity {
-        0% {
-            opacity: 1;
-        }
-        100%{
-            opacity: 0;
-        }
-    `}   
+    z-index: 9;
 `
 
 export const ModalInner = styled.div`
@@ -62,7 +39,7 @@ export const ModalInner = styled.div`
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     padding: 10px 20px 40px;
-    z-index: 999;
+    z-index: 99;
     max-width: 420px;
     max-height: 90vh;
     form{

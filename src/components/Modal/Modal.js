@@ -82,53 +82,41 @@ export const ModalContact = ({isOpen, onClose, title}) => {
         }
     };
 
-    function close(e){
-        e.preventDefault()
-        
-        if (onClose) {
-            onClose()
-        }
-    }
-
     return (
-        <ModalWrapper isOpen={isOpen}>
-            <ModalInner isOpen={isOpen}>
-                <ModalHeader title={title} close={(e) => close(e)} />
-                {!mailSent ?
-                    <FormWrapper ref={form} onSubmit={(e) => sendEmail(e)}>
-                        <ItemForm>
-                            <Input className={errorName ? 'error' : ''} onChange={(e) => {setErrorName(false); setName(e.target.value)}} type="text" name="name" placeholder="Name"/>
-                        </ItemForm>
-                        <ItemForm>
-                            <Input className={errorEmail ? 'error' : ''} onChange={(e) => {setErrorEmail(false); setEmail(e.target.value)}} type="email" name="email" placeholder="Email"/>
-                        </ItemForm>
-                        <ItemForm>
-                            <Input className={errorSubject ? 'error' : ''} onChange={(e) => {setErrorSubject(false); setSubject(e.target.value)}} type="text" name="subject" placeholder="Subject"/>
-                        </ItemForm>
-                        <ItemForm>
-                            <Textarea className={errorMessage ? 'error' : ''} onChange={(e) => {setErrorMessage(false); setMessage(e.target.value)}} rows={'5'} name="message" placeholder="Message"/>
-                        </ItemForm>
-                        {!sent ?
-                            <SubmitButton type="submit">Send</SubmitButton>
-                            :
-                            <Flex justifyContent="center" alignItems="center" flexDirection="column">
-                                <CustomLoader size={50} />
-                            </Flex>
-                        }
-                    </FormWrapper>
-                    :
-                    <Flex justifyContent="center" alignItems="center" flexDirection="column">
-                        <Heading color="white" fontFamily="DM Sans" fontSize={[4]}>Thank you for your message!</Heading>
-                        <Heading color="white" fontFamily="DM Sans" fontSize={[2]}>We will get back to you as soon as possible.</Heading>
-                    </Flex>
-                }
-            </ModalInner>
-        </ModalWrapper>
+        <Modal title={title} isOpen={isOpen} onClose={onClose}>
+            {!mailSent ?
+                <FormWrapper ref={form} onSubmit={(e) => sendEmail(e)}>
+                    <ItemForm>
+                        <Input className={errorName ? 'error' : ''} onChange={(e) => {setErrorName(false); setName(e.target.value)}} type="text" name="name" placeholder="Name"/>
+                    </ItemForm>
+                    <ItemForm>
+                        <Input className={errorEmail ? 'error' : ''} onChange={(e) => {setErrorEmail(false); setEmail(e.target.value)}} type="email" name="email" placeholder="Email"/>
+                    </ItemForm>
+                    <ItemForm>
+                        <Input className={errorSubject ? 'error' : ''} onChange={(e) => {setErrorSubject(false); setSubject(e.target.value)}} type="text" name="subject" placeholder="Subject"/>
+                    </ItemForm>
+                    <ItemForm>
+                        <Textarea className={errorMessage ? 'error' : ''} onChange={(e) => {setErrorMessage(false); setMessage(e.target.value)}} rows={'5'} name="message" placeholder="Message"/>
+                    </ItemForm>
+                    {!sent ?
+                        <SubmitButton type="submit">Send</SubmitButton>
+                        :
+                        <Flex justifyContent="center" alignItems="center" flexDirection="column">
+                            <CustomLoader size={50} />
+                        </Flex>
+                    }
+                </FormWrapper>
+                :
+                <Flex justifyContent="center" alignItems="center" flexDirection="column">
+                    <Heading color="white" fontFamily="DM Sans" fontSize={[4]}>Thank you for your message!</Heading>
+                    <Heading color="white" fontFamily="DM Sans" fontSize={[2]}>We will get back to you as soon as possible.</Heading>
+                </Flex>
+            }
+        </Modal>
     )
 }
 
 export const Modal = ({isOpen, onClose, title, children}) => {
-    const isMobileDevice = useIsMobileDevice();
     const wrapperRef = React.createRef();
     const {clicked} = useOutsideAlerter(wrapperRef);
 
@@ -139,15 +127,14 @@ export const Modal = ({isOpen, onClose, title, children}) => {
     }, [clicked])
 
     return(
-        <>
-        <ModalWrapper isOpen={isOpen}>
-            <ModalInner isOpen={isOpen} ref={wrapperRef}>
+        isOpen &&
+        <ModalWrapper>
+            <ModalInner ref={wrapperRef}>
                 <ModalHeader title={title} close={(e) => onClose(e)} />
                 <Flex flexDirection="column" justifyContent="center" alignItems="center">
                     {children}
                 </Flex>
             </ModalInner>            
-        </ModalWrapper>
-      </>
+        </ModalWrapper> 
     )
 }

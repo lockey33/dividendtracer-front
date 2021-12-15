@@ -33,12 +33,12 @@ export const TrendingsMarquee = ({}) => {
     const trendings = useTrendingCoins();
 
     return (
-        trendings && trendings.length > 9 &&
+        trendings && trendings.length > 0 &&
         <Flex alignItems="center" justifyContent="center">
             <Flex alignItems="center" py={2} px={4} sx={{borderRight: 'solid 1px grey'}}>
-                <Text  color="white" fontSize={[1, 2, 3]} fontWeight="bold">Trendings</Text>
+                <Flex alignItems='center' color="white" fontSize={[1, 2, 3]} fontWeight="bold">🏆 <Text>Trendings</Text></Flex>
             </Flex>
-            <Marquee gradient={false} pauseOnHover={true}>
+            <Marquee gradient={false} speed={80}>
                 {trendings.map((trending, index) => {
                     return (
                         <ItemMarquee key={index} index={index + 1} item={trending} />

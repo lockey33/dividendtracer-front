@@ -29,13 +29,14 @@ export const useWatchlist = (tokenAddress, tokenName, tokenSymbol) => {
         return data;
     }
 
-    const removeFromWatchlistBDD = async() => {
+    const removeFromWatchlistBDD = async(address) => {
+        address = address ? address : tokenAddress;
         let data = await axios({
             method: 'post',
             url: 'http://localhost:3001/v1/users/removeFromWatchlist',
             data: {
                 address: account,
-                tokenAddress: tokenAddress
+                tokenAddress: address
             }
         })
         .then(res => {
@@ -78,12 +79,13 @@ export const useWatchlist = (tokenAddress, tokenName, tokenSymbol) => {
          return;
      }
  
-    const removeFromWatchlistLocal = () => {
-         let watchlist = localStorage.getItem('watchlist');
-         watchlist = watchlist ? JSON.parse(watchlist) : [];
-         watchlist = watchlist.filter(item => item.address !== tokenAddress);         
-         localStorage.setItem('watchlist', JSON.stringify(watchlist));
-         setWatchlist(watchlist);
+    const removeFromWatchlistLocal = (address) => {
+        address = address ? address : tokenAddress;
+        let watchlist = localStorage.getItem('watchlist');
+        watchlist = watchlist ? JSON.parse(watchlist) : [];
+        watchlist = watchlist.filter(item => item.address !== address);         
+        localStorage.setItem('watchlist', JSON.stringify(watchlist));
+        setWatchlist(watchlist);
     }
 
 
@@ -95,12 +97,12 @@ export const useWatchlist = (tokenAddress, tokenName, tokenSymbol) => {
 
     const addToWatchlist = () => {
         account ? addToWatchlistBDD() : addToWatchlistLocal();
-        fetchWatchlist();
+        setIsInWatchlist(true);
     };
     
-    const removeFromWatchlist = () => {
-        account ? removeFromWatchlistBDD() : removeFromWatchlistLocal();
-        fetchWatchlist();
+    const removeFromWatchlist = (tokenAddress) => {        
+        account ? removeFromWatchlistBDD(tokenAddress) : removeFromWatchlistLocal(tokenAddress);
+        setIsInWatchlist(false);
     };
 
     const fetchWatchlist = async() => {
@@ -118,7 +120,8 @@ export const useWatchlist = (tokenAddress, tokenName, tokenSymbol) => {
     useEffect(() => {
         fetchWatchlist();
         return () => {
-            fetchWatchlist();
+            setIsInWatchlist(false);
+            setWatchlist([]);
         }
     }, []);
     

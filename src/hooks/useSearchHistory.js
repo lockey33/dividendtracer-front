@@ -107,6 +107,12 @@ export const useSearchHistory = () => {
 
     useEffect(() => {
         account ? getSearchHistoryBDD().finally(() => {setFetched(true)}) : getLocalSearchHistory().finally(() => setFetched(true));
+    
+        return () => {
+            setFetched(false);
+            setSearchHistory([]);
+        }
+
     }, [account])
     
     return {

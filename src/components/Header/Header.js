@@ -48,8 +48,8 @@ const Header = () => {
                             <OptionsMenuWrapper ref={wrapperRef}>
                                 <OptionsMenu>
                                     <Link display={'flex'} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px', textDecoration: "none", "svg":{opacity: 0.6}}} id="telegramMenu" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane /></Link>
-                                    <Link display={'flex'} mt={2} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px'}} onClick={() => {setIsModalOpen(true); setModalTitle('Contact us')}}>Contact us <Ask /></Link>
-                                    <Link display={'flex'} mt={2} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px'}} id="requestFeatures" onClick={() => {setIsModalOpen(true); setModalTitle('Request features')}}>Request features <Coffee /></Link>
+                                    <Link display={'flex'} mt={2} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px'}} onClick={() => {setIsOptionsOpen(false); setIsModalOpen(true); setModalTitle('Contact us')}}>Contact us <Ask /></Link>
+                                    <Link display={'flex'} mt={2} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px'}} id="requestFeatures" onClick={() => {setIsOptionsOpen(false);setIsModalOpen(true); setModalTitle('Request features')}}>Request features <Coffee /></Link>
                                     <Link display={'flex'} mt={2} mb={2} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px'}} id="legalsMenu">Legal & privacy <Docs /></Link>
                                 </OptionsMenu>
                             </OptionsMenuWrapper>
