@@ -45,9 +45,10 @@ export class Tracker extends React.Component {
 
     checkAddress = async (address) => {
         try{
-            ethers.utils.getAddress(address.trim())
+            ethers.utils.isAddress(address.trim())
             return true
         }catch(err){
+            console.log(err);
             return false
         }
     }

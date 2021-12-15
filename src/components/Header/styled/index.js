@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {Flex} from "rebass";
+import {Flex, Button} from "rebass";
 import MetamaskIcon from "../../../assets/images/metamask.png";
 import WalletConnectIcon from "../../../assets/images/walletconnect-logo.png";
 
@@ -48,32 +48,26 @@ export const ActionsWrapper = styled.div`
 `
 
 export const WalletButton = styled.button`
-    background: rgba(169, 254, 167, 0.55);
+    background: ${props => props.error ? 'rgb(255, 67, 67)': 'rgba(169, 254, 167, 0.55)'};
     border-radius: 10px;
     padding: 10px 20px;
-    border: none;
+    border: solid 1px transparent;
     font-family:'DM Sans';
     font-style: normal;
     font-weight: bold;
     display: flex;
     align-items: center;
     text-align: center;
-    color: #6CF057;
+    color:  ${props => props.error ? 'white' : '#6CF057'};
     cursor: pointer;
     @media (min-width: 768px) {
         font-size: 18px;
     }
 `
 
-export const AccountWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 10px;
-`
-
 export const AccountAddress = styled.div`
     font-family: 'DM Sans';
-    font-size: 18px;
+    font-size: 16px;
     color: #FFFFFF;
     @media (max-width: 768px) {
         font-size: 14px;
@@ -88,52 +82,12 @@ export const AccountIcon = styled.div`
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    >:last-child{
-        z-index: 1000;
-        position: absolute;
-        color: white;
-        display: none;
-        width: 20px;
-        height: 20px
-    }
-    &:hover{
-        cursor: pointer;
-        >:first-child{
-            opacity: 0.5
-        }
-        >:last-child{
-            display: block;
-        }
-        canvas{
-            opacity: 0.5;
-        }
-    }
+    height: fit-content;
+    width: fit-content;
     canvas{
         width: 100% !important;
         height: 100% !important;
         border-radius: 100%;
-    }
-`
-
-export const TelegramButton = styled.a`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(94,94,94,0.15);
-    padding: 10px 20px;
-    border-radius: 10px;
-    border: solid 1px transparent;
-    color: #fff;
-    font-size: 16px;
-    gap: 15px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    &:hover {        
-        border: solid 1px #6CF057;
-    }
-    @media (max-width: 768px) {
-        display: none;
     }
 `
 
@@ -151,36 +105,50 @@ export const OptionsButton = styled.button`
 `
 
 export const OptionsMenu = styled.div`
-    padding: 0.5rem;
+    padding: 0.7rem 1rem;
     background: #1F1F21;
     min-width: 180px;
     border-radius: 18px;
     border: 1px solid rgb(25, 27, 31);
     display: grid;
-    grid-template-columns: 1fr;
-    a, div{
-        display: flex;
-        flex: 1 1 0%;
-        flex-direction: row;
-        align-items: center;
-        padding: 0.5rem;
-        justify-content: space-between;
-        color: rgb(195, 197, 203);
-        text-decoration: none;
+    font-family: 'DM Sans';
+    font-size: 16px;
+    color: #FFFFFF;
+    width: max-content;
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
+    >div{
+        width: 100%;
+    }
+    a:hover{
+        color: white;
         cursor: pointer;
         svg{opacity: 0.6;}
-        &:hover{
-            color: white;
-        }
     }
+    
 `
 
 export const OptionsWrapper = styled.div`
     position: relative;
-    &:hover{
-        >button{
+    >button{
+        border: ${props => props.active ? 'solid 1px #6CF057' : ''};
+        &:hover{
             border: solid 1px #6CF057;
         }
+    } 
+    ${props => props.active && `
+        &::after{
+            content: '';
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            right: 0px;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9;
+        }`
+        
     }
 `
 
@@ -189,68 +157,73 @@ export const OptionsMenuWrapper = styled.div`
     right: 0;
     top: 100%;
     padding-top: 20px;
+    z-index: 10;
 `
 
-export const MetamaskButton = styled.button`
-    background: white;
+export const ConnectorButton = styled(Button)`
     border-radius: 10px;
-    padding: 10px 20px 10px 40px;
     border: none;
     font-family:'DM Sans';
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: black;
-    position: relative;
-    cursor: pointer;
-    @media (min-width: 768px) {
-        font-size: 14px;
-    }
-    &::before{
-        content: '';
-        background-image: url(${MetamaskIcon});
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        width: 20px;
-        height: 20px;
-        position: absolute;
-        left: 10px;
-    }
-    &:hover{
-        opacity: 0.8;
-    }
-`
-
-export const WalletConnectButton = styled.button`
-    background: white;
-    border-radius: 10px;
-    padding: 10px 20px 10px 40px;
-    border: none;
-    font-family:'DM Sans';
-    font-size: 16px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     text-align: center;
     color: black;
     cursor: pointer;
     position: relative;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+    img{
+        max-width: 20px;
+    }
     @media (min-width: 768px) {
         font-size: 14px;
-    }
-    &::before{
-        content: '';
-        background-image: url(${WalletConnectIcon});
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        width: 20px;
-        height: 20px;
-        position: absolute;
-        left: 10px;
     }
     &:hover{
         opacity: 0.8;
     }
+`
+
+export const AccountWrapper = styled(OptionsButton)`
+    display: flex;
+    align-items: center;
+    ${'' /* padding: 0 20px; */}
+    gap: 15px;
+    &:hover{
+        border: solid 1px #6CF057;
+    }
+`
+
+export const TelegramButton = styled(OptionsButton)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(94,94,94,0.15);
+    border-radius: 10px;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 16px;
+    gap: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover {        
+        border: solid 1px #6CF057;
+    }
+    ${props => !props.noMobile && `
+        @media (max-width: 768px) {
+            display: none;
+        }
+    `}
+`
+
+export const SubMenuWrapper = styled(OptionsWrapper)``
+
+export const MenuWrapper = styled(OptionsMenuWrapper)``
+
+export const Menu = styled(OptionsMenu)`
+    ${'' /* grid-template-columns: min-content; */}
 `

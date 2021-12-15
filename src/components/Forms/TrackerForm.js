@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { Heading, Flex, Box } from 'rebass';
 import { useOutsideAlerter } from '../../hooks/useOutsideAlerter';
+import { useWeb3Network } from '../../hooks/useWeb3Network';
+import { useWeb3Wallet } from '../../hooks/useWeb3Wallet';
 import { GlobalContext } from '../../provider/GlobalProvider';
 import { FormWrapper, ItemForm, ErrorMessage, Input, SubmitButton, AutoComplete, SearchHistoryWrapper, SearchHistory } from './styled';
 
@@ -23,11 +25,20 @@ const InputTracker = ({handleAddress, errorToken}) => {
     const wrapperRef = React.useRef(null);
     const [showSearchhistory, setShowSearchhistory] = React.useState(false);
     const [selectedToken, setSelectedToken] = React.useState('');
-    const clicked = useOutsideAlerter(wrapperRef);
+    const {clicked} = useOutsideAlerter(wrapperRef);
 
     const handleClick = (token) => {
         setShowSearchhistory(false);
         setSelectedToken(token);
+    }
+
+    const handleInput = (value) => {
+        if(value == ''){
+            setShowSearchhistory(true);
+        }else{
+            setShowSearchhistory(false);
+            handleAddress(value)
+        }
     }
 
     useEffect(() => {
@@ -42,12 +53,14 @@ const InputTracker = ({handleAddress, errorToken}) => {
             setShowSearchhistory(false);
         }
     }, [clicked])
+
+
     
     return(
         <ItemForm>
             <label htmlFor="item">Token address</label>
             <SearchHistoryWrapper ref={wrapperRef}>
-                <Input ref={inputRef} autoComplete="off" onFocus={() => setShowSearchhistory(true)} className={errorToken ? 'error' : ''} onChange={(e) => handleAddress(e.target.value)} type="text" name="tokenaddr" placeholder="0x..." required />
+                <Input ref={inputRef} autoComplete="off" onFocus={() => setShowSearchhistory(true)} className={errorToken ? 'error' : ''} onChange={(e) => handleInput(e.target.value)} type="text" name="tokenaddr" placeholder="0x..." required />
                 <SearchHistory handleClick={handleClick} isOpen={showSearchhistory} />
             </SearchHistoryWrapper>
             <ErrorMessage>{errorToken ? 'Please check token address' : ''}</ErrorMessage>
@@ -57,16 +70,17 @@ const InputTracker = ({handleAddress, errorToken}) => {
 
 export const InputWallet = ({handleWallet, errorWallet}) => {
     
-    const context = React.useContext(GlobalContext);
-    const currentAccount = context.wallet.state.currentAccount;
+    const {account} = useWeb3Wallet();
+    const {networkError} = useWeb3Network();
+
     const walletInputRef = React.createRef();
 
     const [wallet, setWalletState] = React.useState('');
     
     const setWallet = () => {
-        setWalletState(currentAccount);
-        handleWallet(currentAccount)
-        walletInputRef.current.value = currentAccount;
+        setWalletState(account);
+        handleWallet(account);
+        walletInputRef.current.value = account;
         walletInputRef.current.disabled = true;
     }
 
@@ -86,12 +100,12 @@ export const InputWallet = ({handleWallet, errorWallet}) => {
     }
 
     useEffect(() => {
-        if(currentAccount) {
+        if(account && !networkError) {
             setWallet();
         }else{
             resetWallet();
         }
-    }, [currentAccount])
+    }, [account, networkError])
     
 
     return(
@@ -100,7 +114,7 @@ export const InputWallet = ({handleWallet, errorWallet}) => {
             <Input className={errorWallet ? 'error' : ''} ref={walletInputRef}  onChange={(e) => handleWallet(e.target.value)} type="text" name="walletaddr" placeholder="0x..." required />
             {errorWallet ? <ErrorMessage>Please check your wallet address</ErrorMessage> : null}
             <Box>
-                {currentAccount ? <Box sx={{'&:hover':{opacity: 0.5, cursor: 'pointer'}}} display="inline-block" fontFamily="DM Sans" fontSize={[1]} color="white" onClick={() => changeWallet()} mt={2}>{wallet !== '' ? 'Use another wallet' : 'Use your wallet'}</Box> : null}
+                {account ? <Box sx={{'&:hover':{opacity: 0.5, cursor: 'pointer'}}} display="inline-block" fontFamily="DM Sans" fontSize={[1]} color="white" onClick={() => changeWallet()} mt={2}>{wallet !== '' ? 'Use another wallet' : 'Use your wallet'}</Box> : null}
             </Box>
         </ItemForm>
     )

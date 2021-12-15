@@ -38,10 +38,11 @@ class LocaleStorageProvider extends React.Component {
         return;
     }
 
-    removeFromWatchlist = (tokenInfo) => {
+    removeFromWatchlist = (token) => {
         let watchlist = localStorage.getItem('watchlist');
         watchlist = watchlist ? JSON.parse(watchlist) : [];
-        watchlist = watchlist.filter(item => item.address !== tokenInfo.address);
+        watchlist = watchlist.filter(item => item.address !== token);
+        console.log(watchlist);
         localStorage.setItem('watchlist', JSON.stringify(watchlist));
         this.setState({watchlist});
     }
@@ -67,6 +68,7 @@ class LocaleStorageProvider extends React.Component {
     getSearchHistory = () => {
         let searchHistory = localStorage.getItem('searchHistory');
         searchHistory = searchHistory ? JSON.parse(searchHistory) : [];
+        searchHistory = searchHistory.reverse();
         this.setState({searchHistory});
         return searchHistory;
     }

@@ -2,22 +2,18 @@ import styled from 'styled-components';
 
 export const ModalHeaderWrapper = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
     position: relative;
     margin-bottom: 2rem;
     button{
-        position: absolute;
-        right: 0;
-        padding: 0.5rem;
         border: none;
         background: transparent;
         cursor: pointer;
         color: white;
         font-size: 30px;
         &:hover{
-            background: rgba(0,0,0,0.1);
+            opacity: 0.5;
         }
     }   
 `
@@ -29,7 +25,30 @@ export const ModalWrapper = styled.div`
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
-    z-index: 100;
+    ${props => props.isOpen && `
+        z-index: 9999;
+        opacity: 1;
+        animation: fadeInOpacity 0.6s ease;
+        @keyframes fadeInOpacity {
+        0% {
+            opacity: 0;
+        }
+        100%{
+            opacity: 1;
+        }
+    `}
+    ${props => !props.isOpen && `
+        z-index: -1;
+        opacity: 0;
+        animation: fadeOutOpacity 0.6s ease;
+        @keyframes fadeOutOpacity {
+        0% {
+            opacity: 1;
+        }
+        100%{
+            opacity: 0;
+        }
+    `}   
 `
 
 export const ModalInner = styled.div`
@@ -37,15 +56,19 @@ export const ModalInner = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
+    width: 100%;
     max-width: 500px;
-    background-color: #23262F;
+    background-color: rgb(25, 27, 31);
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    padding: 2rem 1rem 2rem;
+    padding: 10px 20px 40px;
+    z-index: 999;
+    max-width: 420px;
+    max-height: 90vh;
     form{
         @media screen and (min-width: 760px){
             padding: 0 40px;
         }
     }
+}
 `

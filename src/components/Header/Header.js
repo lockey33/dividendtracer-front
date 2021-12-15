@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import ReactTooltip from 'react-tooltip';
 import {ReactComponent as Logo} from "../../assets/images/bills.svg";
 import {ReactComponent as Dots} from "../../assets/images/dots.svg";
 import {ReactComponent as Docs} from "../../assets/images/docs.svg";
@@ -8,8 +7,7 @@ import {ReactComponent as Coffee} from "../../assets/images/coffee.svg";
 import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu, WalletButton, TelegramButton, MetamaskButton, WalletConnectButton} from "./styled";
 import { ModalContact, Modal} from "../Modal/Modal";
 import {FaTelegramPlane} from 'react-icons/fa';
-import {Flex} from "rebass"
-import { GlobalContext } from "../../provider/GlobalProvider";
+import {Flex, Link} from "rebass"
 import { WalletWrapper } from "./Wallet";
 import {useHistory} from 'react-router-dom';
 import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
@@ -21,13 +19,13 @@ const Header = () => {
     const [isOptionsOpen, setIsOptionsOpen] = React.useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [modalTitle, setModalTitle] = React.useState('');
-    const clickedOutside = useOutsideAlerter(wrapperRef);
+    const {clicked} = useOutsideAlerter(wrapperRef);
 
     useEffect(() => {
-        if(clickedOutside){
+        if(clicked){
             setIsOptionsOpen(false);
         }
-    }, [clickedOutside])
+    }, [clicked])
 
 
     return (
@@ -42,26 +40,24 @@ const Header = () => {
                     <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
                 </Flex>
                 <WalletWrapper />
-                <OptionsWrapper ref={wrapperRef} onClick={() => setIsOptionsOpen(!isOptionsOpen)}>
-                    <OptionsButton id="openMenuTop">
+                <OptionsWrapper active={isOptionsOpen}>
+                    <OptionsButton onClick={() => setIsOptionsOpen(!isOptionsOpen)} id="openMenuTop">
                         <Dots />
                     </OptionsButton>
                         {isOptionsOpen &&
-                            <OptionsMenuWrapper>
+                            <OptionsMenuWrapper ref={wrapperRef}>
                                 <OptionsMenu>
-                                    <a id="telegramMenu" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane /></a>
-                                    <div id="contactUs" onClick={() => {setIsModalOpen(true); setModalTitle('Contact us')}}>Contact us <Ask /></div>
-                                    <div id="requestFeatures" onClick={() => {setIsModalOpen(true); setModalTitle('Request features')}}>Request features <Coffee /></div>
-                                    <div id="legalsMenu">Legal & privacy <Docs /></div>
+                                    <Link display={'flex'} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px', textDecoration: "none", "svg":{opacity: 0.6}}} id="telegramMenu" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane /></Link>
+                                    <Link display={'flex'} mt={2} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px'}} onClick={() => {setIsModalOpen(true); setModalTitle('Contact us')}}>Contact us <Ask /></Link>
+                                    <Link display={'flex'} mt={2} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px'}} id="requestFeatures" onClick={() => {setIsModalOpen(true); setModalTitle('Request features')}}>Request features <Coffee /></Link>
+                                    <Link display={'flex'} mt={2} mb={2} alignItems='center' justifyContent="space-between" color="#a0a0a1" fontSize={[2]} sx={{gap: '10px'}} id="legalsMenu">Legal & privacy <Docs /></Link>
                                 </OptionsMenu>
                             </OptionsMenuWrapper>
                         }
                 </OptionsWrapper>
             </ActionsWrapper>
         </HeaderWrapper>
-        {isModalOpen &&
-            <ModalContact title={modalTitle} onClose={() => setIsModalOpen(false)} />
-        }
+        <ModalContact isOpen={isModalOpen} title={modalTitle} onClose={() => setIsModalOpen(false)} />
         </>
     );
 }

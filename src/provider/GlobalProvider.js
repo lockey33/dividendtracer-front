@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import PANCAKE from '../abi/pancake.json';
 import {ERC20} from "../abi/erc20";
 import firebase from 'firebase';
-import { WalletContext } from "./WalletProvider";
+import { UserContext } from "./UserProvider";
 
 const GlobalContext = React.createContext({});
 const mainNet = "https://bsc-dataseed.binance.org/";
@@ -32,7 +32,7 @@ const database = firebase.database();
 
 class GlobalProvider extends Component {
 
-    static contextType = WalletContext;
+    static contextType = UserContext;
     constructor(props) {
         super(props);
 
@@ -145,8 +145,8 @@ class GlobalProvider extends Component {
         await axios.post("http://localhost:3001/v1/contract/create", {contractABI, tokenAddress})
     }
 
-    pushInDatabase = async (tokenAddress, wallet, globalReward, todayReward, globalRewardDollar, todayRewardDollar) =>{
-        await axios.post("http://localhost:3001/v1/coin/create", {tokenAddress, wallet, globalReward, todayReward, globalRewardDollar, todayRewardDollar})
+    pushInDatabase = async (tokenAddress, tokenName, tokenSymbol) =>{
+        await axios.post("http://localhost:3001/v1/coin/create", {tokenAddress, tokenName, tokenSymbol})
     }
 
     readableValue(value, decimals) {
@@ -255,7 +255,7 @@ class GlobalProvider extends Component {
 
     render() {
         return (
-            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, wallet: this.context.wallet, locale: this.context.locale, user: this.context.user}}>
+            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, locale: this.context.locale, user: this.context.user}}>
                 {this.props.children}
             </GlobalContext.Provider>
         )

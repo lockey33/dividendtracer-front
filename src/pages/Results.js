@@ -5,23 +5,23 @@ import * as moment from 'moment';
 import { ethers } from 'ethers';
 import { CustomLoader } from "../components/Loader/Loader";
 import styled from 'styled-components';
-import {Flex, Text, Heading} from 'rebass';
+import {Flex, Text} from 'rebass';
 import { TrackerWrapper } from "../components/Tracker/styled";
 import { GainsGard, ResultsContainer } from '../components/Results/styled';
-import { Button } from '../components/Tracker/styled';
-import { InputWallet } from '../components/Forms/TrackerForm';
 import { ErrorTracker, ErrorWallet } from '../components/Forms/styled';
 import { TokenCard } from '../components/Results/styled';
+import { useWeb3Wallet } from '../hooks/useWeb3Wallet';
+import {useHistory} from 'react-router-dom';
 
 const Container = styled.div`
     display: block;
     margin: 0 auto;
     padding: 0rem 20px 2rem;
     @media (min-width: 768px) {
-        max-width: 1200px;
+        max-width: 900px;
     }
     @media (min-width: 1200px) {
-        max-width: 890px;
+        max-width: 790px;
         padding: 1rem 20px 2rem;
     }
 `
@@ -58,9 +58,8 @@ export default class ResultsPage extends React.Component {
 
     componentDidMount = async () => {
         if(this.state.address !== '' && this.state.wallet !== ''){
-            if(this.context.wallet.state.currentAccount) this.setState({currentAccount: this.context.wallet.state.currentAccount})
+            if(this.props.account) this.setState({currentAccount: this.props.account})
             this.showDividend();
-            this.saveInLocalStorage();
         }
     }
 
@@ -135,17 +134,15 @@ export default class ResultsPage extends React.Component {
             }
 
             this.setState({tracker: tracker})
+
             let calculatedData = await this.calculate();
-            await this.context.global.actions.pushInDatabase(this.state.address, this.state.wallet, calculatedData.globalGain, calculatedData.todayGain, calculatedData.globalGainDollar, calculatedData.todayGainDollar)
+            this.setState({walletRequired: false, tokenRequired: false, dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, globalGainDollar: calculatedData.globalGainDollar, todayGainDollar: calculatedData.todayGainDollar, fetching: true, response: {}})
             this.context.global.actions.pushContractABI(contractAbi, this.state.address)
-            this.setState({walletRequired: false, tokenRequired: false, dividends: calculatedData.dividends, dividendsSave: calculatedData.dividends, globalGain: calculatedData.globalGain, todayGain: calculatedData.todayGain, globalGainDollar: calculatedData.globalGainDollar, todayGainDollar: calculatedData.todayGainDollar, fetching: true})
         }catch(err){
-            console.log(err)
             if(err === "dividendTracker"){
                 this.setState({tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
             }else{
-                console.log(err)
-                alert('An error occured, please retry')
+                alert(err)
             }
         }
 
@@ -238,21 +235,8 @@ export default class ResultsPage extends React.Component {
     getTokenInfo = async() => {
         const name = await this.context.global.actions.getTokenName(this.state.address);
         const symbol = await this.context.global.actions.getTokenSymbol(this.state.address);
+        this.setState({tokenName: name, tokenSymbol: symbol})
         return {name: name, symbol: symbol}
-    }
-
-    saveInLocalStorage = async() => {
-        try{
-            let {name, symbol} = await this.getTokenInfo();
-            let {address} = this.state;
-            if(this.state.currentAccount){
-                this.context.user.actions.addToSearchHistory(this.state.currentAccount, address, name, symbol);
-            }else{
-                this.context.locale.actions.addToSearchHistory(address, name, symbol);
-            }
-        }catch(err){
-            console.log(err)
-        }
     }
 
 
@@ -260,13 +244,13 @@ export default class ResultsPage extends React.Component {
         return (
             <Container>
                 <TokenCard token={this.state.address} />
-                {this.state.dividends.length > 0 && <GainsGard globalGain={this.state.globalGain} todayGain={this.state.todayGain} />}
+                {this.state.dividends.length > 0 && <GainsGard transactions={this.state.dividends.length} globalGain={this.state.globalGain} todayGain={this.state.todayGain} />}
                 <TrackerWrapper>
                     {!this.state.walletRequired ?
                         <>
                             {this.state.dividends.length > 0 ?
                                 <>
-                                    <ResultsContainer dividends={this.state.dividends} dividendsSave={this.state.dividendsSave} todayGain={this.state.todayGain} globalGain={this.state.globalGain} wallet={this.state.wallet} token={this.state.address} />
+                                    <ResultsContainer {...this.state} />
                                 </>
                             :
                             <>
@@ -297,23 +281,19 @@ export default class ResultsPage extends React.Component {
                         </>
                     }
                 </TrackerWrapper>
-                {/* {this.state.isModalOpen &&
-                    <Modal title={''} onClose={() => this.setIsModalOpen(false)}>
-                        {this.state.response.status === false && this.state.response.hasOwnProperty("type") && this.state.response.type === "dividendTracker"  &&
-                            <ItemForm>
-                                <label htmlFor="item">Dividend Tracker Address</label>
-                                <Input onChange={(e) => this.handleTracker(e)} type="text" name="tracker" placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker} />
-                            </ItemForm>
-                        }
-                        {this.state.customTracker !== ""  && this.state.response.status === true &&
-                            <ItemForm>
-                                <label htmlFor="item">Dividend Tracker Address</label>
-                                <Input onChange={(e) => this.handleTracker(e)} type="text" name="tracker" placeholder="Dividend tracker address (check on your rewards tx)" value={this.state.customTracker} />
-                            </ItemForm>
-                        }
-                    </Modal>
-                } */}
             </Container>
         );
     }
+}
+
+export const ResultsPageWrapper = () => {
+
+    const history = useHistory();
+    const {account} = useWeb3Wallet();
+
+    return (
+        <ResultsPage history={history} account={account} />
+    )
+
+
 }

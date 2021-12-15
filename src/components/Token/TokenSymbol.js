@@ -11,6 +11,9 @@ import {useHistory} from "react-router-dom";
 import ReactTooltip from 'react-tooltip';
 import { CustomLoader } from '../Loader/Loader';
 import { CustomBlockies, JazzIcon } from '../Header/styled/blockies';
+import { useWeb3Wallet } from '../../hooks/useWeb3Wallet';
+import { useWatchlist } from '../../hooks/useWatchlist';
+import { useTokenInfo } from '../../hooks/useTokenInfo';
 
 const getCoin = async (symbol) => {
     try{
@@ -19,7 +22,7 @@ const getCoin = async (symbol) => {
         return icon.default
     }
     catch(err){
-        console.log(err)
+        // console.log(err)
     }
 }
 
@@ -48,13 +51,13 @@ export const TokenIconWrapper = ({symbol, address, size}) => {
                 {icon ?
                     <TokenIcon className="token-symbol" size={size || null} src={icon} />
                 :
-                    <Flex width={size || null} height={size || null} alignItems="center" justifyContent="center" sx={{'canvas': {borderRadius: '100%'}}}>
+                    <Flex alignItems="center" justifyContent="center" sx={{'canvas': {borderRadius: '100%', width: size ? size+' !important' : '100% !important', height: size ? size+' !important' : '100% !important'}}}>
                         <CustomBlockies seed={address} scale={isMobile ? 4 : 6} />
                     </Flex>
                 }
             </Flex>
         :
-        <CustomLoader size={60} />
+        <CustomLoader size={size || 60} />
     )
 
 }
@@ -73,69 +76,27 @@ const AddressLink = styled.div`
 
 export const TokenSymbolWrapper = ({ token }) => {
 
-    const [icon, setIcon] = React.useState('');
-    const [symbol, setSymbol] = React.useState('');
-    const [tokenName, setTokenName] = React.useState('');
-    const [isInWatchList, setIsInWatchlist] = React.useState(false);
-    const context = React.useContext(GlobalContext)
-    const history = useHistory();
     const isMobile = useIsMobile();
-
-    const getTokenInfo = async() => {
-        let symbol = await context.global.actions.getTokenSymbol(token);
-        let name = await context.global.actions.getTokenName(token);
-        return {name, symbol};
-    }
+    const {tokenName, tokenSymbol} = useTokenInfo(token);
+    const {addToWatchlist, removeFromWatchlist, isInWatchlist} = useWatchlist(token, tokenName, tokenSymbol);
 
     const saveWatchlist = async() => {
-        if(context.wallet.state.currentAccount){
-            if(!isInWatchList){
-                await context.user.actions.addToWatchlist(context.wallet.state.currentAccount, token, tokenName, symbol);
-                setIsInWatchlist(true);
-            }else{
-                await context.user.actions.removeFromWatchlist(context.wallet.state.currentAccount, token);
-                setIsInWatchlist(false);
-            }
+        if(!isInWatchlist){
+            addToWatchlist()
         }else{
-            if(!isInWatchList){
-                await context.locale.actions.addToWatchlist(token, tokenName, symbol);
-                setIsInWatchlist(true);
-            }else{
-                await context.locale.actions.removeFromWatchlist(token);
-                setIsInWatchlist(false);
-            }
+           removeFromWatchlist()
         }
     }
-
-
-    const checkWatchlist = async() => {
-        if(context.wallet.state.currentAccount){
-            let isInWatchlist = await context.user.actions.isInWatchlist(context.wallet.state.currentAccount, token);
-            setIsInWatchlist(isInWatchlist);
-        }else{
-            let watchlist = await context.locale.actions.getWatchlist();
-            let isInWatchlist = watchlist.some(item => item.address === token);
-            setIsInWatchlist(isInWatchlist)
-        }
-    }
-
-    useEffect(() => {
-        checkWatchlist();
-        getTokenInfo().then(info => { 
-            setTokenName(info.name);
-            setSymbol(info.symbol);
-        });
-    }, [token])
 
     return (
         <Flex alignItems="center" justifyContent={'space-between'} width='100%' sx={{gap: '15px'}}>
             <Flex sx={{gap: '15px'}}>
-                <TokenIconWrapper address={token} symbol={symbol} />
+                <TokenIconWrapper address={token} symbol={tokenSymbol} />
                 <TokenName>
                     <Flex justifyContent="space-between" alignItems="center">
                         <Text color="white" fontSize={[2, 3, 4]} fontWeight='bold' fontFamily={'ABeeZee'}>{tokenName}</Text>
                     </Flex>
-                    <AddressLink>{isMobile ? formatAddress(token, 6) : token}</AddressLink>
+                    <AddressLink>{isMobile ? formatAddress(token, 8) : token}</AddressLink>
                 </TokenName>
             </Flex>
             <Flex alignItems="center" sx={{gap: '15px'}}>
@@ -146,7 +107,7 @@ export const TokenSymbolWrapper = ({ token }) => {
                     <ReactTooltip />
                 </Box>
                 <Box sx={{'&:hover':{opacity: 0.8, cursor: 'pointer'}}} onClick={saveWatchlist}>        
-                    {isInWatchList ? <FaStar data-tip="Remove from watchlist" color="#B1B5C4" size={isMobile ? 22 : 26} /> : <FaRegStar data-tip="Add to watchlist" color="#B1B5C4" size={isMobile ? 22 : 26} />}
+                    {isInWatchlist ? <FaStar data-tip="Remove from watchlist" color="#B1B5C4" size={isMobile ? 22 : 26} /> : <FaRegStar data-tip="Add to watchlist" color="#B1B5C4" size={isMobile ? 22 : 26} />}
                     <ReactTooltip />
                 </Box>
             </Flex>

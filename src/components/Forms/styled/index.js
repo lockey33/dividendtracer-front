@@ -11,6 +11,10 @@ import { TokenIconWrapper } from '../../Token/TokenSymbol';
 import { WalletButtonWrapper } from '../../Header/Wallet';
 import { useIsMobile, useIsMobileDevice } from '../../../hooks/useIsMobile';
 import { formatAddress } from '../../../utils/format';
+import { useWeb3Wallet } from '../../../hooks/useWeb3Wallet';
+import { useWeb3Network } from '../../../hooks/useWeb3Network';
+import { useSearchHistory } from '../../../hooks/useSearchHistory';
+import { useWatchlist } from '../../../hooks/useWatchlist';
 
 export const SubmitButton = styled.button`
     background: #669566;
@@ -132,7 +136,8 @@ export const ErrorMessage = styled.div`
 const StyledSearchHistory = styled.div`
     position: absolute;
     width: -webkit-fill-available;
-    height: 30vh;
+    height: auto;
+    max-height: 25vh;
     overflow: scroll;
     padding: 2rem 20px;
     background: black;
@@ -248,93 +253,39 @@ const SearchHistoryItem = ({handleClick, index, item, handleRemove}) => {
 }
 
 const SearchHistoryList = ({handleClick, active}) => {
-
-    const context = React.useContext(GlobalContext);
-    const currentAccount = context.wallet.state.currentAccount;
-    const [loading, setLoading] = React.useState(true);
-
-    const removeFromSearchHistory = async(address) => {
-        if(currentAccount){
-            context.user.actions.removeFromSearchHistory(currentAccount, address);
-        }else{
-            context.locale.actions.removeFromSearchHistory(address)
-        }
-    }
-
-    function loadUser(){
-        if(currentAccount){
-            setLoading(true);
-            context.user.actions.init(currentAccount);
-            setLoading(false);
-        }else{
-            setLoading(true);
-            context.locale.actions.getSearchHistory();
-            context.locale.actions.getWatchlist();
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        loadUser();
-    }, []);
+    
+    const {searchHistory, fetched, removeFromSearchHistory} = useSearchHistory()
+    const {watchlist} = useWatchlist()
 
     return(
-        !loading ?
+        fetched ?
             <>
-                {active === 'search' &&
-                    <>
-                        {currentAccount ?
-                            context.user.state.searchHistory.length > 0 ? 
-                                context.user.state.searchHistory.map((item, index) => {
-                                return (
-                                    <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
-                                )
-                            })
-                            :
-                            <Flex alignItems="center" justifyContent="center" mt={5}>
-                                <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in search history</Text>
-                            </Flex>
+                {active === 'search' ?
+                    searchHistory.length > 0  ? 
+                        searchHistory.map((item, index) => {
+                            return (
+                                <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
+                            )
+                        })
                         :
-                        context.locale.state.searchHistory.length > 0 ? 
-                                context.locale.state.searchHistory.map((item, index) => {
-                                return (
-                                    <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
-                                )
-                            })
-                            :
-                            <Flex alignItems="center" justifyContent="center" mt={5}>
-                                <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in watchlist</Text>
-                            </Flex>
-                    }
-                    </>
+                        <Flex alignItems="center" justifyContent="center" mt={5}>
+                            <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in search history</Text>
+                        </Flex>
+                : null
                 }
 
-                {active === 'watchlist' &&
-                    <>
-                    {currentAccount ?
-                        context.user.state.watchlist.length > 0 ?
-                            context.user.state.watchlist.map((item, index) => {
-                                return (
-                                    <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
-                                )
-                            })
-                            :
-                            <Flex alignItems="center" justifyContent="center" mt={5}>
-                                <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in search history</Text>
-                            </Flex>
-                        :
-                            context.locale.state.watchlist.length > 0 ? 
-                                context.locale.state.watchlist.map((item, index) => {
-                                return (
-                                    <SearchHistoryItem key={index} handleClick={handleClick} handleRemove={removeFromSearchHistory} index={index} item={item} />
-                                )
-                            })
-                        :
-                            <Flex alignItems="center" justifyContent="center" mt={5}>
-                                <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in watchlist</Text>
-                            </Flex>
-                        }
-                    </>
+                {active === 'watchlist' ?
+                   watchlist.length > 0 ?
+                    watchlist.map((item, index) => {
+                        return (
+                            <SearchHistoryItem key={index} handleClick={handleClick} index={index} item={item} />
+                        )
+                    })
+                    :
+                    <Flex alignItems="center" justifyContent="center" mt={5}>
+                        <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in watchlist</Text>
+                    </Flex>    
+                : null                  
                 }
 
             </>
@@ -361,21 +312,21 @@ export const SearchHistory = ({handleClick, isOpen}) => {
 
 export const ErrorWallet = ({handleWallet, action, errorWallet}) => {
 
-    const context = React.useContext(GlobalContext)
+    const {account} = useWeb3Wallet();
     const [inputValue, setInputValue] = useState(null);
 
     useEffect(() => {
-        if(context.wallet.state.currentAccount){
-            setInputValue(context.wallet.state.currentAccount);
+        if(account){
+            setInputValue(account);
         }else{
             setInputValue(null);
         }
-    }, [context.wallet.state.currentAccount])
+    }, [account])
 
     return(
             <Flex flexDirection="column" width={'100%'} alignItems="center" justifyContent="center">
                 <Heading mb={4} textAlign='center' fontFamily='DM Sans' color="white" fontSize={[2, 3, 4]}>Oops, we need your wallet address</Heading>
-                {!context.wallet.state.currentAccount &&
+                {!account &&
                     <>
                         <WalletButtonWrapper />
                         <Text mt={3} color="white" fontFamily='DM Sans' fontSize={[2, 3]}>or</Text>

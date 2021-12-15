@@ -1,18 +1,16 @@
-import React, {useEffect, useState, useCallback} from 'react';
-import { UserContext } from './UserProvider';
+import React, {useEffect, useState, useCallback, useMemo, memo} from 'react';
+import { UserContext } from '../provider/UserProvider';
 import { useWeb3React } from "@web3-react/core"
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import {isMobile} from 'react-device-detect'
 
-
-const WalletContext = React.createContext({});
-
-const WalletProvider = ({children}) => {
+export const useWeb3Wallet = () => {
     
     const context = React.useContext(UserContext);
-    const {active, account, library, connector, activate, deactivate} = useWeb3React();
-
+    const {active, account, activate, deactivate} = useWeb3React();
+    const accountSaved = sessionStorage.getItem('accountSaved') || false;
+    const isConnected = localStorage.getItem('isConnected') || false;
+    
     const walletConnect = new WalletConnectConnector({
         rpc: {56: 'https://bsc-dataseed.binance.org/'},
         qrcode: true
@@ -22,18 +20,13 @@ const WalletProvider = ({children}) => {
         supportedChainIds: [1, 3, 4, 5, 42, 56],
     })
 
-
-    useEffect(() => {
-        if(account) context.user.actions.createUser(account);
-    }, [account])
-
     useEffect(() => {
         injected.isAuthorized().then(async(isAuthorized) => {
-            if (isAuthorized) {
-                activate(injected);
+            if (isAuthorized && isConnected) {
+                setTimeout(() => activate(injected), 1);
             }
-        })    
-    }, [])
+        })  
+    }, [isConnected])
 
     const resetWalletConnector = () => {
         if (
@@ -45,39 +38,40 @@ const WalletProvider = ({children}) => {
           }
     }
 
-    const connect  = async(type) => {
+    const connect = async(type) => {
         if(type === "walletconnect"){
             await activate(walletConnect)
-            .catch((err) => {
+            .catch(() => {
                 resetWalletConnector();
             });
+            localStorage.setItem('isConnected', true);
         }else if(type === "injected"){
             await activate(injected)
+            localStorage.setItem('isConnected', true);
         }
+
     };
 
     const disconnect = async() => {
         try {
+            localStorage.removeItem('isConnected');
             deactivate()
         }catch(error){
             console.log(error)
         }
     }
 
-    const state = {
-        currentAccount: account
-    }
+    useEffect(() => {
+        if(account && !accountSaved) {
+            context.user.actions.createUser(account);
+            sessionStorage.setItem('accountSaved', true);
+        }
+    }, [account])
 
-    const actions = {
+    return {
         connect,
-        disconnect
+        disconnect,
+        account,
+        active
     }
-
-    return (
-        <WalletContext.Provider value={{wallet: {state: state, actions: actions}, locale: context.locale, user: context.user}}>
-            {children}
-        </WalletContext.Provider>
-    )
 }
-
-export {WalletContext, WalletProvider};
