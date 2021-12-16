@@ -30,7 +30,7 @@ export const TokenIconWrapper = ({address, size}) => {
         icon ?
             <TokenIcon className="token-symbol" size={size || null} src={icon} />
         :
-            <Flex width="100%" height="100%" alignItems="center" justifyContent="center" sx={{'canvas': {borderRadius: '100%', width: size ? size+' !important' : '100% !important', height: size ? size+' !important' : '100% !important'}}}>
+            <Flex width="auto" height="auto" alignItems="center" justifyContent="center" sx={{'canvas': {borderRadius: '100%', width: size ? size+' !important' : '100% !important', height: size ? size+' !important' : '100% !important'}}}>
                 <CustomBlockies seed={address} scale={isMobile ? 4 : 6} />
             </Flex>
     )

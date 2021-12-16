@@ -238,7 +238,7 @@ const SearchHistoryItem = ({handleClick, index, item, handleRemove}) => {
     return(
         <StyledSearchHistoryItem style={{color: 'white'}}>
             <Flex onClick={() => handleClick(item.address)} alignItems="center" sx={{gap: '10px'}}>
-                <TokenIconWrapper symbol={item.symbol} address={item.address} size={'40px'} />
+                <TokenIconWrapper symbol={item.symbol} address={item.address} size={isMobile ? '30px' : '40px'} />
                 <Flex flexDirection={'column'}>
                     <Flex alignItems="center" sx={{gap: '5px'}}>
                         <span>{item.name}</span>

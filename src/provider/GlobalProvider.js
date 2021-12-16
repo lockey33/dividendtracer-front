@@ -107,7 +107,7 @@ class GlobalProvider extends Component {
 
     getBddContractABI = async (tokenAddress) => {
         try{
-            let contractResponse = await axios.get("http://159.223.127.45:3001/v1/contract/find/" + tokenAddress)
+            let contractResponse = await axios.get("https://159.223.127.45:3001/v1/contract/find/" + tokenAddress)
             if(contractResponse.hasOwnProperty("data")){
                 if(contractResponse.hasOwnProperty("contractABI")){
                     return contractResponse.contractABI
@@ -122,11 +122,11 @@ class GlobalProvider extends Component {
     }
 
     pushContractABI = async (contractABI, tokenAddress) => {
-        await axios.post("http://159.223.127.45:3001/v1/contract/create", {contractABI, tokenAddress})
+        await axios.post("https://159.223.127.45:3001/v1/contract/create", {contractABI, tokenAddress})
     }
 
     pushInDatabase = async (tokenAddress, tokenName, tokenSymbol) =>{
-        await axios.post("http://159.223.127.45:3001/v1/coin/create", {tokenAddress, tokenName, tokenSymbol})
+        await axios.post("https://159.223.127.45:3001/v1/coin/create", {tokenAddress, tokenName, tokenSymbol})
     }
 
     readableValue(value, decimals) {

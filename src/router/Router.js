@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { TrendingsMarquee } from "../components/Trendings/TrendingsMarquee";
 import { ModalAnnouncement } from "../components/Modal/ModalAnnoucement";
 import { Banner } from "../components/Banner/Banner";
-import { Footer } from "../components/Footer/Footer";
 
 const AppRouter = () => {
 
