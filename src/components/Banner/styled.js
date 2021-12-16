@@ -7,7 +7,7 @@ export const BannerWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding: 8px 20px;
-    width: 100%;
+    width: auto;
     background-color: #24262f;
     cursor: pointer;
 `

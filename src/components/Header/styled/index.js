@@ -4,7 +4,7 @@ import {Flex, Button} from "rebass";
 export const HeaderWrapper = styled(Flex)`
     padding: 20px 40px;
     @media (max-width: 768px) {
-        padding: 20px 20px;
+        padding: 10px 15px;
     }
 `
 
