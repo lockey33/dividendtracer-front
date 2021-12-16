@@ -195,7 +195,7 @@ export const AccountWrapper = styled(OptionsButton)`
     }
 `
 
-export const TelegramButton = styled(OptionsButton)`
+export const TelegramButton = styled.a`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -204,6 +204,7 @@ export const TelegramButton = styled(OptionsButton)`
     border: solid 1px transparent;
     color: #fff;
     font-size: 16px;
+    padding: 10px; 
     gap: 15px;
     text-decoration: none;
     cursor: pointer;
