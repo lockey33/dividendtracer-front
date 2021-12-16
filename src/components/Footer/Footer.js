@@ -14,7 +14,7 @@ export const Footer = () => {
             </Flex>
             <Flex alignItems="center" justifyContent="center" sx={{gap: '15px'}}>
                 <TelegramButton rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Telegram <FaTelegramPlane /></TelegramButton>
-                <TelegramButton>Twitter <FaTwitter /></TelegramButton>
+                <TelegramButton rel="noreferrer" target="_blank" href="https://twitter.com/dividend_tracer">Twitter <FaTwitter /></TelegramButton>
             </Flex>
             <Flex mt={3} alignItems="center" justifyContent="center" sx={{gap: '15px'}}>
                 <Text fontSize='13px' color="white">© 2021 DividendTracer</Text>
