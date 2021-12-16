@@ -9,7 +9,7 @@ const GlobalContext = React.createContext({});
 const mainNet = "https://bsc-dataseed.binance.org/";
 const mainNetSocket = 'wss://bsc-ws-node.nariox.org:443';
 const provider = new ethers.providers.JsonRpcProvider(mainNet);
-
+const apiUrl = '159.223.127.45:3001'
 
 class GlobalProvider extends Component {
 
@@ -47,7 +47,6 @@ class GlobalProvider extends Component {
             pushInDatabase: this.pushInDatabase,
             pushContractABI: this.pushContractABI,
             getBddContractABI: this.getBddContractABI,
-            getTrendingTokens: this.getTrendingTokens,
             getAccountTransactions: this.getAccountTransactions,
             getAllContracts: this.getAllContracts
         }
@@ -75,28 +74,6 @@ class GlobalProvider extends Component {
         return data
     }
 
-    getTrendingTokens = async() => {
-        return new Promise(async (resolve, reject) => {
-            let trendingArray = []
-            let trendingRef = database.ref('trendingTokens').orderByChild('increment')
-            await trendingRef.once('value', async(snapshot) => {
-                if(snapshot.exists()){
-                    snapshot.forEach((child) => {
-                        trendingArray.push(child.val())
-                    })
-                }
-            })
-            trendingArray.sort((b, a) => (parseInt(a.increment) > parseInt(b.increment)) ? 1 : ((parseInt(b.increment) > parseInt(a.increment)) ? -1 : 0))
-            const slicedArray = trendingArray.slice(0, 10);
-            await Promise.all(slicedArray.map(async (object, index) => {
-                let tokenName = await this.getTokenName(object.tokenAddress)
-                slicedArray[index].name = tokenName
-            }))
-            resolve(slicedArray)
-        })
-    }
-
-
     getTokenName = async(address) => {
         return new Promise(async(resolve,reject) => {
             const tokenContract = await this.getFreeContractInstance(address, ERC20)
@@ -107,7 +84,7 @@ class GlobalProvider extends Component {
 
     getBddContractABI = async (tokenAddress) => {
         try{
-            let contractResponse = await axios.get("https://159.223.127.45:3001/v1/contract/find/" + tokenAddress)
+            let contractResponse = await axios.get("http://"+apiUrl+"/v1/contract/find/" + tokenAddress)
             if(contractResponse.hasOwnProperty("data")){
                 if(contractResponse.hasOwnProperty("contractABI")){
                     return contractResponse.contractABI
@@ -122,11 +99,11 @@ class GlobalProvider extends Component {
     }
 
     pushContractABI = async (contractABI, tokenAddress) => {
-        await axios.post("https://159.223.127.45:3001/v1/contract/create", {contractABI, tokenAddress})
+        await axios.post("http://"+apiUrl+"/v1/contract/create", {contractABI, tokenAddress})
     }
 
     pushInDatabase = async (tokenAddress, tokenName, tokenSymbol) =>{
-        await axios.post("https://159.223.127.45:3001/v1/coin/create", {tokenAddress, tokenName, tokenSymbol})
+        await axios.post("http://"+apiUrl+"/v1/coin/create", {tokenAddress, tokenName, tokenSymbol})
     }
 
     readableValue(value, decimals) {

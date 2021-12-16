@@ -9,7 +9,7 @@ export const useTrendingCoins = () => {
         const fetchData = async () => {
             const response = await axios({
                 method: 'GET',
-                url: 'https://159.223.127.45:3001/v1/coin/trendingCoins',
+                url: 'http://159.223.127.45:3001/v1/coin/trendingCoins',
             }).then(res => {
                 return res.data
             }).catch(err => {

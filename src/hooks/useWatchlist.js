@@ -10,7 +10,7 @@ export const useWatchlist = (tokenAddress, tokenName, tokenSymbol) => {
     const addToWatchlistBDD = async() => {
         let data = axios({
             method: 'post',
-            url: 'https://159.223.127.45:3001/v1/users/addToWatchlist',
+            url: 'http://159.223.127.45:3001/v1/users/addToWatchlist',
             data: {
                 address: account,
                 tokenAddress: tokenAddress,
@@ -33,7 +33,7 @@ export const useWatchlist = (tokenAddress, tokenName, tokenSymbol) => {
         address = address ? address : tokenAddress;
         let data = await axios({
             method: 'post',
-            url: 'https://159.223.127.45:3001/v1/users/removeFromWatchlist',
+            url: 'http://159.223.127.45:3001/v1/users/removeFromWatchlist',
             data: {
                 address: account,
                 tokenAddress: address
@@ -53,7 +53,7 @@ export const useWatchlist = (tokenAddress, tokenName, tokenSymbol) => {
     const getUserWatchlistBDD = async() => {
         let userWatchlist = await axios({
             method: 'post',
-            url: 'https://159.223.127.45:3001/v1/users/getUserWatchlist',
+            url: 'http://159.223.127.45:3001/v1/users/getUserWatchlist',
             data: {
                 address: account
             }

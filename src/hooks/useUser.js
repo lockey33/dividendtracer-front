@@ -6,7 +6,7 @@ export const useUser = (account) => {
     const createUser = () => {
         axios({
             method: 'post',
-            url: 'https://159.223.127.45:3001/v1/users/createUser',
+            url: 'http://159.223.127.45:3001/v1/users/createUser',
             data: {
                 address: account
             }
