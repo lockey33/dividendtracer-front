@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, Flex } from 'rebass';
+import { Box, Text} from 'rebass';
 import { Modal } from '../Modal/Modal';
 import { BannerWrapper } from './styled';
 

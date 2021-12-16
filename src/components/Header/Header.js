@@ -4,10 +4,10 @@ import {ReactComponent as Dots} from "../../assets/images/dots.svg";
 import {ReactComponent as Docs} from "../../assets/images/docs.svg";
 import {ReactComponent as Ask} from "../../assets/images/ask.svg";
 import {ReactComponent as Coffee} from "../../assets/images/coffee.svg";
-import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu, TelegramButton} from "./styled";
+import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu} from "./styled";
 import { ModalContact} from "../Modal/Modal";
 import {FaTelegramPlane} from 'react-icons/fa';
-import {Flex, Link} from "rebass"
+import {Link} from "rebass"
 import { WalletWrapper } from "./Wallet";
 import {useHistory} from 'react-router-dom';
 import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
