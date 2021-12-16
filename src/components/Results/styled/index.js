@@ -35,17 +35,17 @@ export const TokenCard = ({ token }) => {
 export const GainsGard = ({ globalGain, todayGain, transactions }) => {
     return(
         <Card>
-            <Flex flex={1} justifyContent="space-around" alignItems="center" flexDirection="row">
-                <Flex sx={{gap: '5px'}} flexDirection="column" alignItems="center">
-                    <Text color="white" fontSize={[3, 4]} fontFamily={'ABeeZee'}>{globalGain} $</Text>
+            <Flex flex={1} justifyContent="space-around" alignItems="center" flexDirection="row" sx={{"@media screen and (max-width: 330px)": {flexDirection: "column", gap: '30px'}}}>
+                <Flex flexDirection="column" alignItems="center">
+                    <Text color="white" fontSize={[2, 3, 4]} fontFamily={'ABeeZee'}>{globalGain} $</Text>
                     <Text color="#B1B5C4" fontSize={['13px', 3]} fontFamily={'DM Sans'}>Total profit</Text>
                 </Flex>
-                <Flex sx={{gap: '5px'}} flexDirection="column" alignItems="center">
-                    <Text color="white" fontSize={[3, 4]}  fontFamily={'ABeeZee'}>{todayGain} $</Text>
+                <Flex flexDirection="column" alignItems="center">
+                    <Text color="white" fontSize={[2, 3, 4]}  fontFamily={'ABeeZee'}>{todayGain} $</Text>
                     <Text color="#B1B5C4" fontSize={['13px', 3]} fontFamily={'DM Sans'}>Today</Text>
                 </Flex>
-                <Flex sx={{gap: '5px'}} flexDirection="column" alignItems="center">
-                    <Text color="white" fontSize={[3, 4]}  fontFamily={'ABeeZee'}>{transactions}</Text>
+                <Flex flexDirection="column" alignItems="center">
+                    <Text color="white" fontSize={[2, 3, 4]}  fontFamily={'ABeeZee'}>{transactions}</Text>
                     <Text color="#B1B5C4" fontSize={['13px', 3]} fontFamily={'DM Sans'}>Transactions</Text>                   
                 </Flex>
             </Flex>

@@ -35,7 +35,6 @@ export const ModalWrapper = styled.div`
 
 export const ModalInner = styled.div`
     position: absolute;
-    pointer-events: none;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -44,10 +43,12 @@ export const ModalInner = styled.div`
     background-color: rgb(25, 27, 31);
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    padding: 10px 20px 40px;
+    padding: 10px 20px 20px;
     z-index: 99;
     max-width: 500px;
     max-height: 90vh;
+    display: flex;
+    flex-direction: column;
     form{
         @media screen and (min-width: 760px){
             width: 90%;

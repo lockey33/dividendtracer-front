@@ -2,10 +2,14 @@ import { UAParser } from 'ua-parser-js'
 import { useMediaQuery } from 'react-responsive';
 
 export const useIsMobile = () => {
-    
     const isMobile = useMediaQuery({ query: `(max-width: 760px)` });
     
     return isMobile;
+}
+
+export const useIsSmall = () => {
+    const isSmall = useMediaQuery({ query: `(max-width: 330px)` });
+    return isSmall;
 }
 
 export const useIsTablet = () => {

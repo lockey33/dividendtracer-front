@@ -259,7 +259,7 @@ const SearchHistoryList = ({handleClick, active}) => {
     
     const {searchHistory, fetched, removeFromSearchHistory} = useSearchHistory()
     const {watchlist, removeFromWatchlist} = useWatchlist()
-
+    const isMobile = useIsMobile();
     return(
         fetched ?
             <>
@@ -293,7 +293,9 @@ const SearchHistoryList = ({handleClick, active}) => {
 
             </>
         :
-        <CustomLoader />
+        <Flex alignItems="center" justifyContent="center" my={4}>
+            <CustomLoader size={isMobile && 40} />
+        </Flex>
     )
 
 }

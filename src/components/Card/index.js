@@ -7,6 +7,6 @@ export const Card = styled.div`
     padding: 40px 50px;
     margin-top: 1rem;
     @media (max-width: 768px) {
-        padding: 30px 20px;
+        padding: 20px;
     }
 `

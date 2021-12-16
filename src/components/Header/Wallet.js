@@ -10,6 +10,7 @@ import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
 import {HiDocumentDuplicate} from "react-icons/hi";
 import MetamaskIcon from "../../assets/images/metamask.png";
 import WalletConnectIcon from "../../assets/images/walletconnect-logo.png";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 export const WalletButtonWrapper = () => {
     const {ethereum} = window;
@@ -37,7 +38,7 @@ export const WalletButtonWrapper = () => {
     return(
         <SubMenuWrapper active={isModalOpen}>
             <WalletButton ref={buttonRef} error={networkError} onClick={() => !networkError ? setIsModalOpen(true) : switchChainToBsc()}>
-                {networkError ? 'Switch Network to BSC' : 'Connect Wallet'}
+                {networkError ? 'Switch to BSC' : 'Connect Wallet'}
             </WalletButton>
 
             {isModalOpen && 
@@ -127,13 +128,13 @@ export const WalletWrapper = () => {
                             <Flex alignItems="center" justifyContent="space-between">
                                 <Text fontSize={[1, 2]}>Account</Text>
                             </Flex>
-                            <Flex pt={2} width='fit-content' alignItems="center">
+                            <Flex pt={2} width='fit-content' justifyContent="space-between" alignItems="center">
                                 <Jazzicon
                                     diameter={20}
                                     seed={jsNumberForAddress(account)}
                                 />
                                 <Flex onClick={() => copyClipboard()} alignItems="center" sx={{':hover': {cursor: 'pointer', opacity: 0.5}}}>
-                                    <Text p={0} px={2} fontSize={[2, 3]}>{formatAddress(account, 12)}</Text>
+                                    <Text p={0} px={2} fontSize={[2, 3]}>{formatAddress(account, useIsMobile ? 7 : 12)}</Text>
                                     <HiDocumentDuplicate size={20} />   
                                 </Flex>                             
                             </Flex>

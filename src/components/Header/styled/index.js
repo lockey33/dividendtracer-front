@@ -210,6 +210,7 @@ export const TelegramButton = styled.a`
     text-decoration: none;
     cursor: pointer;
     transition: all 0.3s ease;
+    padding: 10px 20px;
     &:hover {        
         border: solid 1px #6CF057;
     }

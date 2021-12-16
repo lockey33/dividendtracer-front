@@ -11,13 +11,13 @@ export const Banner = () => {
         <>
         <BannerWrapper id="releaseNotesBanner" onClick={() => setModalOpen(true)}>
             <Text color="white" fontSize={[1]}>
-                🎉 New update available <small>(click to learn more)</small> 🎉
+                🎉 New update available <small>(click to learn more)</small>
             </Text>
         </BannerWrapper>
 
         <Modal isOpen={modalOpen} title={'🎉 Release notes'} onClose={() => setModalOpen(false)}>
             <Box width={1} textAlign="center">
-                <Text pb={4} color="white" fontWeight="bold" fontSize={[4]}>
+                <Text pb={[3, 4]} color="white" fontWeight="bold" fontSize={[2, 3, 4]}>
                 👨‍🍳  We cooked this for you
                 </Text>
             </Box>
@@ -48,9 +48,6 @@ export const Banner = () => {
                     <li>New layout for results page (Better for screenshots 📸)</li>
                 </ul>
             </Box>
-            <Flex mt={3} justifyContent="center" width={'100%'}>
-                <Button px={4} sx={{border: 'solid 1px transparent', '&:hover': {border: 'solid 1px #6CF057', cursor: 'pointer'}}} bg="#669566" color="#6CF057" onClick={() => setModalOpen(false)}>Close</Button>
-            </Flex>
         </Modal>
         </>
     )

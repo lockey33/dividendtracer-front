@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ModalHeaderWrapper, ModalInner, ModalWrapper } from "./styled";
 import { FormWrapper, Input, ItemForm, SubmitButton, Textarea } from "../Forms/styled";
-import {Heading, Text, Flex} from "rebass";
+import {Heading, Text, Flex, Button} from "rebass";
 import emailjs from 'emailjs-com';
 import { CustomLoader } from "../Loader/Loader";
 import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
@@ -82,7 +82,7 @@ export const ModalContact = ({isOpen, onClose, title}) => {
     };
 
     return (
-        <Modal title={title} isOpen={isOpen} onClose={onClose}>
+        <Modal noCloseButton={true} title={title} isOpen={isOpen} onClose={onClose}>
             {!mailSent ?
                 <FormWrapper ref={form} onSubmit={(e) => sendEmail(e)}>
                     <ItemForm>
@@ -115,7 +115,7 @@ export const ModalContact = ({isOpen, onClose, title}) => {
     )
 }
 
-export const Modal = ({isOpen, onClose, title, children}) => {
+export const Modal = ({isOpen, onClose, title, noCloseButton, children}) => {
     const wrapperRef = React.createRef();
     const {clicked} = useOutsideAlerter(wrapperRef);
 
@@ -123,16 +123,23 @@ export const Modal = ({isOpen, onClose, title, children}) => {
         if (clicked) {
             onClose();
         }
-    }, [clicked])
+        if(isOpen) document.body.style.overflowY = 'hidden' 
+        else document.body.style.overflowY = 'auto';
+    }, [clicked, isOpen]);
 
     return(
         isOpen &&
         <ModalWrapper>
             <ModalInner ref={wrapperRef}>
                 <ModalHeader title={title} close={(e) => onClose(e)} />
-                <Flex flexDirection="column" alignItems="center">
+                <Flex overflowY={'scroll'} flexDirection="column" alignItems="center">
                     {children}
                 </Flex>
+                {!noCloseButton && 
+                    <Flex mt={3} justifyContent="center" width={'100%'}>
+                        <Button px={4} sx={{border: 'solid 1px transparent', '&:hover': {border: 'solid 1px #6CF057', cursor: 'pointer'}}} bg="#669566" color="#6CF057" onClick={(e) => onClose(e)}>Close</Button>
+                    </Flex>                
+                }
             </ModalInner>            
         </ModalWrapper> 
     )
