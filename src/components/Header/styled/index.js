@@ -53,6 +53,7 @@ export const WalletButton = styled.button`
     font-family:'DM Sans';
     font-style: normal;
     font-weight: bold;
+    font-size: 14px;
     display: flex;
     align-items: center;
     text-align: center;

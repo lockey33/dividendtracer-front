@@ -147,6 +147,9 @@ const StyledSearchHistory = styled.div`
     display: ${props => props.isOpen ? 'block' : 'none'};
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    @media screen and (max-width: 768px){
+        padding: 1rem 15px;
+    }
 `
 
 export const SearchHistoryWrapper = styled.div`

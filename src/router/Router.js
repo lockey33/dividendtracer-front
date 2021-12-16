@@ -20,7 +20,6 @@ const AppRouter = () => {
             <Header />
             <Route default path="/" exact component={Home} />
             <Route path="/results" component={ResultsPageWrapper} />
-            <Footer />
             <ModalAnnouncement />
         </Router>
     )

@@ -13,6 +13,7 @@ import {useHistory} from 'react-router-dom';
 import { Results } from '../components/Results/Results';
 import { Container } from './styled';
 import { Card } from '../components/Card/';
+import { Footer } from '../components/Footer/Footer';
 
 class ResultsPage extends React.Component {
     
@@ -269,6 +270,7 @@ class ResultsPage extends React.Component {
                         </>
                     }
                 </Card>
+                <Footer />
             </Container>
         );
     }

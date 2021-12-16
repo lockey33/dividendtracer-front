@@ -6,12 +6,15 @@ export const ModalHeaderWrapper = styled.div`
     align-items: center;
     position: relative;
     margin-bottom: 1rem;
+    width: 100%;
     button{
         border: none;
         background: transparent;
         cursor: pointer;
         color: white;
         font-size: 30px;
+        margin: 0;
+        padding: 0;
         &:hover{
             opacity: 0.5;
         }
@@ -20,8 +23,10 @@ export const ModalHeaderWrapper = styled.div`
 
 export const ModalWrapper = styled.div`
     position: fixed;
+    overflow: hidden;
     top: 0;
     left: 0;
+    bottom: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.8);
@@ -30,6 +35,7 @@ export const ModalWrapper = styled.div`
 
 export const ModalInner = styled.div`
     position: absolute;
+    pointer-events: none;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
