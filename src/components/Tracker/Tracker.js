@@ -1,9 +1,10 @@
 import React from "react";
 import { GlobalContext } from "../../provider/GlobalProvider";
 import { ethers } from 'ethers';
-import {Box, Flex, Text, Heading} from 'rebass';
-import {TrackerWrapper, AdBlock, Button} from './styled';
+import {Box} from 'rebass';
+import {AdBlock} from './styled';
 import { Form } from "../Forms/TrackerForm";
+import { Card } from "../Card";
 
 
 export class Tracker extends React.Component {
@@ -77,11 +78,11 @@ export class Tracker extends React.Component {
 
     render(){        
         return(
-            <Box width={'100%'} my={[4, 5]}>
+            <Box width={'100%'} mt={[4, 5]} mb={[2, 4]}>
                 <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
-                <TrackerWrapper>
+                <Card>
                     <Form action={this.results} handleAddress={this.handleAddress} handleWallet={this.handleWallet} response={this.state.response} errorWallet={this.state.errorWallet} errorToken={this.state.errorToken} />
-                </TrackerWrapper>
+                </Card>
             </Box>
         )
     }

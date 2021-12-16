@@ -1,17 +1,16 @@
 import React, { useEffect } from 'react';
-import { Heading, Flex, Box } from 'rebass';
+import { Heading, Box } from 'rebass';
 import { useOutsideAlerter } from '../../hooks/useOutsideAlerter';
 import { useWeb3Network } from '../../hooks/useWeb3Network';
 import { useWeb3Wallet } from '../../hooks/useWeb3Wallet';
-import { GlobalContext } from '../../provider/GlobalProvider';
-import { FormWrapper, ItemForm, ErrorMessage, Input, SubmitButton, AutoComplete, SearchHistoryWrapper, SearchHistory } from './styled';
+import { FormWrapper, ItemForm, ErrorMessage, Input, SubmitButton, SearchHistoryWrapper, SearchHistory } from './styled';
 
 
 export const Form = ({action, handleAddress, handleWallet, errorWallet, errorToken}) => {
 
     return(
         <FormWrapper  action="">
-            <Heading fontFamily="DM Sans" color="white" fontSize={[3, 4]} mb={3} mt={0} textAlign="center">Start tracking your dividends</Heading>
+            <Heading mb={3} fontFamily="DM Sans" color="white" fontSize={[3, 4]} mt={0} textAlign="center">Start tracking your dividends</Heading>
             <InputTracker handleAddress={handleAddress} errorToken={errorToken} />
             <InputWallet handleWallet={handleWallet} errorWallet={errorWallet} />
             <SubmitButton id="searchDividendBtn" onClick={(e) => action(e)} type="submit">Track your dividend</SubmitButton>
@@ -33,7 +32,7 @@ const InputTracker = ({handleAddress, errorToken}) => {
     }
 
     const handleInput = (value) => {
-        if(value == ''){
+        if(value === ''){
             setShowSearchhistory(true);
         }else{
             setShowSearchhistory(false);
@@ -60,7 +59,7 @@ const InputTracker = ({handleAddress, errorToken}) => {
         <ItemForm>
             <label htmlFor="item">Token address</label>
             <SearchHistoryWrapper ref={wrapperRef}>
-                <Input ref={inputRef} autoComplete="off" onFocus={() => setShowSearchhistory(true)} className={errorToken ? 'error' : ''} onChange={(e) => handleInput(e.target.value)} type="text" name="tokenaddr" placeholder="0x..." required />
+                <Input ref={inputRef} autoComplete="off" onFocus={() => setShowSearchhistory(true)} className={errorToken ? 'error' : ''} onChange={(e) => handleInput(e.target.value)} type="text" name="token" placeholder="0x..." required />
                 <SearchHistory handleClick={handleClick} isOpen={showSearchhistory} />
             </SearchHistoryWrapper>
             <ErrorMessage>{errorToken ? 'Please check token address' : ''}</ErrorMessage>
@@ -111,7 +110,7 @@ export const InputWallet = ({handleWallet, errorWallet}) => {
     return(
         <ItemForm>
             <label htmlFor="item">Wallet address</label>
-            <Input className={errorWallet ? 'error' : ''} ref={walletInputRef}  onChange={(e) => handleWallet(e.target.value)} type="text" name="walletaddr" placeholder="0x..." required />
+            <Input className={errorWallet ? 'error' : ''} ref={walletInputRef}  onChange={(e) => handleWallet(e.target.value)} type="text" name="wallet" placeholder="0x..." required />
             {errorWallet ? <ErrorMessage>Please check your wallet address</ErrorMessage> : null}
             <Box>
                 {account ? <Box sx={{'&:hover':{opacity: 0.5, cursor: 'pointer'}}} display="inline-block" fontFamily="DM Sans" fontSize={[1]} color="white" onClick={() => changeWallet()} mt={2}>{wallet !== '' ? 'Use another wallet' : 'Use your wallet'}</Box> : null}

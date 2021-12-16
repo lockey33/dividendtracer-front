@@ -12,3 +12,15 @@ export const TokenName = styled.div`
     justify-content: start;    
     align-self: center;
 `
+
+
+export const AddressLink = styled.div`
+    color: #B1B5C4;
+    font-family 'ABeeZee';
+    margin-top: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    @media screen and (max-width: 768px) {
+        font-size: 12px;
+    }
+`

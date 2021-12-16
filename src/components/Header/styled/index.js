@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 import {Flex, Button} from "rebass";
-import MetamaskIcon from "../../../assets/images/metamask.png";
-import WalletConnectIcon from "../../../assets/images/walletconnect-logo.png";
 
 export const HeaderWrapper = styled(Flex)`
     padding: 20px 40px;
@@ -213,11 +211,6 @@ export const TelegramButton = styled(OptionsButton)`
     &:hover {        
         border: solid 1px #6CF057;
     }
-    ${props => !props.noMobile && `
-        @media (max-width: 768px) {
-            display: none;
-        }
-    `}
 `
 
 export const SubMenuWrapper = styled(OptionsWrapper)``

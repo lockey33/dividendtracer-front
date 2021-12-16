@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 
 export const useWeb3Network = () => {
     const { ethereum } = window;
-    const {active, account, library, connector, activate, deactivate} = useWeb3React();
-    const [network, setNetwork] = useState(null);
+    const {active, account, library, connector} = useWeb3React();
     const [networkError, setNetworkError] = useState(false);
 
     useEffect(() => {
@@ -45,7 +44,6 @@ export const useWeb3Network = () => {
     }
 
     return {
-        network,
         networkError,
         switchChainToBsc,
     }

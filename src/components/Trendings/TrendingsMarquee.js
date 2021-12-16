@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react';
-import { useTokenInfo } from '../../hooks/useTokenInfo';
+import React from 'react';
 import { useTrendingCoins } from '../../hooks/useTrendingCoins';
 import Marquee from "react-fast-marquee";
-import {Flex, Box, Text} from 'rebass';
-import { TokenIcon } from '../Token/styled';
+import {Flex, Text} from 'rebass';
 import { TokenIconWrapper } from '../Token/TokenSymbol';
 
-export const ItemMarquee = ({ item, index }) => {
+const ItemMarquee = ({ item, index }) => {
 
     return(
         <>
@@ -28,7 +26,7 @@ export const ItemMarquee = ({ item, index }) => {
     )
 }
 
-export const TrendingsMarquee = ({}) => {
+export const TrendingsMarquee = () => {
 
     const trendings = useTrendingCoins();
 

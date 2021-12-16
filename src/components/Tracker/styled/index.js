@@ -1,8 +1,4 @@
-import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Card } from '../../Card';
-
-export const TrackerWrapper = styled(Card)``
 
 export const AdBlock = styled.div`
     margin-top: 1rem;

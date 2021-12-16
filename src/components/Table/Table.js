@@ -5,12 +5,27 @@ import {Box, Heading, Text, Flex} from "rebass";
 import DatePicker from "react-datepicker";
 import * as moment from 'moment';
 import { PageButton, StyledTable } from './styled';
+import {IoCalendar} from 'react-icons/io5';
+import styled from 'styled-components';
+import ReactTooltip from 'react-tooltip';
 
-const ExampleCustomInput = ({ value, onClick }) => (
-    <button className="example-custom-input" onClick={onClick}>
-        set Date
-    </button>
-  );
+const CalendarButton = styled.div`
+    background: #f7f8f8;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    color: #24262f;
+    cursor: pointer;
+`
+
+const CustomCalendarInput = ({ onClick }) => (
+    <CalendarButton data-tip="Filter by date" onClick={() => onClick()}>
+        <IoCalendar size={18} />
+        <ReactTooltip offset={{top: 5}} />
+    </CalendarButton>
+);
 
 export const TableWrapper = ({data}) => {
 
@@ -18,7 +33,7 @@ export const TableWrapper = ({data}) => {
     const [dateGain, setDateGain] = React.useState("");
     const [dividends, setDividends] = React.useState([]);
     const [previousDividends, setPreviousDividends] = React.useState([]);
-    const [datePickerVisible, setDatePickerVisible] = React.useState(false);
+    // const [datePickerVisible, setDatePickerVisible] = React.useState(false);
 
     useEffect(() => {
         let newDate = data.map(item => {
@@ -60,7 +75,8 @@ export const TableWrapper = ({data}) => {
         prepareRow,
         page,
         pageOptions,
-        gotoPage,
+        nextPage,
+        previousPage,
         state: { pageIndex },
     } = useTable({columns, data: dividends, initialState: { pageIndex: 0 }}, usePagination);
 
@@ -93,18 +109,20 @@ export const TableWrapper = ({data}) => {
     return(
         <>
         <Flex mb={3} justifyContent={'space-between'} alignItems="center">
-            <Heading mb={2} fontFamily={'DM Sans'} fontSize={[2, 4]} color="white">Transactions</Heading>
-            <Box alignItems="center" display="inline-flex">
+            <Box>
+                <Heading fontFamily={'DM Sans'} fontSize={4} color="white">Transactions</Heading>
+                {dateRange !== '' && 
+                    <Text mt={2} color="white" fontSize={2}>Profit on <Moment format='YYYY/MM/DD'>{dateRange}</Moment> : <strong>{dateGain} $</strong></Text>
+                }
+            </Box>
+            <Box className={dateRange !== '' ? 'showButton' : ''} alignItems="center" display="inline-flex">
                 <DatePicker id="datePicker" placeholderText="YYYY/MM/DD" dateFormat="yyyy/MM/dd"
                     selected={dateRange}
                     onChange={(date) => handleDate(date)}
                     isClearable={true}
-                    customInput={<ExampleCustomInput />}
+                    customInput={<CustomCalendarInput />}
                 />
             </Box>
-            {dateRange !== '' && 
-                <Text mt={3} color="white" fontSize={2}>Profit on <Moment format='YYYY/MM/DD'>{dateRange}</Moment> : <strong>{dateGain} $</strong></Text>
-            }
         </Flex>
         <StyledTable {...getTableProps()}>
             <thead>
@@ -130,15 +148,10 @@ export const TableWrapper = ({data}) => {
             </tbody>
         </StyledTable>
         <Box mt={4}>
-            <Flex justifyContent="center">
-                <Box>
-                   {pageOptions.map((page, i) => (
-                        <PageButton id={`pagination-${i}`}  key={page} className={pageIndex === page ? 'active' : ''} onClick={() => gotoPage(page)}>
-                            {page}
-                        </PageButton>
-                   )
-                    )}
-                </Box>
+            <Flex sx={{gap: '10px'}} alignItems="center" justifyContent="center">
+                <PageButton onClick={() => previousPage()} disabled={pageIndex === 0}>{'<'}</PageButton>
+                <Text fontSize={2} fontWeight="bold" color="white">Page {pageIndex + 1} of {pageOptions.length}</Text>
+                <PageButton onClick={() => nextPage()} disabled={pageIndex === pageOptions.length - 1}>{'>'}</PageButton>
             </Flex>
         </Box>
         </>

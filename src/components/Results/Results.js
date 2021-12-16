@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import {Flex, Text, Box} from "rebass";
+import React from 'react';
+import {Box} from "rebass";
 import "react-datepicker/dist/react-datepicker.css";
 import { TableWrapper } from '../Table/Table';
 import { ChartWrapper } from '../Chart/Chart';

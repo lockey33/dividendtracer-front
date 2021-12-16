@@ -3,12 +3,17 @@ import styled from 'styled-components';
 export const StyledTable = styled.table`
     width: 100%;
     color: white;
+    border-collapse: collapse;
     td, th{
         text-align: left;
         padding: 10px 0;
     }
-    thead > tr:first-child{
-        display: none;
+    thead > tr{
+        :first-child{
+            display: none;
+        }
+        flex: 1;
+        border-bottom: 1px solid #fff;
     }
     tr{
         >:first-child{
@@ -41,21 +46,13 @@ export const StyledTable = styled.table`
     }
     thead{
         position: relative;
-        ::before{
-            content: "";
-            display: block;
-            width: 100%;
-            height: 1px;
-            background: #fff;
-            bottom: 0;
-            position: absolute;
-        }
     }
 `
 
 export const PageButton = styled.button`
-    background: #669566;
-    border: solid 1px transparent;
+    color: #f7f8f8;
+    background: #24262f;
+    border: solid 1px #6CF057;
     border-radius: 3px;
     height: 30px;
     width: 30px;
@@ -63,15 +60,13 @@ export const PageButton = styled.button`
     font-family: 'DM Sans';
     font-weight: bold;
     font-size: 14px;
-    color: #FFFFFF;
-    margin-left: auto;
-    cursor: pointer;    
+    cursor: pointer; 
+    display: ${props => props.disabled ? 'none' : 'block'};   
     &:hover {
         border: solid 1px #6CF057;
     }
     &.active{
-        background: #6CF057;
-        color: #fff;
-        border: solid 1px #6CF057;
+        background: #f7f8f8;
+        color: #24262f;
     }
 `

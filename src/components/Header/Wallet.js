@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { AccountAddress, AccountIcon, AccountWrapper, ConnectorButton, Menu, MenuWrapper, SubMenuWrapper, WalletButton } from "./styled";
 import {Flex, Text, Button, Box} from "rebass";
-import { MetamaskButton, WalletConnectButton } from "./styled";
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import { formatAddress } from "../../utils/format";
 import { useWeb3Network } from "../../hooks/useWeb3Network";
@@ -50,13 +49,13 @@ export const WalletButtonWrapper = () => {
                         <Box>
                             <Flex sx={{gap: '15px'}} flexDirection="column">
                                 <ConnectorButton backgroundColor="#121212" onClick={() => handleMetamaskClick()}>
-                                    <img src={MetamaskIcon} /> {!ethereum ? 'Install' : ''} 
+                                    <img alt="" src={MetamaskIcon} />
                                     <Flex flex={1} justifyContent="center" alignItems="center">
-                                        Metamask
+                                    {!ethereum ? 'Install' : ''} Metamask
                                     </Flex>
                                 </ConnectorButton>
                                 <ConnectorButton backgroundColor="#121212" onClick={() => connect('walletconnect')}>
-                                <img src={WalletConnectIcon} /> 
+                                <img alt="" src={WalletConnectIcon} /> 
                                     <Flex flex={1} justifyContent="center" alignItems="center">
                                         WalletConnect
                                     </Flex>

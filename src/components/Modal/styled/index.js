@@ -5,7 +5,7 @@ export const ModalHeaderWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     position: relative;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     button{
         border: none;
         background: transparent;
@@ -24,7 +24,7 @@ export const ModalWrapper = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.8);
     z-index: 9;
 `
 
@@ -40,12 +40,21 @@ export const ModalInner = styled.div`
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     padding: 10px 20px 40px;
     z-index: 99;
-    max-width: 420px;
+    max-width: 500px;
     max-height: 90vh;
     form{
         @media screen and (min-width: 760px){
-            padding: 0 40px;
+            width: 90%;
         }
+    }
+    li{
+        font-size: 16px;
+        @media screen and (max-width: 760px){
+            font-size: 14px;
+        }
+    }
+    @media screen and (max-width: 760px){
+       width: 80%;
     }
 }
 `

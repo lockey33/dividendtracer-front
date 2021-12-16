@@ -1,19 +1,18 @@
 import React, {useContext, useEffect} from 'react';
-import {Flex, Box, Text} from 'rebass';
-import { Button } from '../../Tracker/styled';
-import { Results } from '../Results';
-import { VscDebugRestart } from 'react-icons/vsc';
+import {Flex, Text} from 'rebass';
 import {useHistory} from 'react-router-dom';
 import { TokenSymbolWrapper } from '../../Token/TokenSymbol';
 import { Card } from '../../Card';
 import { useTokenInfo } from '../../../hooks/useTokenInfo';
 import { GlobalContext } from '../../../provider/GlobalProvider';
 import { useSearchHistory } from '../../../hooks/useSearchHistory';
+import {FaArrowLeft} from 'react-icons/fa';
 
 export const TokenCard = ({ token }) => {
 
     let {tokenName, tokenSymbol} = useTokenInfo(token);
     const context = useContext(GlobalContext);
+    const history = useHistory();
     const {addToSearchHistory} = useSearchHistory();
 
     useEffect(() => {
@@ -25,7 +24,10 @@ export const TokenCard = ({ token }) => {
 
     return(
         <Card>
-            <TokenSymbolWrapper token={token} />
+            <Flex width={'100%'} alignItems="center" sx={{gap: '22px'}}>
+                <FaArrowLeft onClick={() => history.push('/')} style={{cursor:"pointer"}} color="white" size={25} />
+                <TokenSymbolWrapper token={token} />
+            </Flex>
         </Card>
     )
 }
@@ -35,32 +37,18 @@ export const GainsGard = ({ globalGain, todayGain, transactions }) => {
         <Card>
             <Flex flex={1} justifyContent="space-around" alignItems="center" flexDirection="row">
                 <Flex sx={{gap: '5px'}} flexDirection="column" alignItems="center">
-                    <Text color="#B1B5C4" fontSize={['12px', 3]} fontFamily={'DM Sans'}>Total profit</Text>
-                    <Text color="white" fontSize={[2, 4]} fontFamily={'ABeeZee'}>{globalGain} $</Text>
+                    <Text color="white" fontSize={[3, 4]} fontFamily={'ABeeZee'}>{globalGain} $</Text>
+                    <Text color="#B1B5C4" fontSize={['13px', 3]} fontFamily={'DM Sans'}>Total profit</Text>
                 </Flex>
                 <Flex sx={{gap: '5px'}} flexDirection="column" alignItems="center">
-                    <Text color="#B1B5C4" fontSize={['12px', 3]} fontFamily={'DM Sans'}>Today</Text>
-                    <Text color="white" fontSize={[2, 4]}  fontFamily={'ABeeZee'}>{todayGain} $</Text>
+                    <Text color="white" fontSize={[3, 4]}  fontFamily={'ABeeZee'}>{todayGain} $</Text>
+                    <Text color="#B1B5C4" fontSize={['13px', 3]} fontFamily={'DM Sans'}>Today</Text>
                 </Flex>
                 <Flex sx={{gap: '5px'}} flexDirection="column" alignItems="center">
-                    <Text color="#B1B5C4" fontSize={['12px', 3]} fontFamily={'DM Sans'}>Transactions</Text>
-                    <Text color="white" fontSize={[2, 4]}  fontFamily={'ABeeZee'}>{transactions}</Text>
+                    <Text color="white" fontSize={[3, 4]}  fontFamily={'ABeeZee'}>{transactions}</Text>
+                    <Text color="#B1B5C4" fontSize={['13px', 3]} fontFamily={'DM Sans'}>Transactions</Text>                   
                 </Flex>
             </Flex>
         </Card>
-)
-    }
-
-export const ResultsContainer = ({dividendsSave, token, wallet, dividends, globalGain, todayGain}) => {
-    
-    const history = useHistory();
-    const restart = () => {
-        history.push('/')
-    }
-
-    return(
-        <Flex width={'100%'} alignItems="start" flexDirection='column'>
-            <Results dividendsSave={dividendsSave} token={token} wallet={wallet} dividends={dividends} globalGain={globalGain} todayGain={todayGain} />
-        </Flex>
     )
 }

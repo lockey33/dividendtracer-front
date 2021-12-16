@@ -4,35 +4,15 @@ import web3 from "web3";
 import { ethers } from 'ethers';
 import PANCAKE from '../abi/pancake.json';
 import {ERC20} from "../abi/erc20";
-import firebase from 'firebase';
-import { UserContext } from "./UserProvider";
 
 const GlobalContext = React.createContext({});
 const mainNet = "https://bsc-dataseed.binance.org/";
 const mainNetSocket = 'wss://bsc-ws-node.nariox.org:443';
 const provider = new ethers.providers.JsonRpcProvider(mainNet);
 
-const firebaseConfig = {
-    apiKey: "AIzaSyCmS_5pCCN0scyfqtd0HFHBZmUpjNSCCXY",
-    authDomain: "dividendtracker-d1553.firebaseapp.com",
-    databaseURL: "https://dividendtracker-d1553-default-rtdb.firebaseio.com",
-    projectId: "dividendtracker-d1553",
-    storageBucket: "dividendtracker-d1553.appspot.com",
-    messagingSenderId: "657687636245",
-    appId: "1:657687636245:web:3e5c6e6bff193a30a8a11c",
-    measurementId: "G-F5CKD3M7L6"
-};
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}else {
-    firebase.app(); // if already initialized, use that one
-}
-const database = firebase.database();
 
 class GlobalProvider extends Component {
 
-    static contextType = UserContext;
     constructor(props) {
         super(props);
 
@@ -127,7 +107,7 @@ class GlobalProvider extends Component {
 
     getBddContractABI = async (tokenAddress) => {
         try{
-            let contractResponse = await axios.get("http://localhost:3001/v1/contract/find/" + tokenAddress)
+            let contractResponse = await axios.get("http://159.223.127.45:3001/v1/contract/find/" + tokenAddress)
             if(contractResponse.hasOwnProperty("data")){
                 if(contractResponse.hasOwnProperty("contractABI")){
                     return contractResponse.contractABI
@@ -142,11 +122,11 @@ class GlobalProvider extends Component {
     }
 
     pushContractABI = async (contractABI, tokenAddress) => {
-        await axios.post("http://localhost:3001/v1/contract/create", {contractABI, tokenAddress})
+        await axios.post("http://159.223.127.45:3001/v1/contract/create", {contractABI, tokenAddress})
     }
 
     pushInDatabase = async (tokenAddress, tokenName, tokenSymbol) =>{
-        await axios.post("http://localhost:3001/v1/coin/create", {tokenAddress, tokenName, tokenSymbol})
+        await axios.post("http://159.223.127.45:3001/v1/coin/create", {tokenAddress, tokenName, tokenSymbol})
     }
 
     readableValue(value, decimals) {
@@ -255,7 +235,7 @@ class GlobalProvider extends Component {
 
     render() {
         return (
-            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}, locale: this.context.locale, user: this.context.user}}>
+            <GlobalContext.Provider value={{ global : {state: this.state, actions: this.actions}}}>
                 {this.props.children}
             </GlobalContext.Provider>
         )

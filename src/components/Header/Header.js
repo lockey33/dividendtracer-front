@@ -4,8 +4,8 @@ import {ReactComponent as Dots} from "../../assets/images/dots.svg";
 import {ReactComponent as Docs} from "../../assets/images/docs.svg";
 import {ReactComponent as Ask} from "../../assets/images/ask.svg";
 import {ReactComponent as Coffee} from "../../assets/images/coffee.svg";
-import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu, WalletButton, TelegramButton, MetamaskButton, WalletConnectButton} from "./styled";
-import { ModalContact, Modal} from "../Modal/Modal";
+import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu, TelegramButton} from "./styled";
+import { ModalContact} from "../Modal/Modal";
 import {FaTelegramPlane} from 'react-icons/fa';
 import {Flex, Link} from "rebass"
 import { WalletWrapper } from "./Wallet";
@@ -36,9 +36,9 @@ const Header = () => {
                 <h1>Dividend Tracer</h1>
             </LogoWrapper>
             <ActionsWrapper>
-                <Flex alignItems="center" color="white">
+                {/* <Flex sx={{'@media screen and (max-width: 997px)': {display: 'none'}}} alignItems="center" color="white">
                     <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
-                </Flex>
+                </Flex> */}
                 <WalletWrapper />
                 <OptionsWrapper active={isOptionsOpen}>
                     <OptionsButton onClick={() => setIsOptionsOpen(!isOptionsOpen)} id="openMenuTop">

@@ -1,16 +1,16 @@
-import React, {useState, useEffect, useRef, forwardRef} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 
 export const useOutsideAlerter = (ref) => {
     
     const [clicked, setClicked] = useState(false);
 
-    const handleClickOutside = (event) => {    
+    const handleClickOutside = useCallback((event) => {    
         if (ref.current && !ref.current.contains(event.target)) {
             setClicked(true);
         }else{
             setClicked(false);
         }
-    };
+    });
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);

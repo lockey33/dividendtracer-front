@@ -19,11 +19,17 @@ export const useTokenInfo = (token) => {
         return tokenSymbol
     }
 
+    const getCoin = async() => {
+        const result = await fetch(window.location.origin+'/coins/'+tokenSymbol+'.png', { method: 'HEAD' });
+        return result.ok ? result.url : false;
+    }
+
+    const fetchData = async() => {
+        setTokenName(await getTokenName());
+        setTokenSymbol(await getTokenSymbol());
+    }
+
     useEffect(() => {
-        async function fetchData() {
-            setTokenName(await getTokenName());
-            setTokenSymbol(await getTokenSymbol());
-        }
         fetchData();
         return () => {
             setTokenName("");
@@ -31,6 +37,6 @@ export const useTokenInfo = (token) => {
         }
     }, [token])    
 
-    return {tokenName, tokenSymbol} 
+    return {tokenName, tokenSymbol, getCoin} 
 
 }

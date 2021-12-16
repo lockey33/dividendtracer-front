@@ -1,18 +1,14 @@
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {Flex, Heading, Text} from "rebass"
-import { WalletButton } from '../../Header/styled';
-import { GlobalContext } from '../../../provider/GlobalProvider';
 import { Button } from '../../Tracker/styled';
 import { InputWallet } from '../TrackerForm';
-import { TokenIcon } from '../../Token/styled';
 import { CustomLoader } from '../../Loader/Loader';
 import { TokenIconWrapper } from '../../Token/TokenSymbol';
 import { WalletButtonWrapper } from '../../Header/Wallet';
-import { useIsMobile, useIsMobileDevice } from '../../../hooks/useIsMobile';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import { formatAddress } from '../../../utils/format';
 import { useWeb3Wallet } from '../../../hooks/useWeb3Wallet';
-import { useWeb3Network } from '../../../hooks/useWeb3Network';
 import { useSearchHistory } from '../../../hooks/useSearchHistory';
 import { useWatchlist } from '../../../hooks/useWatchlist';
 
@@ -30,6 +26,7 @@ export const SubmitButton = styled.button`
     margin-left: auto;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    margin-top: 45px;
     &:hover {
         border: solid 1px #6CF057;
     }
@@ -59,6 +56,9 @@ export const ItemForm = styled.div`
 export const FormWrapper = styled.form`
     width: auto;
     flex: 1;
+    @media screen and (max-width: 780px){
+        width: 100%;
+    }
 `
 
 export const Input = styled.input`
@@ -268,7 +268,7 @@ const SearchHistoryList = ({handleClick, active}) => {
                             )
                         })
                         :
-                        <Flex alignItems="center" justifyContent="center" mt={5}>
+                        <Flex alignItems="center" justifyContent="center" my={4}>
                             <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in search history</Text>
                         </Flex>
                 : null
@@ -282,7 +282,7 @@ const SearchHistoryList = ({handleClick, active}) => {
                         )
                     })
                     :
-                    <Flex alignItems="center" justifyContent="center" mt={5}>
+                    <Flex alignItems="center" justifyContent="center" my={4}>
                         <Text color="white" fontFamily='DM Sans' fontSize={[1, 2]} >No token in watchlist</Text>
                     </Flex>    
                 : null                  

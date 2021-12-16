@@ -4,29 +4,17 @@ import axios from 'axios';
 import * as moment from 'moment';
 import { ethers } from 'ethers';
 import { CustomLoader } from "../components/Loader/Loader";
-import styled from 'styled-components';
 import {Flex, Text} from 'rebass';
-import { TrackerWrapper } from "../components/Tracker/styled";
-import { GainsGard, ResultsContainer } from '../components/Results/styled';
+import { GainsGard } from '../components/Results/styled';
 import { ErrorTracker, ErrorWallet } from '../components/Forms/styled';
 import { TokenCard } from '../components/Results/styled';
 import { useWeb3Wallet } from '../hooks/useWeb3Wallet';
 import {useHistory} from 'react-router-dom';
+import { Results } from '../components/Results/Results';
+import { Container } from './styled';
+import { Card } from '../components/Card/';
 
-const Container = styled.div`
-    display: block;
-    margin: 0 auto;
-    padding: 0rem 20px 2rem;
-    @media (min-width: 768px) {
-        max-width: 900px;
-    }
-    @media (min-width: 1200px) {
-        max-width: 790px;
-        padding: 1rem 20px 2rem;
-    }
-`
-
-export default class ResultsPage extends React.Component {
+class ResultsPage extends React.Component {
     
     static contextType = GlobalContext;
 
@@ -142,7 +130,7 @@ export default class ResultsPage extends React.Component {
             if(err === "dividendTracker"){
                 this.setState({tracker: "", response: {status: false, type: "dividendTracker", message: "Dividend tracker address not found for this contract, please enter manually the dividend Tracker address"}})
             }else{
-                alert(err)
+                console.log(err);
             }
         }
 
@@ -245,12 +233,12 @@ export default class ResultsPage extends React.Component {
             <Container>
                 <TokenCard token={this.state.address} />
                 {this.state.dividends.length > 0 && <GainsGard transactions={this.state.dividends.length} globalGain={this.state.globalGain} todayGain={this.state.todayGain} />}
-                <TrackerWrapper>
+                <Card>
                     {!this.state.walletRequired ?
                         <>
                             {this.state.dividends.length > 0 ?
                                 <>
-                                    <ResultsContainer {...this.state} />
+                                    <Results {...this.state} />
                                 </>
                             :
                             <>
@@ -280,7 +268,7 @@ export default class ResultsPage extends React.Component {
                             <ErrorWallet handleWallet={this.handleWallet} action={this.handleShowDividend} errorWallet={this.state.errorWallet} />
                         </>
                     }
-                </TrackerWrapper>
+                </Card>
             </Container>
         );
     }

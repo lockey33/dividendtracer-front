@@ -4,7 +4,6 @@ import { FormWrapper, Input, ItemForm, SubmitButton, Textarea } from "../Forms/s
 import {Heading, Text, Flex} from "rebass";
 import emailjs from 'emailjs-com';
 import { CustomLoader } from "../Loader/Loader";
-import { useIsMobileDevice } from "../../hooks/useIsMobile";
 import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
 
 
@@ -131,7 +130,7 @@ export const Modal = ({isOpen, onClose, title, children}) => {
         <ModalWrapper>
             <ModalInner ref={wrapperRef}>
                 <ModalHeader title={title} close={(e) => onClose(e)} />
-                <Flex flexDirection="column" justifyContent="center" alignItems="center">
+                <Flex flexDirection="column" alignItems="center">
                     {children}
                 </Flex>
             </ModalInner>            

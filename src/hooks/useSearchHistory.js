@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useWeb3Wallet } from "./useWeb3Wallet";
 
@@ -11,7 +11,7 @@ export const useSearchHistory = () => {
     const getSearchHistoryBDD = async() => {
         let data = await axios({
             method: 'post',
-            url: 'http://localhost:3001/v1/users/getUserSearchHistory',
+            url: 'http://159.223.127.45:3001/v1/users/getUserSearchHistory',
             data: {
                 address: account
             }
@@ -30,7 +30,7 @@ export const useSearchHistory = () => {
         addToLocalSearchHistory(tokenAddress, tokenName, symbol);
         let data = axios({
             method: 'post',
-            url: 'http://localhost:3001/v1/users/addToSearchHistory',
+            url: 'http://159.223.127.45:3001/v1/users/addToSearchHistory',
             data: {
                 address: account,
                 tokenAddress: tokenAddress,
@@ -52,7 +52,7 @@ export const useSearchHistory = () => {
         removeFromLocalSearchHistory(tokenAddress);
         let data = axios({
             method: 'post',
-            url: 'http://localhost:3001/v1/users/removeFromSearchHistory',
+            url: 'http://159.223.127.45:3001/v1/users/removeFromSearchHistory',
             data: {
                 address: account,
                 tokenAddress: tokenAddress

@@ -1,15 +1,16 @@
-import React, {useEffect, useState, useCallback, useMemo, memo} from 'react';
-import { UserContext } from '../provider/UserProvider';
+import React, {useEffect} from 'react';
 import { useWeb3React } from "@web3-react/core"
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import { useUser } from './useUser';
 
 export const useWeb3Wallet = () => {
     
-    const context = React.useContext(UserContext);
+    
     const {active, account, activate, deactivate} = useWeb3React();
-    const accountSaved = sessionStorage.getItem('accountSaved') || false;
-    const isConnected = localStorage.getItem('isConnected') || false;
+    const accountSaved = sessionStorage.getItem('accountSaved');
+    const {createUser} = useUser(account)
+    const isConnected = localStorage.getItem('isConnected');
     
     const walletConnect = new WalletConnectConnector({
         rpc: {56: 'https://bsc-dataseed.binance.org/'},
@@ -63,7 +64,7 @@ export const useWeb3Wallet = () => {
 
     useEffect(() => {
         if(account && !accountSaved) {
-            context.user.actions.createUser(account);
+            createUser();
             sessionStorage.setItem('accountSaved', true);
         }
         return () => {}
