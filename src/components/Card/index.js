@@ -1,7 +1,7 @@
 import styled from 'styled-components';
+import { Flex } from "rebass";
 
-export const Card = styled.div`
-    display: flex;
+export const Card = styled(Flex)`
     background: #23262F;
     border-radius: 10px;
     padding: 40px 50px;

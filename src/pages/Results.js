@@ -234,7 +234,7 @@ class ResultsPage extends React.Component {
             <Container>
                 <TokenCard token={this.state.address} />
                 {this.state.dividends.length > 0 && <GainsGard transactions={this.state.dividends.length} globalGain={this.state.globalGain} todayGain={this.state.todayGain} />}
-                <Card>
+                <Card mt={3} mb={4}>
                     {!this.state.walletRequired ?
                         <>
                             {this.state.dividends.length > 0 ?

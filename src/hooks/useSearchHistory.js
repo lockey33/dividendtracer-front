@@ -28,7 +28,7 @@ export const useSearchHistory = () => {
 
     const addToSearchHistoryBDD = async(tokenAddress, tokenName, symbol) => {
         addToLocalSearchHistory(tokenAddress, tokenName, symbol);
-        let data = axios({
+        let data = await axios({
             method: 'post',
             url: 'https://dividendtracer.com:3001/v1/users/addToSearchHistory',
             data: {
@@ -50,7 +50,7 @@ export const useSearchHistory = () => {
 
     const removeFromSearchHistoryBDD = async(tokenAddress) => {
         removeFromLocalSearchHistory(tokenAddress);
-        let data = axios({
+        let data = await axios({
             method: 'post',
             url: 'https://dividendtracer.com:3001/v1/users/removeFromSearchHistory',
             data: {
@@ -63,8 +63,8 @@ export const useSearchHistory = () => {
         })
         .catch(err => {
             console.log(err);
-        })
-        
+        });
+        console.log(data);
         setSearchHistory(data);
         return data;
     }

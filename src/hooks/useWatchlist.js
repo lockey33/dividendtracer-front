@@ -8,7 +8,7 @@ export const useWatchlist = (tokenAddress, tokenName, tokenSymbol) => {
     const {account} = useWeb3Wallet();
     
     const addToWatchlistBDD = async() => {
-        let data = axios({
+        let data = await axios({
             method: 'post',
             url: 'https://dividendtracer.com:3001/v1/users/addToWatchlist',
             data: {
