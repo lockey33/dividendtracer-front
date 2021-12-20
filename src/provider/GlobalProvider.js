@@ -9,7 +9,7 @@ const GlobalContext = React.createContext({});
 const mainNet = "https://bsc-dataseed.binance.org/";
 const mainNetSocket = 'wss://bsc-ws-node.nariox.org:443';
 const provider = new ethers.providers.JsonRpcProvider(mainNet);
-const apiUrl = '159.223.127.45:3001'
+const apiUrl = 'dividendtracer.com:3001'
 
 class GlobalProvider extends Component {
 
