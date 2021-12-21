@@ -20,8 +20,10 @@ export const useTokenInfo = (token) => {
     }
 
     const getCoin = async() => {
-        const result = await fetch(window.location.origin+'/coins/'+tokenSymbol+'.png', { method: 'HEAD' });
-        return result.ok ? result.url : false;
+        let symbol = await getTokenSymbol();
+        symbol = symbol.toLowerCase();
+        const result = await fetch(window.location.origin+'/coins/'+symbol+'.png', { method: 'HEAD' }).then(r => r.ok ? r.url : false);
+        return result;
     }
 
     const fetchData = async() => {

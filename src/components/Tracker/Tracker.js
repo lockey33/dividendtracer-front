@@ -80,7 +80,7 @@ export class Tracker extends React.Component {
         return(
             <Box width={'100%'} mt={[3, 4]} mb={[2, 4]}>
                 <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
-                <Card>
+                <Card mt={3}>
                     <Form action={this.results} handleAddress={this.handleAddress} handleWallet={this.handleWallet} response={this.state.response} errorWallet={this.state.errorWallet} errorToken={this.state.errorToken} />
                 </Card>
             </Box>

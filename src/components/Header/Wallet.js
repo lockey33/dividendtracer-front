@@ -93,7 +93,6 @@ export const WalletWrapper = () => {
     }, [active]);
 
     useEffect(() => {
-        console.log(clicked);
         if(clicked){
             setIsMenuOpen(false);
         }

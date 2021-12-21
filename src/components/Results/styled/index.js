@@ -34,7 +34,7 @@ export const TokenCard = ({ token }) => {
 
 export const GainsGard = ({ globalGain, todayGain, transactions }) => {
     return(
-        <Card>
+        <Card mt={3}>
             <Flex flex={1} justifyContent="space-around" alignItems="center" flexDirection="row" sx={{"@media screen and (max-width: 330px)": {flexDirection: "column", gap: '30px'}}}>
                 <Flex flexDirection="column" alignItems="center">
                     <Text color="white" fontSize={[2, 3, 4]} fontFamily={'ABeeZee'}>{globalGain} $</Text>

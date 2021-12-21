@@ -3,8 +3,8 @@ import axios from "axios";
 
 export const useUser = (account) => {
 
-    const createUser = () => {
-        axios({
+    const createUser = async() => {
+        await axios({
             method: 'post',
             url: 'https://dividendtracer.com:3001/v1/users/createUser',
             data: {
