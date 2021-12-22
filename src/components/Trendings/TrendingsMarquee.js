@@ -36,7 +36,7 @@ export const TrendingsMarquee = () => {
             <Flex alignItems="center" py={2} px={4} sx={{borderRight: 'solid 1px grey'}}>
                 <Flex alignItems='center' color="white" fontSize={[1, 2, 3]} fontWeight="bold">🏆 <Text>Trendings</Text></Flex>
             </Flex>
-            <Marquee gradient={false} speed={80}>
+            <Marquee gradient={false} speed={80} pauseOnHover={true}>
                 {trendings.map((trending, index) => {
                     return (
                         <ItemMarquee key={index} index={index + 1} item={trending} />

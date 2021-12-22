@@ -73,7 +73,7 @@ export const useSearchHistory = () => {
     const addToLocalSearchHistory = (tokenAddress, tokenName, symbol) => {
         let searchHistory = localStorage.getItem('searchHistory');
         searchHistory = searchHistory ? JSON.parse(searchHistory) : [];
-        if(!(searchHistory.some(o => o.address === tokenAddress))){
+        if(!(searchHistory.some(o => o.address.toLowerCase() === tokenAddress.toLowerCase()))){
             let newSearchHistory = {address: tokenAddress, name: tokenName, symbol: symbol};
             searchHistory.push(newSearchHistory);
             localStorage.setItem('searchHistory', JSON.stringify(searchHistory));

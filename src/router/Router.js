@@ -15,7 +15,7 @@ const AppRouter = () => {
         <Router>
             <Banner />
             <ToastContainer theme='dark' />
-            {/* <TrendingsMarquee /> */}
+            <TrendingsMarquee />
             <Header />
             <Route default path="/" exact component={Home} />
             <Route path="/results" component={ResultsPageWrapper} />

@@ -22,7 +22,8 @@ export const useTokenInfo = (token) => {
     const getCoin = async() => {
         let symbol = await getTokenSymbol();
         symbol = symbol.toLowerCase();
-        const result = await fetch(window.location.origin+'/coins/'+symbol+'.png', { method: 'HEAD' }).then(r => r.ok ? r.url : false);
+        let result = await fetch(window.location.origin+'/coins/'+symbol+'.png', { method: 'HEAD' })
+        result = result.ok && result.headers.get("content-type").includes('image') ? result.url : false; 
         return result;
     }
 

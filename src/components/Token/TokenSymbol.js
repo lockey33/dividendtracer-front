@@ -9,16 +9,19 @@ import ReactTooltip from 'react-tooltip';
 import { CustomBlockies } from '../Header/styled/blockies';
 import { useWatchlist } from '../../hooks/useWatchlist';
 import { useTokenInfo } from '../../hooks/useTokenInfo';
+import { CustomLoader } from '../Loader/Loader';
 
 export const TokenIconWrapper = ({address, size}) => {
 
     const [icon, setIcon] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
     const {getCoin} = useTokenInfo(address);
     const isMobile = useIsMobile();
 
     async function init() {
         const coin = await getCoin();
         setIcon(coin);
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -27,12 +30,17 @@ export const TokenIconWrapper = ({address, size}) => {
 
 
     return(
-        icon ?
-            <TokenIcon className="token-symbol" size={size || null} src={icon} />
+        !loading ?
+            icon ?
+                <TokenIcon className="token-symbol" size={size || null} src={icon} />
+            :
+                <Flex width="auto" height="auto" alignItems="center" justifyContent="center" sx={{'canvas': {borderRadius: '100%', width: size ? size+' !important' : '100% !important', height: size ? size+' !important' : '100% !important'}}}>
+                    <CustomBlockies seed={address} scale={isMobile ? 4 : 6} />
+                </Flex>
         :
-            <Flex width="auto" height="auto" alignItems="center" justifyContent="center" sx={{'canvas': {borderRadius: '100%', width: size ? size+' !important' : '100% !important', height: size ? size+' !important' : '100% !important'}}}>
-                <CustomBlockies seed={address} scale={isMobile ? 4 : 6} />
-            </Flex>
+        <Flex width="auto">
+            <CustomLoader size={size || 40} />
+        </Flex>
     )
 
 }
