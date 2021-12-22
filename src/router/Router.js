@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { TrendingsMarquee } from "../components/Trendings/TrendingsMarquee";
 import { ModalAnnouncement } from "../components/Modal/ModalAnnoucement";
 import { Banner } from "../components/Banner/Banner";
+import { Gelato } from "../pages/Gelato";
 
 const AppRouter = () => {
 
@@ -19,6 +20,7 @@ const AppRouter = () => {
             <Header />
             <Route default path="/" exact component={Home} />
             <Route path="/results" component={ResultsPageWrapper} />
+            <Route path="/gelato" component={Gelato} />
             <ModalAnnouncement />
         </Router>
     )
