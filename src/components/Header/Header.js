@@ -6,8 +6,9 @@ import {ReactComponent as Ask} from "../../assets/images/ask.svg";
 import {ReactComponent as Coffee} from "../../assets/images/coffee.svg";
 import {HeaderWrapper, LogoWrapper, ActionsWrapper, OptionsWrapper, OptionsButton, OptionsMenuWrapper, OptionsMenu} from "./styled";
 import { ModalContact} from "../Modal/Modal";
-import {FaTelegramPlane} from 'react-icons/fa';
-import {Link} from "rebass"
+import {FaRocket, FaTelegramPlane} from 'react-icons/fa';
+import {Link, Flex} from "rebass";
+import { TelegramButton } from "./styled";
 import { WalletWrapper } from "./Wallet";
 import {useHistory} from 'react-router-dom';
 import { useOutsideAlerter } from "../../hooks/useOutsideAlerter";
@@ -37,7 +38,7 @@ const Header = () => {
             </LogoWrapper>
             <ActionsWrapper>
                 {/* <Flex sx={{'@media screen and (max-width: 997px)': {display: 'none'}}} alignItems="center" color="white">
-                    <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
+                    <TelegramButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://token.dividendtracer.com">Token is coming <FaRocket color="white" /></TelegramButton>
                 </Flex> */}
                 <WalletWrapper />
                 <OptionsWrapper active={isOptionsOpen}>

@@ -23,7 +23,6 @@ export const Ads = () => {
             <AdWrapper id='adWrapper' target='_blank' href="https://www.green-snkrs.com">
                 <img src={SNKRSGif} alt="" />
             </AdWrapper>
-            <PromoteMessage />
         </>
     );
 };

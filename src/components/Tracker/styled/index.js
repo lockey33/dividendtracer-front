@@ -18,6 +18,27 @@ export const AdBlock = styled.div`
     }
 `
 
+export const PromotionWrapper = styled.div`
+    margin-top: 1rem;
+    background: rgb(133, 189, 147);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-align: center;
+    font-family: 'DM Sans';
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
+    &:hover{
+        cursor: pointer;
+    }
+`
+
 export const Button = styled.button`
     background-color: transparent;
     border: 1px solid #a9a9a9;
