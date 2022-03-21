@@ -208,6 +208,27 @@ export const AccountWrapper = styled(OptionsButton)`
     }
 `
 
+export const TelegramButtonWhite = styled.a`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 10px;
+    font-weight: bold;
+    border: solid 1px transparent;
+    color: black;
+    font-size: 18px;
+    padding: 10px; 
+    gap: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+    &:hover {        
+        border: solid 1px #58b8df;
+    }
+`
+
 export const TelegramButton = styled.a`
     display: flex;
     align-items: center;

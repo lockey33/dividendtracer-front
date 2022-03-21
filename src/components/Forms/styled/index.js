@@ -12,6 +12,26 @@ import { useWeb3Wallet } from '../../../hooks/useWeb3Wallet';
 import { useSearchHistory } from '../../../hooks/useSearchHistory';
 import { useWatchlist } from '../../../hooks/useWatchlist';
 
+export const PromotionButton = styled.a`
+    background: white;
+    border: solid 1px transparent;
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-family: 'DM Sans';
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+    margin-left: auto;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    &:hover {
+        border: solid 2px black;
+    }
+`
+
 export const SubmitButton = styled.button`
     background: #58b8df;
     border: solid 1px transparent;

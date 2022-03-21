@@ -18,6 +18,30 @@ export const AdBlock = styled.div`
     }
 `
 
+export const PromotionWrapperOrange = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+    background: #f2b04f;
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-align: center;
+    font-family: 'DM Sans';
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
+    &:hover{
+        cursor: pointer;
+    }
+`
+
 export const PromotionWrapper = styled.div`
     margin-top: 1rem;
     background: #58b8df;
