@@ -13,7 +13,7 @@ const AppRouter = () => {
 
     return (
         <Router>
-            <Banner />
+            {/* <Banner /> */}
             <ToastContainer theme='dark' />
             <TrendingsMarquee />
             <Header />

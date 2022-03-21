@@ -17,18 +17,30 @@ export const LogoWrapper = styled.a`
     text-decoration: none;
     cursor: pointer;
     svg{
-        max-width: 60px;
+        max-width: 90px;
         height: auto;
     }
     h1{
         margin: 0;
         @media (max-width: 768px) {
             font-size: 1.3em;
-            width: 50%;
+            width: auto;
             line-height: 1em;
         }
         @media (max-width: 500px) {
-        display: none;
+            display: none;
+        }
+    }
+    p{
+        margin: 0;
+        font-family: 'Mitr';
+        line-height: 0.4;
+        a{
+            color: inherit;
+            text-decoration: none;
+        }
+        @media (max-width: 500px) {
+            display: none;
         }
     }
     &:hover{
@@ -46,7 +58,7 @@ export const ActionsWrapper = styled.div`
 `
 
 export const WalletButton = styled.button`
-    background: ${props => props.error ? 'rgb(255, 67, 67)': 'rgba(169, 254, 167, 0.55)'};
+    background: ${props => props.error ? 'rgb(255, 67, 67)': '#58b8df'};
     border-radius: 10px;
     padding: 10px 20px;
     border: solid 1px transparent;
@@ -57,7 +69,7 @@ export const WalletButton = styled.button`
     display: flex;
     align-items: center;
     text-align: center;
-    color:  ${props => props.error ? 'white' : '#6CF057'};
+    color: white;
     cursor: pointer;
     @media (min-width: 768px) {
         font-size: 18px;
@@ -131,9 +143,9 @@ export const OptionsMenu = styled.div`
 export const OptionsWrapper = styled.div`
     position: relative;
     >button{
-        border: ${props => props.active ? 'solid 1px #6CF057' : ''};
+        border: ${props => props.active ? 'solid 1px #58b8df' : ''};
         &:hover{
-            border: solid 1px #6CF057;
+            border: solid 1px #58b8df;
         }
     } 
     ${props => props.active && `
@@ -192,7 +204,7 @@ export const AccountWrapper = styled(OptionsButton)`
     ${'' /* padding: 0 20px; */}
     gap: 15px;
     &:hover{
-        border: solid 1px #6CF057;
+        border: solid 1px #58b8df;
     }
 `
 
@@ -202,9 +214,10 @@ export const TelegramButton = styled.a`
     justify-content: center;
     background: rgba(94,94,94,0.15);
     border-radius: 10px;
+    font-weight: bold;
     border: solid 1px transparent;
     color: #fff;
-    font-size: 16px;
+    font-size: 18px;
     padding: 10px; 
     gap: 15px;
     text-decoration: none;
@@ -212,7 +225,7 @@ export const TelegramButton = styled.a`
     transition: all 0.3s ease;
     padding: 10px 20px;
     &:hover {        
-        border: solid 1px #6CF057;
+        border: solid 1px #58b8df;
     }
 `
 

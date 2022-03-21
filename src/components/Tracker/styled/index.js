@@ -20,7 +20,7 @@ export const AdBlock = styled.div`
 
 export const PromotionWrapper = styled.div`
     margin-top: 1rem;
-    background: rgb(133, 189, 147);
+    background: #58b8df;
     border-radius: 10px;
     padding: 18px 20px;
     text-align: center;

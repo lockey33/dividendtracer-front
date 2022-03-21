@@ -80,8 +80,8 @@ export class Tracker extends React.Component {
         return(
             <Box width={'100%'} mt={[3, 4]} mb={[2, 4]}>
                 <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
-                <PromotionWrapper onClick={() => window.location = 'https://token.dividendtracer.com'}>
-                    <Text fontSize={"20px"} fontFamily={"DM Sans"} color={"white"}>$DVT reward token is coming <small style={{fontSize: '14px'}}><u>Learn more</u></small></Text>
+                <PromotionWrapper onClick={() => window.location = 'https://ponyswap.org'}>
+                    <Text fontSize={["18px", "20px"]} fontFamily={"DM Sans"} color={"white"}>Here comes a new DEX on BSC, full of PONYs.<br/><small style={{fontSize: '14px'}}>Made with love by the DividendTracer Team. ❤️</small></Text>
                 </PromotionWrapper>
                 <Card mt={3}>
                     <Form action={this.results} handleAddress={this.handleAddress} handleWallet={this.handleWallet} response={this.state.response} errorWallet={this.state.errorWallet} errorToken={this.state.errorToken} />

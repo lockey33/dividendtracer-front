@@ -52,7 +52,7 @@ export const StyledTable = styled.table`
 export const PageButton = styled.button`
     color: #f7f8f8;
     background: #24262f;
-    border: solid 1px #6CF057;
+    border: solid 1px #58b8df;
     border-radius: 3px;
     height: 30px;
     width: 30px;
@@ -63,7 +63,7 @@ export const PageButton = styled.button`
     cursor: pointer; 
     display: ${props => props.disabled ? 'none' : 'block'};   
     &:hover {
-        border: solid 1px #6CF057;
+        border: solid 1px #58b8df;
     }
     &.active{
         background: #f7f8f8;

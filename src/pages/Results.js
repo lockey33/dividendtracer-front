@@ -138,7 +138,7 @@ class ResultsPage extends React.Component {
     }
 
     calculate = async() => {
-        let data = await this.getData()
+        let data = await this.getData();
         let dividends = []
         let bnbPrice = await this.context.global.actions.getBnbPrice()
         bnbPrice = bnbPrice.ethusd

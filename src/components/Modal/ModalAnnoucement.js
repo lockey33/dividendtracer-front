@@ -27,8 +27,8 @@ export const ModalAnnouncement = () => {
         <Modal noCloseButton={true} isOpen={isModalOpen} title={'📢 If we say Tokenomics...'} onClose={closeModal}>
             <Flex mb={3} flexDirection="column" alignItems="center">
                 <Text color="white" mb={2} fontWeight={'bold'} textAlign="center" fontSize={[2, 3]}>🤑 Get a chance to join our presale whitelist</Text>
-                <Text color="white" mb={4} textAlign="center" fontStyle="italic" fontSize={1}>Not already a part of the DividendTracer's community ?</Text>
-                <TelegramButton noMobile rel="noreferrer" target="_blank" href="https://t.me/DividendTracer">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
+                <Text color="white" mb={4} textAlign="center" fontStyle="italic" fontSize={1}>Not already a part of the PonySwap community ?</Text>
+                <TelegramButton noMobile rel="noreferrer" target="_blank" href="https://t.me/ponyswapEN">Join our telegram <FaTelegramPlane color="white" /></TelegramButton>
             </Flex>
         </Modal>
     )

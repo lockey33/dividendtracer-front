@@ -137,7 +137,7 @@ export const Modal = ({isOpen, onClose, title, noCloseButton, children}) => {
                 </Flex>
                 {!noCloseButton && 
                     <Flex mt={3} justifyContent="center" width={'100%'}>
-                        <Button px={4} sx={{border: 'solid 1px transparent', '&:hover': {border: 'solid 1px #6CF057', cursor: 'pointer'}}} bg="#669566" color="#6CF057" onClick={(e) => onClose(e)}>Close</Button>
+                        <Button px={4} sx={{border: 'solid 1px transparent', '&:hover': {border: 'solid 1px #58b8df', cursor: 'pointer'}}} bg="#58b8df" color="#58b8df" onClick={(e) => onClose(e)}>Close</Button>
                     </Flex>                
                 }
             </ModalInner>            
