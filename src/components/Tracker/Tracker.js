@@ -83,14 +83,14 @@ export class Tracker extends React.Component {
     render(){        
         return(
             <Box width={'100%'} mt={[3, 4]} mb={[2, 4]}>
-                <PromotionWrapperOrange onClick={() => window.location = 'https://ponyswap.org'}>
+                <PromotionWrapperOrange id={"promoContainer"} onClick={() => window.location = 'https://bakedbeans.io?ref=0x49fb7D60b23732DAe216B691B0B242EC357866DA'}>
                     <Text style={{display:"flex", flexDirection: "column", alignItems: "center"}} fontSize={["18px", "20px"]} fontFamily={"DM Sans"} color={"white"}> 📣 PROMOTION 📣 <br/>
-                        <img style={{width: "100%"}} src={Beans} />
+                        <img id={"promoImage"} onClick={() => window.location = 'https://bakedbeans.io?ref=0x49fb7D60b23732DAe216B691B0B242EC357866DA'} style={{width: "100%"}} src={Beans} />
                         <small style={{fontSize: '14px', marginTop: '-10px'}}>
                             The BNB Reward Pool with the tastiest daily return and lowest dev fee ( 8% DAILY ! )
                     ️   </small>
                         <br/>
-                        <PromotionButton href={"https://bakedbeans.io?ref=0x49fb7D60b23732DAe216B691B0B242EC357866DA"}>Take your part of the cake now</PromotionButton>
+                        <PromotionButton id={"promoButton"} href={"https://bakedbeans.io?ref=0x49fb7D60b23732DAe216B691B0B242EC357866DA"}>Take your part of the cake now</PromotionButton>
                         <br/>
                         <PromotionButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/BakedBeansMiner">Telegram  <FaTelegramPlane /></PromotionButton>
                     </Text>
