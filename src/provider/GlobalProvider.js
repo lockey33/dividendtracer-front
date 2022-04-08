@@ -52,10 +52,6 @@ class GlobalProvider extends Component {
         }
     }
 
-    componentDidMount(){
-        this.initContracts();
-    }
-
     getAllContracts = async(transactions) => {
         let contracts = []
         await Promise.all(transactions.map(async (transaction) => {
@@ -121,6 +117,8 @@ class GlobalProvider extends Component {
         return amount
     }
 
+
+
     initContracts = async () =>{
         const contracts = {
             "routerFreeContractInstance": await this.getFreeContractInstance(this.state.pancakeswap.router, PANCAKE, this.state.signer),
@@ -140,13 +138,12 @@ class GlobalProvider extends Component {
             return false
         }
     }
-    getContractABI = async (contract) => {
+    getContractABI= async (contract) => {
         const url = "https://api.bscscan.com/api?module=contract&action=getabi&address="+contract+"&apikey=Q9ZQ3W73JY63ATR9Y5AIXZTGA3Q68TCZ1C"
         const response = await axios.get(url)
         const data = response.data.result
         return data
     }
-
     getBnbPrice = async () => {
         const url = "https://api.bscscan.com/api?module=stats&action=bnbprice&apikey=Q9ZQ3W73JY63ATR9Y5AIXZTGA3Q68TCZ1C"
         const response = await axios.get(url)
@@ -154,7 +151,7 @@ class GlobalProvider extends Component {
         return data
     }
 
-    getTokenDecimals = async (address) => {
+    getTokenDecimals= async (address) => {
         const tokenContract = await this.getFreeContractInstance(address, ERC20)
         const tokenDecimals = await this.callContractMethod(tokenContract, "decimals")
 

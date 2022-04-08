@@ -2,13 +2,9 @@ import React from "react";
 import { GlobalContext } from "../../provider/GlobalProvider";
 import { ethers } from 'ethers';
 import {Box, Text} from 'rebass';
-import {AdBlock, PromotionWrapper, PromotionWrapperOrange} from './styled';
+import {AdBlock, PromotionWrapper} from './styled';
 import { Form } from "../Forms/TrackerForm";
 import { Card } from "../Card";
-import Beans from "../../assets/images/beans.png";
-import {PromotionButton, SubmitButton} from "../Forms/styled/index.js";
-import {TelegramButton, TelegramButtonWhite} from "../Header/styled/index.js";
-import {FaRocket, FaTelegramPlane} from "react-icons/fa";
 
 
 export class Tracker extends React.Component {
@@ -83,22 +79,10 @@ export class Tracker extends React.Component {
     render(){        
         return(
             <Box width={'100%'} mt={[3, 4]} mb={[2, 4]}>
-                <PromotionWrapperOrange id={"promoContainer"} onClick={() => window.location = 'https://bakedbeans.io?ref=0x49fb7D60b23732DAe216B691B0B242EC357866DA'}>
-                    <Text style={{display:"flex", flexDirection: "column", alignItems: "center"}} fontSize={["18px", "20px"]} fontFamily={"DM Sans"} color={"white"}> 📣 PROMOTION 📣 <br/>
-                        <img id={"promoImage"} onClick={() => window.location = 'https://bakedbeans.io?ref=0x49fb7D60b23732DAe216B691B0B242EC357866DA'} style={{width: "100%"}} src={Beans} />
-                        <small style={{fontSize: '14px', marginTop: '-10px'}}>
-                            The BNB Reward Pool with the tastiest daily return and lowest dev fee ( 8% DAILY ! )
-                    ️   </small>
-                        <br/>
-                        <PromotionButton id={"promoButton"} href={"https://bakedbeans.io?ref=0x49fb7D60b23732DAe216B691B0B242EC357866DA"}>Take your part of the cake now</PromotionButton>
-                        <br/>
-                        <PromotionButton id="telegramHeader" rel="noreferrer" target="_blank" href="https://t.me/BakedBeansMiner">Telegram  <FaTelegramPlane /></PromotionButton>
-                    </Text>
-                </PromotionWrapperOrange>
                 <AdBlock><span>Make sure to disable your ad blocker in order to use our tracker</span></AdBlock>
-{/*                <PromotionWrapper onClick={() => window.location = 'https://ponyswap.org'}>
-                    <Text fontSize={["18px", "20px"]} fontFamily={"DM Sans"} color={"white"}>Here comes a new DEX on BSC, full of PONYs.<br/><small style={{fontSize: '14px'}}>Made with love by the DividendTracer Team. ❤️</small></Text>
-                </PromotionWrapper>*/}
+                <PromotionWrapper onClick={() => window.location = 'https://token.dividendtracer.com'}>
+                    <Text fontSize={"20px"} fontFamily={"DM Sans"} color={"white"}>$DVT reward token is coming <small style={{fontSize: '14px'}}><u>Learn more</u></small></Text>
+                </PromotionWrapper>
                 <Card mt={3}>
                     <Form action={this.results} handleAddress={this.handleAddress} handleWallet={this.handleWallet} response={this.state.response} errorWallet={this.state.errorWallet} errorToken={this.state.errorToken} />
                 </Card>
